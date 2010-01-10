@@ -1,4 +1,5 @@
 #include "parser.h"
+#include "util.h"
 #include <ctype.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -16,7 +17,7 @@ void parser_read(Board *b, char *data) {
     Player p;
     do {
         if (data == '\0') {
-            exit(EXIT_FAILURE);
+            handle_error("Reached end of string, board data was not complete.");
         } else if (isspace(*data)) {
             data++;
             continue;
@@ -35,7 +36,7 @@ void parser_read(Board *b, char *data) {
                     p = NOBODY;
                     break;
                 default:
-                    exit(EXIT_FAILURE);
+                    handle_error("Illegal character in board data.");
             }
             pieces[row][col] = p;
             data++;

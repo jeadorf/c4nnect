@@ -44,7 +44,9 @@ Player board_get(Board *b, int row, int col);
 
 Player board_winner(Board *b);
 
-bool board_full(Board *b, int col);
+bool board_column_full(Board *b, int col);
+
+bool board_full(Board *b);
 
 void board_print(Board *b);
 

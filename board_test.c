@@ -17,16 +17,46 @@ static char* test_board_put() {
     return 0;
 }
 
-static char* test_board_full() {
-    printf("test_board_full\n");
+static char* test_board_column_full() {
+    printf("test_board_column_full\n");
     int r;
     Board b;
     board_init(&b);
     for (r = 0; r < NUM_ROWS; r++) {
-        mu_assert("error, column cannot be full", !board_full(&b, 3));
+        mu_assert("error, column cannot be full", !board_column_full(&b, 3));
         board_put(&b, BLACK, 3);
     }
-    mu_assert("error, column must be full", board_full(&b, 3));
+    mu_assert("error, column must be full", board_column_full(&b, 3));
+    return 0;
+}
+
+static char* test_board_full() {
+    printf("test_board_full\n");
+    Board b;
+    parser_read(&b,
+            "b w b w b w b"
+            "w b b b w b w"
+            "b b w b w b w"
+            "w w w b b b w"
+            "w w b w w w b"
+            "w b b w b b w");
+    mu_assert("error, board should be full", board_full(&b));
+    mu_assert("error, game should be drawn", b.winner == NOBODY);
+    return 0;
+}
+
+static char* test_board_not_full() {
+    printf("test_board_not_full\n");
+    Board b;
+    parser_read(&b,
+            "b w - w b w b"
+            "w b b b w b w"
+            "b b w b w b w"
+            "w w w b b b w"
+            "w w b w w w b"
+            "w b b w b b w");
+    mu_assert("error, board should not be full", !board_full(&b));
+    mu_assert("error, game should be drawn", b.winner == NOBODY);
     return 0;
 }
 
@@ -129,6 +159,8 @@ static char* test_board_move_wins_diagdown2() {
 static char* all_tests() {
     mu_run_test(test_board_put);
     mu_run_test(test_board_full);
+    mu_run_test(test_board_not_full);
+    mu_run_test(test_board_column_full);
     mu_run_test(test_board_move_wins_col);
     mu_run_test(test_board_move_wins_row);
     mu_run_test(test_board_move_wins_row2);

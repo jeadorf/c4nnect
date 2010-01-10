@@ -1,12 +1,7 @@
-#include <stdlib.h>
 #include <stdio.h>
-#include <stdbool.h>
 #include <string.h>
-
 #include "board.h"
-
-#define max(A,B) (((A)>(B))?(A):(B))
-#define min(A,B) (((A)<(B))?(A):(B))
+#include "util.h"
 
 void board_init(Board *b) {
     memset(b, 0, sizeof(Board));
@@ -126,9 +121,12 @@ static bool board_move_wins(Board *b, Player p, int row, int col) {
 }
 
 void board_put(Board *b, Player p, int col) {
-    // TODO: exception handling: what if the column is already full?
-    // Put a piece on the column
     int row = b->tops[col];
+    if (row == NUM_ROWS) {
+        handle_error("Column is already full, cannot put another piece in this column!");
+    }
+
+    // Put a piece on the column
     b->cols[p][col] |= (1 << row);
     b->tops[col]++;
 
@@ -147,7 +145,17 @@ Player board_get(Board *b, int row, int col) {
     }
 }
 
-bool board_full(Board *b, int col) {
+bool board_full(Board *b) {
+    int c;
+    for (c = 0; c < NUM_COLS; c++) {
+        if (!board_column_full(b, c)) {
+            return false;
+        }
+    }
+    return true;
+}
+
+bool board_column_full(Board *b, int col) {
     return b->tops[col] == NUM_ROWS;
 }
 
@@ -170,10 +178,6 @@ void board_print(Board *b) {
         }
         putchar('\n');
     }
-    /*
-        putchar('\n');
-        for (c = 0; c < NUM_COLS; c++) {
-            printf("col %d : %02x %02x top %d\n", c, b->cols[0][c], b->cols[1][c], b->tops[c]);
-        }
-     */
+    
+    putchar('\n');
 }

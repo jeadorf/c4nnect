@@ -34,6 +34,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/parser.o \
 	${OBJECTDIR}/board_test.o \
 	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/util.o \
 	${OBJECTDIR}/board.o
 
 # C Compiler Flags
@@ -74,6 +75,11 @@ ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+
+${OBJECTDIR}/util.o: nbproject/Makefile-${CND_CONF}.mk util.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/util.o util.c
 
 ${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c 
 	${MKDIR} -p ${OBJECTDIR}

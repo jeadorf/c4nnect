@@ -5,7 +5,7 @@
 #include "board.h"
 #include "parser.h"
 #include "board_test.h"
-#include "minunit.h"
+#include "util.h"
 
 /*
  * 
@@ -27,7 +27,10 @@ int main(int argc, char** argv) {
             c = getchar() - '0';
             // Read line feed
             getchar();
-        } while (c < 0 || c >= NUM_COLS || board_full(&b, c));
+            if (board_column_full(&b, c)) {
+                printf("You can no longer put a piece in this column!\n");
+            }
+        } while (c < 0 || c >= NUM_COLS || board_column_full(&b, c));
 
         // put piece selected by the human player
         board_put(&b, WHITE, c);
