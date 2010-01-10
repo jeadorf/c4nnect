@@ -31,12 +31,13 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/parser.o \
 	${OBJECTDIR}/board_test.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/board.o
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=-std=c99
 
 # CC Compiler Flags
 CCFLAGS=
@@ -57,7 +58,12 @@ LDLIBSOPTIONS=
 
 dist/Debug/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/GNU-Linux-x86
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	gcc -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/parser.o: nbproject/Makefile-${CND_CONF}.mk parser.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser.o parser.c
 
 ${OBJECTDIR}/board_test.o: nbproject/Makefile-${CND_CONF}.mk board_test.c 
 	${MKDIR} -p ${OBJECTDIR}

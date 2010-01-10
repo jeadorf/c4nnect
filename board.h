@@ -26,15 +26,17 @@ struct Board {
      * inserted in a column is represented by the least significant bit of the
      * column value, the left-most column is represented by the least significant
      * bit of the row value. */
-    ushort cols[2][NUM_COLS];
-    ushort rows[2][NUM_ROWS];
+    unsigned short int cols[2][NUM_COLS];
+    unsigned short int rows[2][NUM_ROWS];
     /* Stores the number of pieces in each column (0 means empty) */
-    ushort tops[NUM_COLS];
+    unsigned short int tops[NUM_COLS];
     /* The player who gained four in a row, column or diagonal */
     Player winner;
 };
 
 typedef struct Board Board;
+
+void board_init(Board *b);
 
 void board_put(Board *b, Player p, int col);
 

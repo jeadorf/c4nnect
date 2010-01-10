@@ -1,24 +1,139 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 #include "board.h"
+
+#define max(A,B) (((A)>(B))?(A):(B))
+#define min(A,B) (((A)<(B))?(A):(B))
+
+void board_init(Board *b) {
+    memset(b, 0, sizeof(Board));
+    b->winner = NOBODY;
+}
+
+static bool board_move_wins_col(Board *b, Player p, int row, int col) {
+    int count = 0;
+    if (row >= 3) {
+        int start = row - 3;
+        int end = row;
+        for (int i = start; i <= end; i++) {
+            if (board_get(b, i, col) == p) {
+                count++;
+            } else {
+                break;
+            }
+        }
+    }
+    return count >= 4;
+}
+
+static bool board_move_wins_row(Board *b, Player p, int row, int col) {
+    int count = 0;
+    // Walk to the left maximum three steps and as long as the pieces match
+    // the player, increment the line counter.
+    int currentcol = col;
+    while (currentcol >= 0
+            && currentcol >= col - 3
+            && p == board_get(b, row, currentcol)) {
+        count++;
+        currentcol--;
+    }
+    // Walk to the right maximum three steps and as long as the pieces match
+    // the player, increment the line counter. We do not start with the piece
+    // at (row, col) here such that it is not counted twice.
+    currentcol = col + 1;
+    while (currentcol < NUM_COLS
+            && currentcol <= col + 3
+            && p == board_get(b, row, currentcol)) {
+        count++;
+        currentcol++;
+    }
+    return count >= 4;
+}
+
+static bool board_move_wins_diagup(Board *b, Player p, int row, int col) {
+    int count = 0;
+    // Walk left down for maximum three steps and as long as the pieces match the
+    // player increment the line counter.
+    int currentrow = row;
+    int currentcol = col;
+    while (currentcol >= 0
+            && currentcol >= col - 3
+            && currentrow >= 0
+            && currentrow >= row - 3
+            && p == board_get(b, currentrow, currentcol)) {
+        count++;
+        currentcol--;
+        currentrow--;
+    }
+    // Now walk right up for maximum three steps, doing the same again just
+    // that we do not start at (row, col).
+    currentrow = row + 1;
+    currentcol = col + 1;
+    while (currentcol < NUM_COLS
+            && currentcol <= col + 3
+            && currentrow < NUM_ROWS
+            && currentrow <= row + 3
+            && p == board_get(b, currentrow, currentcol)) {
+        count++;
+        currentcol++;
+        currentrow++;
+    }
+    return count >= 4;
+}
+
+static bool board_move_wins_diagdown(Board *b, Player p, int row, int col) {
+    int count = 0;
+    // Walk left up for maximum three steps and as long as the pieces match the
+    // player increment the line counter.
+    int currentrow = row;
+    int currentcol = col;
+    while (currentcol >= 0
+            && currentcol >= col - 3
+            && currentrow < NUM_ROWS
+            && currentrow <= row + 3
+            && p == board_get(b, currentrow, currentcol)) {
+        count++;
+        currentcol--;
+        currentrow++;
+    }
+    // Now walk right down for maximum three steps, doing the same again just
+    // that we do not start at (row, col).
+    currentrow = row - 1;
+    currentcol = col + 1;
+    while (currentcol < NUM_COLS
+            && currentcol <= col + 3
+            && currentrow >= 0
+            && currentrow >= row - 3
+            && p == board_get(b, currentrow, currentcol)) {
+        count++;
+        currentcol++;
+        currentrow--;
+    }
+    return count >= 4;
+}
+
+// Check for win situation. The new piece must have been involved in a
+// win line. Thus, we just need to check rows, columns and diagonals
+// starting from the new piece.
+static bool board_move_wins(Board *b, Player p, int row, int col) {
+    return board_move_wins_row(b, p, row, col)
+            || board_move_wins_col(b, p, row, col)
+            || board_move_wins_diagup(b, p, row, col)
+            || board_move_wins_diagdown(b, p, row, col);
+}
 
 void board_put(Board *b, Player p, int col) {
     // TODO: exception handling: what if the column is already full?
     // Put a piece on the column
-    b->cols[p][col] |= (1 << b->tops[col]);
+    int row = b->tops[col];
+    b->cols[p][col] |= (1 << row);
     b->tops[col]++;
-    // Check for win situation
-    if (b-> tops[col] >= 4) {
-        int k = 1, i;
-        for (i = 1; i <= 3; i++) {
-            if (board_get(b, b->tops[col]-1-i, col) == p)
-                k++;
-        }
-            printf("You nothiing %d!\n", k);
-        if (k == 4)
-            printf("You WIN!\n");
+
+    if (board_move_wins(b, p, row, col)) {
+        b->winner = p;
     }
 }
 
