@@ -125,6 +125,26 @@ static char* test_search_white_win3() {
     return 0;
 }
 
+static char* test_search_defer_defeat() {
+    printf("test_search_defer_defeat\n");
+    Board b;
+    // This position is obviously lost for black, even if it is his turn because
+    // white can either complete the tower in column 4 or initiate a double
+    // threat in column 5. Yet, any optimistic black player would at least
+    // respond to the obvious threat of the tower on 4, therefore deferring
+    // his defeat (which is only sure to happen if white plays correctly) at
+    // least for two plies.
+    parser_read(&b,
+            "- - - - - - -"
+            "b - - - - - -"
+            "w - - b - - -"
+            "b - - w w - -"
+            "b - - w w - -"
+            "b - b w w w b");
+    mu_assert("error, should defer defeat", search(&b, BLACK) == 4);
+    return 0;
+}
+
 static char* all_tests() {
     mu_run_test(test_abn_white_win);
     mu_run_test(test_abn_black_win);
@@ -133,6 +153,7 @@ static char* all_tests() {
     mu_run_test(test_search_white_win2);
     mu_run_test(test_search_white_win3);
     mu_run_test(test_search_black_win);
+    mu_run_test(test_search_defer_defeat);
     return 0;
 }
 
