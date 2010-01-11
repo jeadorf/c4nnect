@@ -52,5 +52,7 @@ bool board_full(Board *b);
 
 void board_print(Board *b);
 
+void board_printd(Board *b, int depth);
+
 #endif	/* _BOARD_H */
 

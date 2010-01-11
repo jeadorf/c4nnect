@@ -174,8 +174,16 @@ bool board_column_full(Board *b, int col) {
 }
 
 void board_print(Board *b) {
+    board_printd(b, 0);
+}
+
+void board_printd(Board *b, int depth) {
     int r, c;
     for (r = NUM_ROWS - 1; r >= 0; r--) {
+        for (c = 0; c < depth * 4; c++) {
+            putchar(' ');
+        }
+
         for (c = 0; c < NUM_COLS; c++) {
             switch (board_get(b, r, c)) {
                 case WHITE:

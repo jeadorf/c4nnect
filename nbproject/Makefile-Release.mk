@@ -34,6 +34,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/parser.o \
 	${OBJECTDIR}/board_test.o \
 	${OBJECTDIR}/search.o \
+	${OBJECTDIR}/parser_test.o \
 	${OBJECTDIR}/board.o \
 	${OBJECTDIR}/eval.o \
 	${OBJECTDIR}/search_test.o \
@@ -79,6 +80,11 @@ ${OBJECTDIR}/search.o: nbproject/Makefile-${CND_CONF}.mk search.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/search.o search.c
+
+${OBJECTDIR}/parser_test.o: nbproject/Makefile-${CND_CONF}.mk parser_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser_test.o parser_test.c
 
 ${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c 
 	${MKDIR} -p ${OBJECTDIR}

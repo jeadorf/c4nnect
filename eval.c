@@ -1,21 +1,21 @@
 #include <float.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include "eval.h"
 
-#define BONUS_WIN 10e32
-#define BONUS_CENTER 25
+#define BONUS_WIN 100
+#define BONUS_CENTER 5
 
 float eval(Board *b) {
-    float value = 0;
+    float value = rand() % 10 - 5;
 
-    // Fast evaluation
     if (b->winner == WHITE) {
-        return BONUS_WIN;
+        value += BONUS_WIN;
     } else if (b->winner == BLACK) {
-        return -BONUS_WIN;
+        value -= BONUS_WIN;
     }
-    
-    if (board_get_top(b, 2) == WHITE) {
+
+   if (board_get_top(b, 2) == WHITE) {
         value += BONUS_CENTER;
     } else if (board_get_top(b, 2) == BLACK) {
         value -= BONUS_CENTER;

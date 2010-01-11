@@ -1,6 +1,7 @@
 #include <malloc.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 #include "minunit.h"
 #include "board.h"
 #include "parser.h"
@@ -75,20 +76,10 @@ static char* test_board_undo_multiple() {
             "- - - - - - -"
             "- - - w b - -"
             "- - w b w b -");
-    printf("before first move\n");
-    board_print(&b);
     board_put(&b, WHITE, 5);
-    printf("after first move\n");
-    board_print(&b);
     board_put(&b, BLACK, 1);
-    printf("after second move\n");
-    board_print(&b);
     board_undo(&b, 1);
-    printf("after undo second move\n");
-    board_print(&b);
     board_undo(&b, 5);
-    printf("after undo first move\n");
-    board_print(&b);
     mu_assert("error, expected no piece here", board_get_top(&b, 1) == NOBODY);
     mu_assert("error, expected no piece here", board_get(&b, 1, 5) == NOBODY);
     return 0;
@@ -233,6 +224,29 @@ static char* test_board_move_wins_diagdown2() {
     return 0;
 }
 
+static char* test_board_compare() {
+    printf("test_board_compare\n");
+    Board b1;
+    parser_read(&b1,
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -");
+    Board b2;
+    board_init(&b2);
+    Board b3;
+    board_init(&b3);
+    mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof(Board)));
+    mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b3, sizeof(Board)));
+    Board b4;
+    board_init(&b4);
+    board_put(&b4, WHITE, 3);
+    mu_assert("error, expected boards to differ", 0 != memcmp(&b1, &b4, sizeof(Board)));
+    return 0;
+}
+
 static char* all_tests() {
     mu_run_test(test_board_put);
     mu_run_test(test_board_undo);
@@ -249,6 +263,7 @@ static char* all_tests() {
     mu_run_test(test_board_move_wins_diagup2);
     mu_run_test(test_board_move_wins_diagdown);
     mu_run_test(test_board_move_wins_diagdown2);
+    mu_run_test(test_board_compare);
     return 0;
 }
 

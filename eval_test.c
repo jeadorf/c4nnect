@@ -15,8 +15,8 @@ static char* test_eval_white_win() {
             "- - - - - - -"
             "- - b - b - -"
             "- w w w w b -");
-    mu_assert("error, minimax value should be positive", eval(&b) > 0);
-    mu_assert("error, minimax value should be big", eval(&b) > 10e5);
+    mu_assert("error, evaluation value should be positive", eval(&b) > 0);
+    mu_assert("error, evaluation value should be big", eval(&b) > 90); // TODO: magic number
     return 0;
 }
 
@@ -30,8 +30,8 @@ static char* test_eval_black_win() {
             "- - - - - - -"
             "- - w w w - -"
             "- w b b b b -");
-    mu_assert("error, minimax value should be negative", eval(&b) < 0);
-    mu_assert("error, minimax value should be negative with big absolute value", eval(&b) < -10e5);
+    mu_assert("error, evaluation value should be negative", eval(&b) < 0);
+    mu_assert("error, evaluation value should be negative with big absolute value", eval(&b) < 90); // TODO: magic number
     return 0;
 }
 

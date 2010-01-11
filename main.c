@@ -8,6 +8,7 @@
 #include "search.h"
 #include "search_test.h"
 #include "util.h"
+#include "parser_test.h"
 
 /*
  * 
@@ -17,6 +18,7 @@ int main(int argc, char** argv) {
     board_test();
     eval_test();
     search_test();
+    parser_test();
 
     puts("Welcome to 'Four in a Row'!");
     Board b;
@@ -37,10 +39,10 @@ int main(int argc, char** argv) {
         } while (c < 0 || c >= NUM_COLS || board_column_full(&b, c));
 
         // put piece selected by the human player
-        board_put(&b, WHITE, c);
+        board_put(&b, BLACK, c);
         board_print(&b);
 
-        if (b.winner == WHITE) {
+        if (b.winner == BLACK) {
             board_print(&b);
             printf("You win!\n");
             break;
@@ -51,18 +53,18 @@ int main(int argc, char** argv) {
         }
 
         // put piece selected by the engine
-        int col = search(b, BLACK);
+        int col = search(&b, WHITE);
 /*
         printf("after selecting black piece %d\n", col);
         board_print(&b);
 */
 
-        board_put(&b, BLACK, col);
+        board_put(&b, WHITE, col);
 /*
         printf("after putting black piece\n");
         board_print(&b);
 */
-        if (b.winner == BLACK) {
+        if (b.winner == WHITE) {
             board_print(&b);
             printf("Computer wins!\n");
             break;
