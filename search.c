@@ -60,6 +60,19 @@ void alphabeta_negamax(
 
 int search(Board *b, Player p) {
     Move res;
-    alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, 4, &res);
+    // Look-ahead for quick ways to victory. This makes the computer's moves
+    // much more predictible if it is on the road to victory. Otherwise the
+    // computer might create additional threats that ultimately lead to victory
+    // instead of winning by simply completing a row.
+    alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, 2, &res);
+    // TODO: magic number
+    // TODO: remember value. If it turns out that even with a deep search, a
+    // defeat is unavoidable, try at least not to lose in the next move which
+    // means that the computer should at least stop 'obvious' row completions
+    // that are not far away
+    if (res.value > 90) {
+        return res.column;
+    }
+    alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, 8, &res);
     return res.column;
 }
