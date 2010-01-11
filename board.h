@@ -24,10 +24,8 @@ struct Board {
     /* Stores all positions of white (columns[WHITE]) and black (columns[BLACK])
      * pieces present on the board (L means present). The first piece that is
      * inserted in a column is represented by the least significant bit of the
-     * column value, the left-most column is represented by the least significant
-     * bit of the row value. */
+     * column value. */
     unsigned short int cols[2][NUM_COLS];
-    unsigned short int rows[2][NUM_ROWS];
     /* Stores the number of pieces in each column (0 means empty) */
     unsigned short int tops[NUM_COLS];
     /* The player who gained four in a row, column or diagonal */
@@ -40,7 +38,11 @@ void board_init(Board *b);
 
 void board_put(Board *b, Player p, int col);
 
+void board_undo(Board *b, int col);
+
 Player board_get(Board *b, int row, int col);
+
+Player board_get_top(Board *b, int col);
 
 Player board_winner(Board *b);
 

@@ -135,6 +135,15 @@ void board_put(Board *b, Player p, int col) {
     }
 }
 
+void board_undo(Board *b, int col) {
+    int row = b->tops[col] - 1;
+    Player p = board_get(b, row, col);
+    b->winner = NOBODY;
+    // Kill bit at row
+    b->cols[p][col] ^= (1 << row);
+    b->tops[col]--;
+}
+
 Player board_get(Board *b, int row, int col) {
     if ((b->cols[WHITE][col] >> row) & 1) {
         return WHITE;
@@ -144,6 +153,11 @@ Player board_get(Board *b, int row, int col) {
         return NOBODY;
     }
 }
+
+Player board_get_top(Board *b, int col) {
+    return board_get(b, b->tops[col-1], col);
+}
+
 
 bool board_full(Board *b) {
     int c;

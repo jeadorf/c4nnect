@@ -3,6 +3,5 @@
 
 int board_test();
 
-
 #endif	/* _BOARD_TEST_H */
 

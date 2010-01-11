@@ -5,8 +5,6 @@
 #include "board.h"
 #include "parser.h"
 
-int tests_run = 0;
-
 static char* test_board_put() {
     printf("test_board_put\n");
     Board b;
@@ -14,6 +12,85 @@ static char* test_board_put() {
     board_put(&b, BLACK, 3);
     mu_assert("error, could not place white piece", board_get(&b, 0, 3) == BLACK);
     mu_assert("error, slot should be empty", board_get(&b, 0, 0) == NOBODY);
+    return 0;
+}
+
+static char* test_board_undo() {
+    printf("test_board_undo\n");
+    Board b;
+    parser_read(&b,
+            "- - - - - - -"
+            "- - - - - - -"
+            "- b - - - - -"
+            "w w - - - - -"
+            "w w - - - - -"
+            "w b b - b - -");
+    board_put(&b, BLACK, 3);
+    mu_assert("error, game should be won by BLACK", b.winner == BLACK);
+    board_undo(&b, 3);
+    mu_assert("error, game should be ongoing", b.winner == NOBODY);
+    return 0;
+}
+
+static char* test_board_undo_full() {
+    printf("test_board_undo\n");
+    Board b;
+    parser_read(&b,
+            "- w - - - - -"
+            "- b - - - - -"
+            "- b - - - - -"
+            "w w - - - - -"
+            "w w - - - - -"
+            "w b b - b - -");
+    mu_assert("error, column should be full", board_column_full(&b, 1));
+    board_undo(&b, 1);
+    mu_assert("error, column should no longer be full", !board_column_full(&b, 1));
+    return 0;
+}
+
+static char* test_board_undo_win() {
+    printf("test_board_undo_win\n");
+    Board b;
+    parser_read(&b,
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - w b -"
+            "- - - w b b -"
+            "- - w b w b -");
+    board_put(&b, WHITE, 5);
+    mu_assert("error, game should be won by WHITE", b.winner == WHITE);
+    board_undo(&b, 5);
+    mu_assert("error, game should be ongoing", b.winner == NOBODY);
+    return 0;
+}
+
+static char* test_board_undo_multiple() {
+    printf("test_board_undo_multiple\n");
+    Board b;
+    parser_read(&b,
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - w b - -"
+            "- - w b w b -");
+    printf("before first move\n");
+    board_print(&b);
+    board_put(&b, WHITE, 5);
+    printf("after first move\n");
+    board_print(&b);
+    board_put(&b, BLACK, 1);
+    printf("after second move\n");
+    board_print(&b);
+    board_undo(&b, 1);
+    printf("after undo second move\n");
+    board_print(&b);
+    board_undo(&b, 5);
+    printf("after undo first move\n");
+    board_print(&b);
+    mu_assert("error, expected no piece here", board_get_top(&b, 1) == NOBODY);
+    mu_assert("error, expected no piece here", board_get(&b, 1, 5) == NOBODY);
     return 0;
 }
 
@@ -158,6 +235,10 @@ static char* test_board_move_wins_diagdown2() {
 
 static char* all_tests() {
     mu_run_test(test_board_put);
+    mu_run_test(test_board_undo);
+    mu_run_test(test_board_undo_full);
+    mu_run_test(test_board_undo_win);
+    mu_run_test(test_board_undo_multiple);
     mu_run_test(test_board_full);
     mu_run_test(test_board_not_full);
     mu_run_test(test_board_column_full);

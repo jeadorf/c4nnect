@@ -1,10 +1,12 @@
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <stdbool.h>
-
 #include "board.h"
-#include "parser.h"
 #include "board_test.h"
+#include "eval_test.h"
+#include "parser.h"
+#include "search.h"
+#include "search_test.h"
 #include "util.h"
 
 /*
@@ -13,11 +15,13 @@
 int main(int argc, char** argv) {
     // FIXME: remove tests before release
     board_test();
+    eval_test();
+    search_test();
 
     puts("Welcome to 'Four in a Row'!");
     Board b;
     board_init(&b);
-
+    
     char c;
     while (true) {
         board_print(&b);
@@ -34,17 +38,37 @@ int main(int argc, char** argv) {
 
         // put piece selected by the human player
         board_put(&b, WHITE, c);
+        board_print(&b);
+
         if (b.winner == WHITE) {
             board_print(&b);
             printf("You win!\n");
             break;
+        } else if (board_full(&b)) {
+            board_print(&b);
+            printf("Game drawn!\n");
+            break;
         }
 
         // put piece selected by the engine
-        board_put(&b, BLACK, rand() % NUM_COLS);
+        int col = search(b, BLACK);
+/*
+        printf("after selecting black piece %d\n", col);
+        board_print(&b);
+*/
+
+        board_put(&b, BLACK, col);
+/*
+        printf("after putting black piece\n");
+        board_print(&b);
+*/
         if (b.winner == BLACK) {
             board_print(&b);
             printf("Computer wins!\n");
+            break;
+        } else if (board_full(&b)) {
+            board_print(&b);
+            printf("Game drawn!\n");
             break;
         }
     }

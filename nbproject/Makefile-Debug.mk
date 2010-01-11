@@ -33,9 +33,13 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/parser.o \
 	${OBJECTDIR}/board_test.o \
+	${OBJECTDIR}/search.o \
+	${OBJECTDIR}/board.o \
+	${OBJECTDIR}/eval.o \
+	${OBJECTDIR}/search_test.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/util.o \
-	${OBJECTDIR}/board.o
+	${OBJECTDIR}/eval_test.o
 
 # C Compiler Flags
 CFLAGS=-std=c99
@@ -71,6 +75,26 @@ ${OBJECTDIR}/board_test.o: nbproject/Makefile-${CND_CONF}.mk board_test.c
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
 
+${OBJECTDIR}/search.o: nbproject/Makefile-${CND_CONF}.mk search.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search.o search.c
+
+${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
+
+${OBJECTDIR}/eval.o: nbproject/Makefile-${CND_CONF}.mk eval.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval.o eval.c
+
+${OBJECTDIR}/search_test.o: nbproject/Makefile-${CND_CONF}.mk search_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
+
 ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -81,10 +105,10 @@ ${OBJECTDIR}/util.o: nbproject/Makefile-${CND_CONF}.mk util.c
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/util.o util.c
 
-${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c 
+${OBJECTDIR}/eval_test.o: nbproject/Makefile-${CND_CONF}.mk eval_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
 
 # Subprojects
 .build-subprojects:
