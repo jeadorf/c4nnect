@@ -13,6 +13,8 @@ enum Player {
 
 typedef enum Player Player;
 
+Player other(Player p);
+
 #define NUM_ROWS 6
 #define NUM_COLS 7
 #define NUM_DIAGS NUM_ROWS + NUM_COLS - 1

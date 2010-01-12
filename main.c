@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "board.h"
 #include "board_test.h"
 #include "eval_test.h"
@@ -10,27 +11,17 @@
 #include "util.h"
 #include "parser_test.h"
 
-/*
- * 
- */
-int main(int argc, char** argv) {
-    // FIXME: remove tests before release
-    board_test();
-    eval_test();
-    search_test();
-    parser_test();
-
-    puts("Welcome to 'Four in a Row'!");
+static void play_game() {
     Board b;
     board_init(&b);
-    
+
     char c;
     while (true) {
         board_print(&b);
 
         do {
-            printf("[%d-%d] > ", 0, NUM_COLS - 1);
-            c = getchar() - '0';
+            printf("[%d-%d] > ", 1, NUM_COLS);
+            c = getchar() - '1';
             // Read line feed
             getchar();
             if (board_column_full(&b, c)) {
@@ -39,10 +30,10 @@ int main(int argc, char** argv) {
         } while (c < 0 || c >= NUM_COLS || board_column_full(&b, c));
 
         // put piece selected by the human player
-        board_put(&b, BLACK, c);
+        board_put(&b, WHITE, c);
         board_print(&b);
 
-        if (b.winner == BLACK) {
+        if (b.winner == WHITE) {
             board_print(&b);
             printf("You win!\n");
             break;
@@ -53,18 +44,9 @@ int main(int argc, char** argv) {
         }
 
         // put piece selected by the engine
-        int col = search(&b, WHITE);
-/*
-        printf("after selecting black piece %d\n", col);
-        board_print(&b);
-*/
-
-        board_put(&b, WHITE, col);
-/*
-        printf("after putting black piece\n");
-        board_print(&b);
-*/
-        if (b.winner == WHITE) {
+        int col = search(&b, BLACK);
+        board_put(&b, BLACK, col);
+        if (b.winner == BLACK) {
             board_print(&b);
             printf("Computer wins!\n");
             break;
@@ -74,6 +56,27 @@ int main(int argc, char** argv) {
             break;
         }
     }
+}
+
+/*
+ * 
+ */
+int main(int argc, char** argv) {
+    srand(time(0));
+
+    // FIXME: remove tests before release
+    board_test();
+    eval_test();
+    search_test();
+    parser_test();
+
+    puts("Welcome to 'Four in a Row'!");
+
+    while (true) {
+        puts("A new game starts!");
+        play_game();
+    }
+
     return (EXIT_SUCCESS);
 }
 

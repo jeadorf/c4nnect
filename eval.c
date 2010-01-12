@@ -3,16 +3,18 @@
 #include <stdio.h>
 #include "eval.h"
 
-#define BONUS_WIN 100
 #define BONUS_CENTER 5
 
-float eval(Board *b) {
-    float value = rand() % 10 - 5;
+// TODO: We need some sort of randomization but generating random numbers is a
+// really expensive operation that slows down the whole evaluation process.
+// float value = rand() % 3 - 1.5;
 
+float eval(Board *b) {
+    float value = 0;
     if (b->winner == WHITE) {
-        value += BONUS_WIN;
+        return BONUS_WIN;
     } else if (b->winner == BLACK) {
-        value -= BONUS_WIN;
+        return -BONUS_WIN;
     }
 
    if (board_get_top(b, 2) == WHITE) {

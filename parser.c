@@ -22,7 +22,6 @@ void parser_read(Board *b, char *data) {
             data++;
             continue;
         } else {
-            // TODO: replace with hash-table?
             switch (*data) {
                 case 'w':
                 case 'W':

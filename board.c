@@ -3,6 +3,10 @@
 #include "board.h"
 #include "util.h"
 
+inline Player other(Player p) {
+    return p == WHITE ? BLACK : WHITE;
+}
+
 void board_init(Board *b) {
     memset(b, 0, sizeof(Board));
     b->winner = NOBODY;

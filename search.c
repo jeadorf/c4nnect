@@ -25,14 +25,14 @@ void alphabeta_negamax(
                 board_put(b, p, col);
 
                 // Search subposition
-                alphabeta_negamax(b, p == WHITE ? BLACK : WHITE,
-                        -beta, -bestval, depth + 1, max_depth, result);
+                alphabeta_negamax(b, other(p), -beta, -bestval,
+                                  depth + 1, max_depth, result);
                 result->value *= -1;
                 // Undo move
                 board_undo(b, col);
 
                 // Check for better move
-                if (result->value > bestval) {
+                if (result->value > bestval || bestcol == -1) {
                     bestval = result->value;
                     bestcol = col;
                 }
@@ -42,20 +42,20 @@ void alphabeta_negamax(
                 }
             }
         }
-        
+
         result->value = bestval;
         result->column = bestcol;
     }
-/*
-    board_printd(b, depth);
-    int i;
-    for (i = 0; i < 4 * depth; i++) putchar(' ');
-    printf("player %d, ply %d\n", p, depth);
-    for (i = 0; i < 4 * depth; i++) putchar(' ');
-    printf("value %.2f\n", result->value);
-    for (i = 0; i < 4 * depth; i++) putchar(' ');
-    printf("move %d\n\n\n", result->column);
-*/
+    /*
+        board_printd(b, depth);
+        int i;
+        for (i = 0; i < 4 * depth; i++) putchar(' ');
+        printf("player %d, ply %d\n", p, depth);
+        for (i = 0; i < 4 * depth; i++) putchar(' ');
+        printf("value %.2f\n", result->value);
+        for (i = 0; i < 4 * depth; i++) putchar(' ');
+        printf("move %d\n\n\n", result->column);
+     */
 }
 
 int search(Board *b, Player p) {
@@ -65,8 +65,9 @@ int search(Board *b, Player p) {
     // computer might create additional threats that ultimately lead to victory
     // instead of winning by simply completing a row.
     alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, 2, &lookahead);
-    // TODO: magic number
-    if (lookahead.value > 90) {
+    // Check whether we have found a winning move. If we have there is no point
+    // in looking for more complicated ways to victory.
+    if (lookahead.value > BONUS_WIN) {
         return lookahead.column;
     }
 
