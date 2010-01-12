@@ -15,7 +15,6 @@
 static void play_game() {
     Board b;
     board_init(&b);
-
     char c;
     while (true) {
         board_print(&b);
@@ -64,7 +63,7 @@ static void play_game() {
  */
 int main(int argc, char** argv) {
     srand(time(0));
-    
+    printf("board size %d\n", sizeof(Board));
     // FIXME: remove tests before release
     board_test();
     eval_test();

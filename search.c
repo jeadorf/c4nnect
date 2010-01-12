@@ -21,14 +21,14 @@ void alphabeta_negamax(
         int bestcol = -1;
         // Simple move ordering, start with checking the moves in the center and
         // then circle to the outer columns
-        for (int i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col = col + s*i) {
+        for (int i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col = col + s * i) {
             if (!board_column_full(b, col)) {
                 // Make move
                 board_put(b, p, col);
 
                 // Search subposition
                 alphabeta_negamax(b, other(p), -beta, -bestval,
-                                  depth + 1, max_depth, result);
+                        depth + 1, max_depth, result);
                 result->value *= -1;
                 // Undo move
                 board_undo(b, col);
@@ -48,16 +48,6 @@ void alphabeta_negamax(
         result->value = bestval;
         result->column = bestcol;
     }
-    /*
-        board_printd(b, depth);
-        int i;
-        for (i = 0; i < 4 * depth; i++) putchar(' ');
-        printf("player %d, ply %d\n", p, depth);
-        for (i = 0; i < 4 * depth; i++) putchar(' ');
-        printf("value %.2f\n", result->value);
-        for (i = 0; i < 4 * depth; i++) putchar(' ');
-        printf("move %d\n\n\n", result->column);
-     */
 }
 
 int search(Board *b, Player p) {
@@ -75,7 +65,7 @@ int search(Board *b, Player p) {
 
     Move deepsearch;
     // Now perform a full-scale deep alphabeta search
-    alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, 9, &deepsearch);
+    alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, 12, &deepsearch);
     // Defer defeats that are unavoidable. The computer should at least not to
     // lose in the next move even if the computer sees that he will lose
     // whatever moves he plays (hey, that is not correct, he will only lose
