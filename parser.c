@@ -5,6 +5,7 @@
 #include <stdio.h>
 #include <string.h>
 
+// TODO: fix problem with modifications to NUM_COL (and test cases and so on)
 void parser_read(Board *b, char *data) {
     Player pieces[NUM_ROWS][NUM_COLS];
     memset(pieces, 0, NUM_ROWS * NUM_COLS);

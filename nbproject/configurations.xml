@@ -9,6 +9,7 @@
       <itemPath>minunit.h</itemPath>
       <itemPath>parser.h</itemPath>
       <itemPath>search.h</itemPath>
+      <itemPath>tournament.h</itemPath>
       <itemPath>util.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -23,6 +24,7 @@
       <itemPath>main.c</itemPath>
       <itemPath>parser.c</itemPath>
       <itemPath>search.c</itemPath>
+      <itemPath>tournament.c</itemPath>
       <itemPath>util.c</itemPath>
     </logicalFolder>
     <logicalFolder name="f2" displayName="Test Header Files" projectFiles="true">
@@ -53,8 +55,7 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <commandLine>-std=c99</commandLine>
-          <warningLevel>3</warningLevel>
+          <commandLine>-std=c99 -D_XOPEN_SOURCE</commandLine>
         </cTool>
         <linkerTool>
           <commandlineTool>gcc</commandlineTool>

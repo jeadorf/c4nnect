@@ -63,7 +63,7 @@ static void play_game() {
  */
 int main(int argc, char** argv) {
     srand(time(0));
-
+    
     // FIXME: remove tests before release
     board_test();
     eval_test();
@@ -76,7 +76,7 @@ int main(int argc, char** argv) {
         puts("A new game starts!");
         play_game();
     }
-
+    
     return (EXIT_SUCCESS);
 }
 

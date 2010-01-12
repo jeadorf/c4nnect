@@ -19,7 +19,9 @@ void alphabeta_negamax(
     } else {
         float bestval = alpha;
         int bestcol = -1;
-        for (int col = 0; col < NUM_COLS; col++) {
+        // Simple move ordering, start with checking the moves in the center and
+        // then circle to the outer columns
+        for (int i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col = col + s*i) {
             if (!board_column_full(b, col)) {
                 // Make move
                 board_put(b, p, col);
