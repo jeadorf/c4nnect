@@ -1,4 +1,4 @@
-
+#include <stdbool.h>
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/un.h>
@@ -8,13 +8,12 @@
 #include <unistd.h>
 #include <errno.h>
 #include "util.h"
+#include "board.h"
 
 // TODO: make address configurable
-#define TOURNAMENT_SOCKET_ADDRESS "/tmp/fiawt"
-#define MSG_HELLO "Hello from server\n"
-#define MSG_HELLO_BACK "Hello from client\n"
+#define TOURNAMENT_SOCKET_ADDRESS "/tmp/fiart"
 
-/* Starts a tournament match connecting two players.
+/* Starts a tournament match connecting two players. Goals:
  * - one or both of the players might be human
  * - one or both of the players might be computers
  * - there is a time limit for the whole game
@@ -26,7 +25,7 @@
 void tournament_start() {
     FILE *in_one;
     FILE *in_two;
-    
+
     int pid = getpid();
     // See http://www.cs.cf.ac.uk/Dave/C
     int s;
@@ -80,31 +79,45 @@ void tournament_start() {
 
     in_one = fdopen(fd_one, "r");
     in_two = fdopen(fd_two, "r");
-
-    // Send a hello
-    send(fd_one, MSG_HELLO, strlen(MSG_HELLO), 0);
-    send(fd_two, MSG_HELLO, strlen(MSG_HELLO), 0);
-
-    for (int i = 0; i < strlen(MSG_HELLO_BACK); i++) {
-        putchar(fgetc(in_one));
+ 
+    char buf[64];
+    int col;
+    Board b;
+    board_init(&b);
+    // give player one a hint that he begins
+    write_data(fd_one, "start!");
+    while (true) {
+        // Waiting for move from player one
+        readline(in_one, buf, 64);
+        col = atoi(buf);
+        // TODO: check validity
+        board_put(&b, WHITE, col);
+        board_print(&b);
+        if (b.winner != NOBODY || board_full(&b)) {
+            break;
+        }
+        write_data(fd_two, buf);
+        readline(in_two, buf, 64);
+        col = atoi(buf);
+        // TODO: check validity
+        board_put(&b, BLACK, col);
+        board_print(&b);
+        if (b.winner != NOBODY || board_full(&b)) {
+            break;
+        }
+        write_data(fd_one, buf);
     }
-
-    for (int i = 0; i < strlen(MSG_HELLO_BACK); i++) {
-        putchar(fgetc(in_two));
-    }
+    printf("col %d\n", col);
 
     close(s);
     unlink(TOURNAMENT_SOCKET_ADDRESS);
 }
 
 void tournament_client() {
-    FILE *clientin;
-    int pid = getpid();
     int s;
     if ((s = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
         // TODO: error handling
         handle_error("Tournament client could not create socket");
-
     }
 
     // Server address
@@ -118,17 +131,18 @@ void tournament_client() {
         handle_error("Tournament client could not connect to server");
     }
 
-    clientin = fdopen(s, "r");
+    FILE *cltin;
+    cltin = fdopen(s, "r");
 
-    int i, c;
-    while ((c = fgetc(clientin)) != EOF) {
-        putchar(c);
-
-        if (c == '\n')
-            break;
+    // FIXME: not done yet
+    char buf[64];
+    Board b;
+    board_init(&b);
+    while (true) {
+        readline(cltin, buf, 64);
+        write_data(s, buf);
     }
 
-    write(s, MSG_HELLO_BACK, strlen(MSG_HELLO_BACK));
     close(s);
 }
 

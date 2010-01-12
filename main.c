@@ -10,6 +10,7 @@
 #include "search_test.h"
 #include "util.h"
 #include "parser_test.h"
+#include "tournament.h"
 
 static void play_game() {
     Board b;
@@ -71,7 +72,6 @@ int main(int argc, char** argv) {
     parser_test();
 
     puts("Welcome to 'Four in a Row'!");
-
     while (true) {
         puts("A new game starts!");
         play_game();
