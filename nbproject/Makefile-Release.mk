@@ -44,7 +44,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/eval_test.o
 
 # C Compiler Flags
-CFLAGS=-m64 -std=c99 -D_XOPEN_SOURCE -O2 -pg
+CFLAGS=-m64 -std=c99 -D_XOPEN_SOURCE -O2
 
 # CC Compiler Flags
 CCFLAGS=
@@ -65,62 +65,62 @@ LDLIBSOPTIONS=
 
 dist/Release/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
-	${LINK.c} -pg -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/parser.o: nbproject/Makefile-${CND_CONF}.mk parser.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser.o parser.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser.o parser.c
 
 ${OBJECTDIR}/board_test.o: nbproject/Makefile-${CND_CONF}.mk board_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
 
 ${OBJECTDIR}/tournament.o: nbproject/Makefile-${CND_CONF}.mk tournament.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/tournament.o tournament.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/tournament.o tournament.c
 
 ${OBJECTDIR}/search.o: nbproject/Makefile-${CND_CONF}.mk search.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/search.o search.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/search.o search.c
 
 ${OBJECTDIR}/parser_test.o: nbproject/Makefile-${CND_CONF}.mk parser_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser_test.o parser_test.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser_test.o parser_test.c
 
 ${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
 
 ${OBJECTDIR}/eval.o: nbproject/Makefile-${CND_CONF}.mk eval.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval.o eval.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval.o eval.c
 
 ${OBJECTDIR}/search_test.o: nbproject/Makefile-${CND_CONF}.mk search_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
 
 ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
 
 ${OBJECTDIR}/util.o: nbproject/Makefile-${CND_CONF}.mk util.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/util.o util.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/util.o util.c
 
 ${OBJECTDIR}/eval_test.o: nbproject/Makefile-${CND_CONF}.mk eval_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
+	$(COMPILE.c) -g -O -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
 
 # Subprojects
 .build-subprojects:

@@ -17,17 +17,24 @@ float eval(Board *b) {
         return -BONUS_WIN;
     }
 
-   if (board_get_top(b, 2) == WHITE) {
+    Player p = board_get_top(b, 2);
+    if (p == WHITE) {
         value += BONUS_CENTER;
-    } else if (board_get_top(b, 2) == BLACK) {
+    } else if (p == BLACK) {
         value -= BONUS_CENTER;
-    } else if (board_get_top(b, 3) == WHITE) {
+    }
+
+    p = board_get_top(b, 3);
+    if (p == WHITE) {
         value += BONUS_CENTER;
-    } else if (board_get_top(b, 3) == BLACK) {
+    } else if (p == BLACK) {
         value -= BONUS_CENTER;
-    } else if (board_get_top(b, 4) == WHITE) {
+    }
+
+    p = board_get_top(b, 4);
+    if (p == WHITE) {
         value += BONUS_CENTER;
-    } else if (board_get_top(b, 4) == BLACK) {
+    } else if (p == BLACK) {
         value -= BONUS_CENTER;
     }
 
