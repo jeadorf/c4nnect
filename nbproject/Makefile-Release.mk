@@ -44,7 +44,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/eval_test.o
 
 # C Compiler Flags
-CFLAGS=
+CFLAGS=-m64 -std=c99 -D_XOPEN_SOURCE -O2 -pg
 
 # CC Compiler Flags
 CCFLAGS=
@@ -65,7 +65,7 @@ LDLIBSOPTIONS=
 
 dist/Release/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.c} -pg -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/parser.o: nbproject/Makefile-${CND_CONF}.mk parser.c 
 	${MKDIR} -p ${OBJECTDIR}

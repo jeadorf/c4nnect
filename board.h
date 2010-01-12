@@ -3,15 +3,14 @@
 
 #include <sys/types.h>
 #include <stdbool.h>
+#include <stdint.h>
 
 /* Players. Do not change the values of this enumeration. */
-enum Player {
-    WHITE=0,
-    BLACK=1,
-    NOBODY=2
-};
+#define WHITE 0
+#define BLACK 1
+#define NOBODY 2
 
-typedef enum Player Player;
+typedef uint8_t Player;
 
 Player other(Player p);
 
@@ -27,9 +26,9 @@ struct Board {
      * pieces present on the board (L means present). The first piece that is
      * inserted in a column is represented by the least significant bit of the
      * column value. */
-    unsigned short int cols[2][NUM_COLS];
+    uint8_t cols[2][NUM_COLS];
     /* Stores the number of pieces in each column (0 means empty) */
-    unsigned short int tops[NUM_COLS];
+    uint8_t tops[NUM_COLS];
     /* The player who gained four in a row, column or diagonal */
     Player winner;
 };

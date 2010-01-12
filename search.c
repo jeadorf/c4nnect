@@ -21,7 +21,8 @@ void alphabeta_negamax(
         int bestcol = -1;
         // Simple move ordering, start with checking the moves in the center and
         // then circle to the outer columns
-        for (int i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col = col + s * i) {
+        // TODO: better move ordering
+        for (int i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col += s * i) {
             if (!board_column_full(b, col)) {
                 // Make move
                 board_put(b, p, col);

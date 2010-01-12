@@ -55,7 +55,7 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <commandLine>-std=c99 -D_XOPEN_SOURCE</commandLine>
+          <commandLine>-std=c99 -D_XOPEN_SOURCE -O3</commandLine>
         </cTool>
         <linkerTool>
           <commandlineTool>gcc</commandlineTool>
@@ -73,6 +73,8 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <architecture>2</architecture>
+          <commandLine>-std=c99 -D_XOPEN_SOURCE -O2 -pg</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>
@@ -83,6 +85,7 @@
         <linkerTool>
           <linkerLibItems>
           </linkerLibItems>
+          <commandLine>-pg</commandLine>
         </linkerTool>
       </compileType>
     </conf>

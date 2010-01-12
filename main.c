@@ -32,7 +32,6 @@ static void play_game() {
         // put piece selected by the human player
         board_put(&b, WHITE, c);
         board_print(&b);
-
         if (b.winner == WHITE) {
             board_print(&b);
             printf("You win!\n");
@@ -63,7 +62,6 @@ static void play_game() {
  */
 int main(int argc, char** argv) {
     srand(time(0));
-    printf("board size %d\n", sizeof(Board));
     // FIXME: remove tests before release
     board_test();
     eval_test();
@@ -75,7 +73,7 @@ int main(int argc, char** argv) {
         puts("A new game starts!");
         play_game();
     }
-    
+
     return (EXIT_SUCCESS);
 }
 

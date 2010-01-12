@@ -13,26 +13,14 @@ void board_init(Board *b) {
 }
 
 static bool board_move_wins_col(Board *b, Player p, int row, int col) {
-    int count = 0;
-    if (row >= 3) {
-        int start = row - 3;
-        int end = row;
-        for (int i = start; i <= end; i++) {
-            if (board_get(b, i, col) == p) {
-                count++;
-            } else {
-                break;
-            }
-        }
-    }
-    return count >= 4;
+    return ((row -= 3) >= 0) && (((b->cols[p][col] >> row) ^ 0xF) == 0);
 }
 
 static bool board_move_wins_row(Board *b, Player p, int row, int col) {
     int count = 0;
     // Walk to the left maximum three steps and as long as the pieces match
     // the player, increment the line counter.
-    int currentcol = col;
+    register int currentcol = col;
     while (currentcol >= 0
             && currentcol >= col - 3
             && p == board_get(b, row, currentcol)) {
@@ -56,8 +44,8 @@ static bool board_move_wins_diagup(Board *b, Player p, int row, int col) {
     int count = 0;
     // Walk left down for maximum three steps and as long as the pieces match the
     // player increment the line counter.
-    int currentrow = row;
-    int currentcol = col;
+    register int currentrow = row;
+    register int currentcol = col;
     while (currentcol >= 0
             && currentcol >= col - 3
             && currentrow >= 0
@@ -87,8 +75,8 @@ static bool board_move_wins_diagdown(Board *b, Player p, int row, int col) {
     int count = 0;
     // Walk left up for maximum three steps and as long as the pieces match the
     // player increment the line counter.
-    int currentrow = row;
-    int currentcol = col;
+    register int currentrow = row;
+    register int currentcol = col;
     while (currentcol >= 0
             && currentcol >= col - 3
             && currentrow < NUM_ROWS
@@ -149,9 +137,10 @@ void board_undo(Board *b, int col) {
 }
 
 Player board_get(Board *b, int row, int col) {
-    if ((b->cols[WHITE][col] >> row) & 1) {
+    // no faster 2 - (((b->cols[WHITE][col] >> row) & 1) << 1) - ((b->cols[BLACK][col] >> row) & 1);
+    if (b->cols[WHITE][col] & (1 << row)) {
         return WHITE;
-    } else if ((b->cols[BLACK][col] >> row) & 1) {
+    } else if (b->cols[BLACK][col] & (1 << row)) {
         return BLACK;
     } else {
         return NOBODY;

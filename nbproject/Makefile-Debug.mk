@@ -44,7 +44,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/eval_test.o
 
 # C Compiler Flags
-CFLAGS=-std=c99 -D_XOPEN_SOURCE
+CFLAGS=-std=c99 -D_XOPEN_SOURCE -O3
 
 # CC Compiler Flags
 CCFLAGS=
