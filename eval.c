@@ -26,9 +26,9 @@ float eval(Board *b) {
 
     p = board_get_top(b, 3);
     if (p == WHITE) {
-        value += BONUS_CENTER;
+        value += BONUS_CENTER << 1;
     } else if (p == BLACK) {
-        value -= BONUS_CENTER;
+        value -= BONUS_CENTER << 1;
     }
 
     p = board_get_top(b, 4);
