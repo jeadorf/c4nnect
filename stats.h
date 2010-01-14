@@ -22,7 +22,11 @@ struct Statistics {
     int reached_depth;
     /* Denotes whether the search has lead to a winning strategy for one of
      * the players. */
-    bool forced_variation;
+    bool winner_identified;
+    /* Denotes whether the computer has recognized that he will lose to an
+     * opponent that plays optimally and that he now tries to defer the defeat
+     * as long as possible. */
+    bool defeat_deferred;
     /* Used processor time. */
     clock_t cpu_time;
 };

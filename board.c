@@ -179,7 +179,7 @@ void board_printd(Board *b, int depth) {
         for (c = 0; c < depth * 4; c++) {
             putchar(' ');
         }
-
+        putchar('"');
         for (c = 0; c < NUM_COLS; c++) {
             switch (board_get(b, r, c)) {
                 case WHITE:
@@ -194,6 +194,7 @@ void board_printd(Board *b, int depth) {
             }
             putchar(' ');
         }
+        putchar('"');
         putchar('\n');
     }
     

@@ -1,3 +1,4 @@
+#include <stdbool.h>
 #include "stats.h"
 
 void stats_init(Statistics *stats) {
@@ -7,6 +8,7 @@ void stats_init(Statistics *stats) {
     stats->wincut_cnt = 0;
     stats->max_depth = 0;
     stats->reached_depth = 0;
-    stats->forced_variation = 0;
+    stats->winner_identified = false;
+    stats->defeat_deferred = false;
     stats->cpu_time = 0;
 }
