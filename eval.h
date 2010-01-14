@@ -5,7 +5,7 @@
 #include "board.h"
 
 /* Ultimate evaluation result that denotes a win. */
-#define BONUS_WIN FLT_MAX
+#define BONUS_WIN 10e8
 
 /*
  * Evaluates the position on the board from the view of player WHITE. A positive

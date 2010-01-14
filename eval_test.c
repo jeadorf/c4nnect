@@ -15,8 +15,8 @@ static char* test_eval_white_win() {
             "- - - - - - -"
             "- - b - b - -"
             "- w w w w b -");
-    mu_assert("error, evaluation value should be positive", eval(&b) > BONUS_WIN);
-    mu_assert("error, evaluation value should be big", eval(&b) > BONUS_WIN);
+    mu_assert("error, evaluation value should be positive", eval(&b) >= 0);
+    mu_assert("error, evaluation value should be big", eval(&b) >= BONUS_WIN);
     return 0;
 }
 

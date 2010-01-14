@@ -8,6 +8,7 @@ inline Player other(Player p) {
 }
 
 void board_init(Board *b) {
+    // TODO: do board initialization in a safe manner
     memset(b, 0, sizeof(Board));
     b->winner = NOBODY;
 }
@@ -125,6 +126,7 @@ void board_put(Board *b, Player p, int col) {
     if (board_move_wins(b, p, row, col)) {
         b->winner = p;
     }
+    b->move_cnt++;
 }
 
 void board_undo(Board *b, int col) {
@@ -134,6 +136,7 @@ void board_undo(Board *b, int col) {
     // Kill bit at row
     b->cols[p][col] ^= (1 << row);
     b->tops[col]--;
+    b->move_cnt--;
 }
 
 Player board_get(Board *b, int row, int col) {

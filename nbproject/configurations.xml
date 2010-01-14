@@ -9,6 +9,7 @@
       <itemPath>minunit.h</itemPath>
       <itemPath>parser.h</itemPath>
       <itemPath>search.h</itemPath>
+      <itemPath>stats.h</itemPath>
       <itemPath>tournament.h</itemPath>
       <itemPath>util.h</itemPath>
     </logicalFolder>
@@ -24,6 +25,7 @@
       <itemPath>main.c</itemPath>
       <itemPath>parser.c</itemPath>
       <itemPath>search.c</itemPath>
+      <itemPath>stats.c</itemPath>
       <itemPath>tournament.c</itemPath>
       <itemPath>util.c</itemPath>
     </logicalFolder>
@@ -55,9 +57,10 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <developmentMode>0</developmentMode>
+          <developmentMode>2</developmentMode>
           <architecture>2</architecture>
-          <commandLine>-std=c99 -D_XOPEN_SOURCE -O2</commandLine>
+          <commandLine>-std=c99 -D_XOPEN_SOURCE -O2 -DDEBUG</commandLine>
+          <warningLevel>2</warningLevel>
         </cTool>
         <linkerTool>
           <commandlineTool>gcc</commandlineTool>
@@ -74,7 +77,7 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <developmentMode>2</developmentMode>
+          <developmentMode>5</developmentMode>
           <architecture>2</architecture>
           <commandLine>-std=c99 -D_XOPEN_SOURCE -O2</commandLine>
         </cTool>

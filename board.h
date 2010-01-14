@@ -30,6 +30,8 @@ struct Board {
     /* Stores the bit of the topmost pieces in each column. 0 means emoty and
      * (1 << NUM_ROWS) */
     uint8_t tops[NUM_COLS];
+    /* number of moves already done */
+    uint8_t move_cnt;
     /* The player who gained four in a row, column or diagonal */
     Player winner;
 };
