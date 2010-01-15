@@ -1,12 +1,18 @@
+#include <ctype.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 #include "parser.h"
 #include "util.h"
-#include <ctype.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
 
 // TODO: fix problem with modifications to NUM_COL (and test cases and so on)
 void parser_read(Board *b, char *data) {
+    FILE *stream = fmemopen(data, strlen(data), "r");
+    parser_fread(b, stream);
+    fclose(stream);
+}
+
+void parser_fread(Board *b, FILE *stream) {
     Player pieces[NUM_ROWS][NUM_COLS];
     memset(pieces, 0, NUM_ROWS * NUM_COLS);
 
@@ -16,14 +22,15 @@ void parser_read(Board *b, char *data) {
     int row = NUM_ROWS - 1;
     int col = 0;
     Player p;
+    int d;
     do {
-        if (data == '\0') {
-            handle_error("Reached end of string, board data was not complete.");
-        } else if (isspace(*data)) {
-            data++;
+        d = fgetc(stream);
+        if (d == EOF) {
+            handle_error("Reached end of file/buffer, board data was not complete.");
+        } else if (isspace(d) || d == '\"') {
             continue;
         } else {
-            switch (*data) {
+            switch (d) {
                 case 'w':
                 case 'W':
                     p = WHITE;
@@ -39,7 +46,6 @@ void parser_read(Board *b, char *data) {
                     handle_error("Illegal character in board data.");
             }
             pieces[row][col] = p;
-            data++;
             col++;
             if (col == NUM_COLS) {
                 col = 0;

@@ -4,6 +4,7 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <itemPath>benchmark.h</itemPath>
       <itemPath>board.h</itemPath>
       <itemPath>eval.h</itemPath>
       <itemPath>minunit.h</itemPath>
@@ -19,6 +20,7 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <itemPath>benchmark.c</itemPath>
       <itemPath>board.c</itemPath>
       <itemPath>eval.c</itemPath>
       <itemPath>main.c</itemPath>
@@ -55,7 +57,7 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <commandLine>-std=c99</commandLine>
+          <commandLine>-std=c99 -DDEBUG</commandLine>
         </cTool>
         <linkerTool>
           <linkerLibItems>

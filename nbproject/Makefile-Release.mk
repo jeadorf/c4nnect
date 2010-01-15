@@ -31,6 +31,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/benchmark.o \
 	${OBJECTDIR}/parser.o \
 	${OBJECTDIR}/stats.o \
 	${OBJECTDIR}/board_test.o \
@@ -66,6 +67,11 @@ LDLIBSOPTIONS=
 dist/Release/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/benchmark.o: nbproject/Makefile-${CND_CONF}.mk benchmark.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/benchmark.o benchmark.c
 
 ${OBJECTDIR}/parser.o: nbproject/Makefile-${CND_CONF}.mk parser.c 
 	${MKDIR} -p ${OBJECTDIR}

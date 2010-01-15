@@ -43,9 +43,32 @@ static char* test_parse_one() {
     return 0;
 }
 
+static char* test_parse_quoted() {
+    printf("test_parse_quoted\n");
+    Board b;
+    parser_read(&b,
+            "\"- - - - - - -\""
+            "\"- - - - - - -\""
+            "\"- - - - - - -\""
+            "\"- - - - - - -\""
+            "\"- - - - - - -\""
+            "\"- - - b - - -\"");
+    int i;
+    for (i = 0; i < NUM_COLS; i++) {
+        if (i != 3) {
+            mu_assert("error, column expected to be empty", board_get_top(&b, i) == NOBODY);
+        }
+    }
+    mu_assert("error, expected black piece", board_get_top(&b, 3) == BLACK);
+
+    return 0;
+}
+
+
 static char* all_tests() {
     mu_run_test(test_parse_empty);
     mu_run_test(test_parse_one);
+    mu_run_test(test_parse_quoted);
     return 0;
 }
 

@@ -31,6 +31,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/benchmark.o \
 	${OBJECTDIR}/parser.o \
 	${OBJECTDIR}/stats.o \
 	${OBJECTDIR}/board_test.o \
@@ -44,7 +45,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/eval_test.o
 
 # C Compiler Flags
-CFLAGS=-std=c99
+CFLAGS=-std=c99 -DDEBUG
 
 # CC Compiler Flags
 CCFLAGS=
@@ -66,6 +67,11 @@ LDLIBSOPTIONS=
 dist/Debug/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/GNU-Linux-x86
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
+
+${OBJECTDIR}/benchmark.o: nbproject/Makefile-${CND_CONF}.mk benchmark.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/benchmark.o benchmark.c
 
 ${OBJECTDIR}/parser.o: nbproject/Makefile-${CND_CONF}.mk parser.c 
 	${MKDIR} -p ${OBJECTDIR}
