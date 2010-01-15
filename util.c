@@ -11,20 +11,10 @@ void handle_error(char *msg) {
     exit(EXIT_FAILURE);
 }
 
-void readline(FILE* stream, char *buf, int maxlen) {
-    char c;
-    int i = 0;
-    while (i < maxlen - 1 && (c = fgetc(stream)) != EOF) {
-        buf[i] = c;
-        i++;
-        if (c == '\n' || c == '\0') {
-            break;
-        }
+void print_unsigned_long_rev(unsigned long n) {
+    for (int i = 0; i < 63; i++) {
+        putchar((n & (1UL << i)) ? '1' : '0');
     }
-    buf[i] = '\0';
-}
+    putchar('\n');
 
-void write_data(FILE* stream, char *msg) {
-    write(stream, msg, strlen(msg));
-    write(stream, "\n", 1);
 }

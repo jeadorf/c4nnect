@@ -9,7 +9,7 @@ inline Player other(Player p) {
 
 void board_init(Board *b) {
     // TODO: do board initialization in a safe manner
-    memset(b, 0, sizeof(Board));
+    memset(b, 0, sizeof (Board));
     b->winner = NOBODY;
 }
 
@@ -151,9 +151,8 @@ Player board_get(Board *b, int row, int col) {
 }
 
 Player board_get_top(Board *b, int col) {
-    return board_get(b, b->tops[col-1], col);
+    return board_get(b, b->tops[col - 1], col);
 }
-
 
 bool board_full(Board *b) {
     int c;
@@ -167,6 +166,18 @@ bool board_full(Board *b) {
 
 bool board_column_full(Board *b, int col) {
     return b->tops[col] == NUM_ROWS;
+}
+
+void board_hash(Board *b, unsigned long *prim_hash, unsigned long *snd_hash, unsigned long *hash) {
+    *hash = 0UL;
+    *prim_hash = 0UL;
+    *snd_hash = 0UL;
+    int c;
+    for (c = 0; c < NUM_COLS; c++) {
+        *prim_hash |= ((unsigned long) b->cols[WHITE][c]) << (c * NUM_ROWS);
+        *snd_hash |= ((unsigned long) b->cols[BLACK][c]) << (c * NUM_ROWS);
+    }
+    *hash = (*prim_hash * *prim_hash) ^ (*snd_hash * *snd_hash);
 }
 
 void board_print(Board *b) {
@@ -197,6 +208,18 @@ void board_printd(Board *b, int depth) {
         putchar('"');
         putchar('\n');
     }
+
+    #if DEBUG
+    putchar('\n');
+    unsigned long prim_hash, snd_hash, hash;
+    board_hash(b, &prim_hash, &snd_hash, &hash);
+    printf("%18s :", "Primary hash");
+    print_unsigned_long_rev(prim_hash);
+    printf("%18s :", "Secondary hash");
+    print_unsigned_long_rev(snd_hash);
+    printf("%18s :", "Combined hash");
+    print_unsigned_long_rev(hash);
+    #endif
     
     putchar('\n');
 }

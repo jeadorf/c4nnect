@@ -54,6 +54,8 @@ bool board_column_full(Board *b, int col);
 
 bool board_full(Board *b);
 
+void board_hash(Board *b, unsigned long *prim_hash, unsigned long *snd_hash, unsigned long *hash);
+
 void board_print(Board *b);
 
 void board_printd(Board *b, int depth);

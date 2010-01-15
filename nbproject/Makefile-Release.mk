@@ -34,7 +34,6 @@ OBJECTFILES= \
 	${OBJECTDIR}/parser.o \
 	${OBJECTDIR}/stats.o \
 	${OBJECTDIR}/board_test.o \
-	${OBJECTDIR}/tournament.o \
 	${OBJECTDIR}/search.o \
 	${OBJECTDIR}/parser_test.o \
 	${OBJECTDIR}/board.o \
@@ -82,11 +81,6 @@ ${OBJECTDIR}/board_test.o: nbproject/Makefile-${CND_CONF}.mk board_test.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
-
-${OBJECTDIR}/tournament.o: nbproject/Makefile-${CND_CONF}.mk tournament.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/tournament.o tournament.c
 
 ${OBJECTDIR}/search.o: nbproject/Makefile-${CND_CONF}.mk search.c 
 	${MKDIR} -p ${OBJECTDIR}

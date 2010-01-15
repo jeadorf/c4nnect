@@ -238,12 +238,34 @@ static char* test_board_compare() {
     board_init(&b2);
     Board b3;
     board_init(&b3);
-    mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof(Board)));
-    mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b3, sizeof(Board)));
+    mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof (Board)));
+    mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b3, sizeof (Board)));
     Board b4;
     board_init(&b4);
     board_put(&b4, WHITE, 3);
-    mu_assert("error, expected boards to differ", 0 != memcmp(&b1, &b4, sizeof(Board)));
+    mu_assert("error, expected boards to differ", 0 != memcmp(&b1, &b4, sizeof (Board)));
+    return 0;
+}
+
+static char* test_board_hash() {
+    printf("test_board_hash\n");
+    Board b;
+    board_init(&b);
+    // TODO: more exactly: expect hash to have no bit set
+    unsigned long prim_hash, snd_hash, hash;
+    board_hash(&b, &prim_hash, &snd_hash, &hash);
+
+    mu_assert("error, expected primary hash to be zero", prim_hash == 0UL);
+    mu_assert("error, expected secondary hash to be zero", snd_hash == 0UL);
+    mu_assert("error, expected hash to be zero", hash == 0UL);
+
+    board_put(&b, WHITE, 0);
+    board_hash(&b, &prim_hash, &snd_hash, &hash);
+
+    mu_assert("error, expected primary hash to be non-zero", prim_hash != 0UL);
+    mu_assert("error, expected secondary hash to be zero", snd_hash == 0UL);
+    mu_assert("error, expected hash to be non-zero", hash != 0UL);
+
     return 0;
 }
 
@@ -264,6 +286,7 @@ static char* all_tests() {
     mu_run_test(test_board_move_wins_diagdown);
     mu_run_test(test_board_move_wins_diagdown2);
     mu_run_test(test_board_compare);
+    mu_run_test(test_board_hash);
     return 0;
 }
 

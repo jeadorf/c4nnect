@@ -153,5 +153,6 @@ void stats_print(Board *b, Player p, Move *move, Statistics *stats) {
     printf("%18s : %ld\n", "Alpha-Beta cuts:", stats->abcut_cnt);
     printf("%18s : %ld\n", "Win cuts:", stats->wincut_cnt);
     printf("%18s : %d ms\n", "CPU time", (int) (stats->cpu_time / (CLOCKS_PER_SEC / 1000)));
+    putchar('\n');
 }
 #endif

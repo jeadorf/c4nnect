@@ -5,9 +5,7 @@
 
 void handle_error(char *msg);
 
-void write_data(FILE* stream, char *msg);
-
-void readline(FILE* stream, char *buf, int maxlen);
+void print_unsigned_long_rev(unsigned long n);
 
 #endif	/* _UTIL_H */
 

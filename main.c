@@ -3,14 +3,13 @@
 #include <stdlib.h>
 #include <time.h>
 #include "board.h"
-#include "board_test.h"
-#include "eval_test.h"
 #include "parser.h"
 #include "search.h"
-#include "search_test.h"
 #include "util.h"
+#include "board_test.h"
+#include "eval_test.h"
 #include "parser_test.h"
-#include "tournament.h"
+#include "search_test.h"
 
 static void play_game() {
     Board b;
@@ -61,12 +60,12 @@ static void play_game() {
  * 
  */
 int main(int argc, char** argv) {
-    srand(time(0));
-    // FIXME: remove tests before release
+#if DEBUG
     board_test();
     eval_test();
     search_test();
     parser_test();
+#endif
 
     puts("Welcome to 'Four in a Row'!");
     while (true) {
