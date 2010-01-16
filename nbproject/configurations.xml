@@ -57,6 +57,7 @@
       </toolsSet>
       <compileType>
         <cTool>
+          <architecture>2</architecture>
           <commandLine>-std=c99 -DDEBUG</commandLine>
         </cTool>
         <linkerTool>
@@ -74,6 +75,8 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
+          <architecture>2</architecture>
+          <commandLine>-std=c99 -DDEBUG</commandLine>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>

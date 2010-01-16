@@ -10,6 +10,7 @@
 #include "eval_test.h"
 #include "parser_test.h"
 #include "search_test.h"
+#include "benchmark.h"
 
 static void play_game() {
     Board b;

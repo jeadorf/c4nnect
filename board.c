@@ -213,11 +213,11 @@ void board_printd(Board *b, int depth) {
     putchar('\n');
     unsigned long prim_hash, snd_hash, hash;
     board_hash(b, &prim_hash, &snd_hash, &hash);
-    printf("%18s :", "Primary hash");
+    printf("%18s : ", "Primary hash");
     print_unsigned_long_rev(prim_hash);
-    printf("%18s :", "Secondary hash");
+    printf("%18s : ", "Secondary hash");
     print_unsigned_long_rev(snd_hash);
-    printf("%18s :", "Combined hash");
+    printf("%18s : ", "Combined hash");
     print_unsigned_long_rev(hash);
     #endif
     

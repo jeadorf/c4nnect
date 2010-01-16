@@ -80,8 +80,6 @@ int searchm(Board *b, Player p) {
 
 void search(Board *b, Player p, SearchRecord *rec) {
     int last_move;
-    float last_rating;
-    
     rec->cpu_time = clock();
 
     // Now perform an iterative-deepening alphabeta search. First, look ahead
@@ -95,10 +93,10 @@ void search(Board *b, Player p, SearchRecord *rec) {
     // of possible moves decreases with the board getting fuller and fuller.
     // Thus, it does not hurt to increase the search depth at later times in the
     // game.
+    // The iterative approach implies that max_depth will never exceed reached_depth
     int iterations = 10 + (b->move_cnt * b->move_cnt) / (NUM_COLS * NUM_ROWS);
     for (int max_depth = 1; max_depth < iterations; max_depth++) {
         last_move = rec->move;
-        last_rating = rec->rating;
         // TODO: Use results for move ordering or killer moves or something like this
         alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, max_depth, rec);
         // Check whether we have found a winning move. If we have there is no point
@@ -107,8 +105,6 @@ void search(Board *b, Player p, SearchRecord *rec) {
             break;
         }
     }
-
-    rec->cpu_time = clock() - rec->cpu_time;
 
     // Defer defeats that are unavoidable. The computer should at least not to
     // lose in the next move even if the computer sees that he will lose
@@ -119,10 +115,10 @@ void search(Board *b, Player p, SearchRecord *rec) {
     // therefore just avoids being defeated in the next two steps.
     if (rec->winner_identified && rec->rating <= -BONUS_WIN) {
         rec->move = last_move;
-        rec->rating = last_rating;
         rec->defeat_deferred = true;
     }
 
+    rec->cpu_time = clock() - rec->cpu_time;
 #ifdef DEBUG
     stats_print(b, p, rec);
 #endif
