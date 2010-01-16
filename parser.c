@@ -1,3 +1,6 @@
+// fmemopen seems to be a function that is some GNU extension to the C library
+#define _GNU_SOURCE
+
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -7,7 +10,8 @@
 
 // TODO: fix problem with modifications to NUM_COL (and test cases and so on)
 void parser_read(Board *b, char *data) {
-    FILE *stream = fmemopen(data, strlen(data), "r");
+    FILE *stream;
+    stream = fmemopen(data, strlen(data), "r");
     parser_fread(b, stream);
     fclose(stream);
 }

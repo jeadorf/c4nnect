@@ -6,7 +6,11 @@
 #include <sys/types.h>
 #include <stdint.h>
 
-struct Statistics {
+struct SearchRecord {
+    /* Recommended move */
+    int move;
+    /* Rating of the move */
+    float rating;
     /* Number of evaluated positions during search */
     unsigned long eval_cnt;
     /* Number of visited positions during search. This includes both leaves and
@@ -31,8 +35,8 @@ struct Statistics {
     clock_t cpu_time;
 };
 
-typedef struct Statistics Statistics;
+typedef struct SearchRecord SearchRecord;
 
-void stats_init(Statistics *stats);
+void searchrecord_init(SearchRecord *rec);
 
 #endif	/* _STATS_H */

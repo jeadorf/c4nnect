@@ -1,14 +1,16 @@
 #include <stdbool.h>
 #include "stats.h"
 
-void stats_init(Statistics *stats) {
-    stats->eval_cnt = 0UL;
-    stats->visited_cnt = 0UL;
-    stats->abcut_cnt = 0UL;
-    stats->wincut_cnt = 0UL;
-    stats->max_depth = 0;
-    stats->reached_depth = 0;
-    stats->winner_identified = false;
-    stats->defeat_deferred = false;
-    stats->cpu_time = 0UL;
+void searchrecord_init(SearchRecord *rec) {
+    rec->move = 0;
+    rec->rating = 0;
+    rec->eval_cnt = 0UL;
+    rec->visited_cnt = 0UL;
+    rec->abcut_cnt = 0UL;
+    rec->wincut_cnt = 0UL;
+    rec->max_depth = 0;
+    rec->reached_depth = 0;
+    rec->winner_identified = false;
+    rec->defeat_deferred = false;
+    rec->cpu_time = 0UL;
 }

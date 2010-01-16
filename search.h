@@ -8,18 +8,10 @@
  * KI engine. */
 int search(Board *b, Player p);
 
-// TODO: maybe make move initialization explicit
-struct Move {
-    int column;
-    float value;
-};
-
-typedef struct Move Move;
-
 void alphabeta_negamax(Board *b, Player p,
-                       float alpha, float beta,
-                       int depth, int max_depth,
-                       Move *result, Statistics *stats);
+        float alpha, float beta,
+        int depth, int max_depth,
+        SearchRecord *rec);
 
 #endif	/* _SEARCH_H */
 

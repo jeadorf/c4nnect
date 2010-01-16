@@ -18,12 +18,11 @@ static char* test_abn_white_win() {
             "- - - - - - -"
             "- b b - b - -"
             "- w w - w - -");
-    Move res;
-    Statistics stats;
-    stats_init(&stats);
-    alphabeta_negamax(&b, WHITE, -FLT_MAX, FLT_MAX, 0, 2, &res, &stats);
-    mu_assert("error, minimax value should be very big", res.value > 90);
-    mu_assert("error, should find winning move", res.column == 3);
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    alphabeta_negamax(&b, WHITE, -FLT_MAX, FLT_MAX, 0, 2, &rec);
+    mu_assert("error, minimax value should be very big", rec.rating  > 90);
+    mu_assert("error, should find winning move", rec.move == 3);
     return 0;
 }
 
@@ -37,12 +36,11 @@ static char* test_abn_white_win2() {
             "b - - w w - -"
             "b - - w w - -"
             "b - b w w w b");
-    Move res;
-    Statistics stats;
-    stats_init(&stats);
-    alphabeta_negamax(&b, WHITE, -FLT_MAX, FLT_MAX, 0, 1, &res, &stats);
-    mu_assert("error, should find winning move", res.column == 4);
-    mu_assert("error, minimax value should be very big", res.value > 90);
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    alphabeta_negamax(&b, WHITE, -FLT_MAX, FLT_MAX, 0, 1, &rec);
+    mu_assert("error, should find winning move", rec.move == 4);
+    mu_assert("error, minimax value should be very big", rec.rating > 90);
     return 0;
 }
 
@@ -56,12 +54,11 @@ static char* test_abn_black_win() {
             "- - - - - - -"
             "- w w - w - -"
             "- b b - b - -");
-    Move res;
-    Statistics stats;
-    stats_init(&stats);
-    alphabeta_negamax(&b, BLACK, -FLT_MAX, FLT_MAX, 0, 1, &res, &stats);
-    mu_assert("error, should find winning move", res.column == 3);
-    mu_assert("error, minimax value should be very big", res.value > 90);
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    alphabeta_negamax(&b, BLACK, -FLT_MAX, FLT_MAX, 0, 1, &rec);
+    mu_assert("error, should find winning move", rec.move == 3);
+    mu_assert("error, minimax value should be very big", rec.rating > 90);
     return 0;
 }
 
@@ -215,10 +212,9 @@ static char* test_maximum_search_depth() {
             "w - b b - - -"
             "w - b b - - -"
             "w b w w b - -");
-    Statistics stats;
-    stats_init(&stats);
-    Move mv;
-    alphabeta_negamax(&b, WHITE, -FLT_MAX, FLT_MAX, 0, 42, &mv, &stats);
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    alphabeta_negamax(&b, WHITE, -FLT_MAX, FLT_MAX, 0, 42, &rec);
     
     Board b2;
     parser_read(&b2,
@@ -228,10 +224,9 @@ static char* test_maximum_search_depth() {
             "w - b b - - -"
             "w - b b w w b"
             "w b w w b b w");
-    Statistics stats2;
-    stats_init(&stats2);
-    Move mv2;
-    alphabeta_negamax(&b2, WHITE, -FLT_MAX, FLT_MAX, 0, 42, &mv2, &stats2);
+    SearchRecord rec2;
+    searchrecord_init(&rec2);
+    alphabeta_negamax(&b2, WHITE, -FLT_MAX, FLT_MAX, 0, 42, &rec2);
     return 0;
 }
 

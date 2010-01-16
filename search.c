@@ -9,19 +9,19 @@
 #include "util.h"
 
 #ifdef DEBUG
-void stats_print(Board *b, Player p, Move *move, Statistics *stats);
+void stats_print(Board *b, Player p, SearchRecord *rec);
 #endif
 
 void alphabeta_negamax(
         Board *b, Player p,
         float alpha, float beta,
         int depth, int max_depth,
-        Move *move, Statistics *stats) {
+        SearchRecord *rec) {
     if (b->winner != NOBODY
             || board_full(b)
             || depth == max_depth) {
-        move->value = (p == WHITE ? 1 : -1) * eval(b);
-        stats->eval_cnt++;
+        rec->rating = (p == WHITE ? 1 : -1) * eval(b);
+        rec->eval_cnt++;
     } else {
         float bestval = alpha;
         int bestcol = -1;
@@ -35,50 +35,55 @@ void alphabeta_negamax(
 
                 // Search subposition
                 alphabeta_negamax(b, other(p), -beta, -bestval,
-                        depth + 1, max_depth, move, stats);
-                move->value *= -1;
+                        depth + 1, max_depth, rec);
+                rec->rating *= -1;
                 // Undo move
                 board_undo(b, col);
 
                 // Check for better move
-                if (move->value > bestval || bestcol == -1) {
-                    bestval = move->value;
+                if (rec->rating > bestval || bestcol == -1) {
+                    bestval = rec->rating;
                     bestcol = col;
                 }
                 // Check for a beta cutoff
                 if (bestval >= beta) {
-                    stats->abcut_cnt++;
+                    rec->abcut_cnt++;
                     break;
                 }
                 // Check for a win situation, there is no need to look for a
                 // better move than one that already wins.
                 if (bestval >= BONUS_WIN) {
-                    stats->wincut_cnt++;
+                    rec->wincut_cnt++;
                     break;
                 }
             }
         }
 
-        move->value = bestval;
-        move->column = bestcol;
+        rec->rating = bestval;
+        rec->move = bestcol;
     }
 
-    stats->visited_cnt++;
-    stats->max_depth = max_depth;
-    stats->winner_identified = (move->value <= -BONUS_WIN || move->value >= BONUS_WIN);
-    if (depth > stats->reached_depth) {
-        stats->reached_depth = depth;
+    rec->visited_cnt++;
+    rec->max_depth = max_depth;
+    rec->winner_identified = (rec->rating <= -BONUS_WIN || rec->rating >= BONUS_WIN);
+    if (depth > rec->reached_depth) {
+        rec->reached_depth = depth;
     }
 }
 
 int search(Board *b, Player p) {
-    // TODO: make one-level move history simpler
-    Move *move = malloc(sizeof (Move));
-    Move *last_move = malloc(sizeof (Move));
-    Move *tmp;
-    Statistics stats;
-    stats_init(&stats);
-    stats.cpu_time = clock();
+    // Allocate two search records on the stack
+    SearchRecord r1, r2;
+    searchrecord_init(&r1);
+    searchrecord_init(&r2);
+
+    // Access the search records via pointers such that we can just swap pointers
+    SearchRecord *rec, *last_rec, *tmp;
+    rec = &r1;
+    last_rec = &r2;
+    
+    rec->cpu_time = clock();
+    last_rec->cpu_time = clock();
 
     // Now perform an iterative-deepening alphabeta search. First, look ahead
     // for quick ways to victory. This makes the computer's moves much more
@@ -93,20 +98,20 @@ int search(Board *b, Player p) {
     // game.
     int iterations = 10 + (b->move_cnt * b->move_cnt) / (NUM_COLS * NUM_ROWS);
     for (int max_depth = 1; max_depth < iterations; max_depth++) {
-        tmp = move;
-        move = last_move;
-        last_move = tmp;
+        tmp = rec;
+        rec = last_rec;
+        last_rec = tmp;
 
         // TODO: Use results for move ordering or killer moves or something like this
-        alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, max_depth, move, &stats);
+        alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, max_depth, rec);
         // Check whether we have found a winning move. If we have there is no point
         // in looking for more complicated ways to victory.
-        if (stats.winner_identified) {
+        if (rec->winner_identified) {
             break;
         }
     }
 
-    stats.cpu_time = clock() - stats.cpu_time;
+    rec->cpu_time = clock() - rec->cpu_time;
 
     // Defer defeats that are unavoidable. The computer should at least not to
     // lose in the next move even if the computer sees that he will lose
@@ -115,44 +120,41 @@ int search(Board *b, Player p) {
     // is greater than the value returned by the deep search then the lookahead
     // simply did not discover the threats hidden some plies ahead. And it
     // therefore just avoids being defeated in the next two steps.
-    if (stats.winner_identified && move->value <= -BONUS_WIN) {
-        tmp = move;
-        move = last_move;
-        last_move = tmp;
-        stats.defeat_deferred = true;
+    if (rec->winner_identified && rec->rating <= -BONUS_WIN) {
+        tmp = rec;
+        rec = last_rec;
+        last_rec = tmp;
+        rec->defeat_deferred = true;
     }
 
 #ifdef DEBUG
-    stats_print(b, p, move, &stats);
+    stats_print(b, p, rec);
 #endif
-    int col = move->column;
-    free(last_move);
-    free(move);
-    return col;
+    return rec->move;
 }
 
 #ifdef DEBUG
 
-void stats_print(Board *b, Player p, Move *move, Statistics *stats) {
+void stats_print(Board *b, Player p, SearchRecord *rec) {
     // Print statistics
     board_print(b);
-    printf("%18s : %d\n", "Move", move->column);
-    if (move->value >= BONUS_WIN) {
-        printf("%18s : %s\n", "Value", p == WHITE ? "White will win" : "Black will win");
-    } else if (move->value <= -BONUS_WIN) {
-        printf("%18s : %s\n", "Value", other(p) == WHITE ? "White will win" : "Black will win");
+    printf("%18s : %d\n", "Move", rec->move);
+    if (rec->rating >= BONUS_WIN) {
+        printf("%18s : %s\n", "Rating", p == WHITE ? "White will win" : "Black will win");
+    } else if (rec->rating <= -BONUS_WIN) {
+        printf("%18s : %s\n", "Rating", other(p) == WHITE ? "White will win" : "Black will win");
     } else {
-        printf("%18s : %.1f\n", "Value", move->value);
+        printf("%18s : %.1f\n", "Rating", rec->rating);
     }
-    printf("%18s : %d\n", "Winner identified", stats->winner_identified);
-    printf("%18s : %d\n", "Defeat deferred", stats->defeat_deferred);
-    printf("%18s : %d\n", "Maximum depth", stats->max_depth);
-    printf("%18s : %d\n", "Reached depth", stats->reached_depth);
-    printf("%18s : %ld\n", "Evaluations", stats->eval_cnt);
-    printf("%18s : %ld\n", "Positions", stats->visited_cnt);
-    printf("%18s : %ld\n", "Alpha-Beta cuts:", stats->abcut_cnt);
-    printf("%18s : %ld\n", "Win cuts:", stats->wincut_cnt);
-    printf("%18s : %d ms\n", "CPU time", (int) (stats->cpu_time / (CLOCKS_PER_SEC / 1000)));
+    printf("%18s : %d\n", "Winner identified", rec->winner_identified);
+    printf("%18s : %d\n", "Defeat deferred", rec->defeat_deferred);
+    printf("%18s : %d\n", "Maximum depth", rec->max_depth);
+    printf("%18s : %d\n", "Reached depth", rec->reached_depth);
+    printf("%18s : %ld\n", "Evaluations", rec->eval_cnt);
+    printf("%18s : %ld\n", "Positions", rec->visited_cnt);
+    printf("%18s : %ld\n", "Alpha-Beta cuts:", rec->abcut_cnt);
+    printf("%18s : %ld\n", "Win cuts:", rec->wincut_cnt);
+    printf("%18s : %d ms\n", "CPU time", (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)));
     putchar('\n');
 }
 #endif
