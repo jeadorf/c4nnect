@@ -42,7 +42,7 @@ static void play_game() {
         }
 
         // put piece selected by the engine
-        int col = search(&b, BLACK);
+        int col = searchm(&b, BLACK);
         board_put(&b, BLACK, col);
         if (b.winner == BLACK) {
             board_print(&b);

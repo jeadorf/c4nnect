@@ -71,19 +71,18 @@ void alphabeta_negamax(
     }
 }
 
-int search(Board *b, Player p) {
-    // Allocate two search records on the stack
-    SearchRecord r1, r2;
-    searchrecord_init(&r1);
-    searchrecord_init(&r2);
+int searchm(Board *b, Player p) {
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    search(b, p, &rec);
+    return rec.move;
+}
 
-    // Access the search records via pointers such that we can just swap pointers
-    SearchRecord *rec, *last_rec, *tmp;
-    rec = &r1;
-    last_rec = &r2;
+void search(Board *b, Player p, SearchRecord *rec) {
+    int last_move;
+    float last_rating;
     
     rec->cpu_time = clock();
-    last_rec->cpu_time = clock();
 
     // Now perform an iterative-deepening alphabeta search. First, look ahead
     // for quick ways to victory. This makes the computer's moves much more
@@ -98,10 +97,8 @@ int search(Board *b, Player p) {
     // game.
     int iterations = 10 + (b->move_cnt * b->move_cnt) / (NUM_COLS * NUM_ROWS);
     for (int max_depth = 1; max_depth < iterations; max_depth++) {
-        tmp = rec;
-        rec = last_rec;
-        last_rec = tmp;
-
+        last_move = rec->move;
+        last_rating = rec->rating;
         // TODO: Use results for move ordering or killer moves or something like this
         alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, max_depth, rec);
         // Check whether we have found a winning move. If we have there is no point
@@ -121,16 +118,14 @@ int search(Board *b, Player p) {
     // simply did not discover the threats hidden some plies ahead. And it
     // therefore just avoids being defeated in the next two steps.
     if (rec->winner_identified && rec->rating <= -BONUS_WIN) {
-        tmp = rec;
-        rec = last_rec;
-        last_rec = tmp;
+        rec->move = last_move;
+        rec->rating = last_rating;
         rec->defeat_deferred = true;
     }
 
 #ifdef DEBUG
     stats_print(b, p, rec);
 #endif
-    return rec->move;
 }
 
 #ifdef DEBUG

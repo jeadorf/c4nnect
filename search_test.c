@@ -72,10 +72,10 @@ static char* test_search_white_win() {
             "- - - - - - -"
             "- b b - b - -"
             "- w w - w - -");
-    mu_assert("error, should find winning move", search(&b, WHITE) == 3);
+    mu_assert("error, should find winning move", searchm(&b, WHITE) == 3);
     // This is dangerous to test. There might be no way for black to avoid
     // defeat in this position though this is rather unlikely.
-    mu_assert("error, should find saving move", search(&b, BLACK) == 3);
+    mu_assert("error, should find saving move", searchm(&b, BLACK) == 3);
     return 0;
 }
 
@@ -96,7 +96,7 @@ static char* test_search_white_win2() {
             "b - - w w - -"
             "b - b w w w b");
 
-    mu_assert("error, should find fastest winning move", search(&b, WHITE) == 4);
+    mu_assert("error, should find fastest winning move", searchm(&b, WHITE) == 4);
     return 0;
 }
 
@@ -110,8 +110,8 @@ static char* test_search_black_win() {
             "- - - - - - -"
             "- w w - w - -"
             "- b b - b w -");
-    mu_assert("error, should find winning move", search(&b, BLACK) == 3);
-    mu_assert("error, should find saving move", search(&b, WHITE) == 3);
+    mu_assert("error, should find winning move", searchm(&b, BLACK) == 3);
+    mu_assert("error, should find saving move", searchm(&b, WHITE) == 3);
     return 0;
 }
 
@@ -125,7 +125,7 @@ static char* test_search_white_win3() {
             "b b b w w b -"
             "b w b w w w -"
             "b b b w w b -");
-    mu_assert("error, should find winning move h", search(&b, WHITE) == 1);
+    mu_assert("error, should find winning move h", searchm(&b, WHITE) == 1);
     return 0;
 }
 
@@ -144,7 +144,7 @@ static char* test_beginning_trap_white() {
             "- - - - - - -"
             "- - - b - - -"
             "- - w w - - -");
-    int col = search(&b, BLACK);
+    int col = searchm(&b, BLACK);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
     return 0;
 }
@@ -159,7 +159,7 @@ static char* test_beginning_trap_black() {
             "- - - - - - -"
             "- - - w - - -"
             "- - b b - - -");
-    int col = search(&b, WHITE);
+    int col = searchm(&b, WHITE);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
     return 0;
 }
@@ -175,7 +175,7 @@ static char* test_fast_black_win() {
             "- - w b b - -"
             "w w b b w w w");
 
-    int col = search(&b, BLACK);
+    int col = searchm(&b, BLACK);
     mu_assert("error, should choose 3-ply win", col == 5);
     return 0;
 }
@@ -196,7 +196,7 @@ static char* test_search_defer_defeat() {
             "b - - w w - -"
             "b - - w w - -"
             "b - b w w w b");
-    mu_assert("error, should defer defeat", search(&b, BLACK) == 4);
+    mu_assert("error, should defer defeat", searchm(&b, BLACK) == 4);
     return 0;
 }
 
