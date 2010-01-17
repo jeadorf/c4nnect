@@ -61,11 +61,41 @@ static char* test_parse_quoted() {
     return 0;
 }
 
+static char* test_white_to_move() {
+    printf("test_white_to_move\n");
+    Board b;
+    parser_read(&b,
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -"
+            "b - - - - - -"
+            "w w - - w - -"
+            "w b b - b - -");
+    mu_assert("error, it should be white's turn", b.turn == WHITE);
+    return 0;
+}
+
+static char* test_black_to_move() {
+    printf("test_black_to_move\n");
+    Board b;
+    parser_read(&b,
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -"
+            "- - - - - - -"
+            "w w - - w - -"
+            "w b b - b - -");
+    board_print(&b);
+    mu_assert("error, it should be black's turn", b.turn == BLACK);
+    return 0;
+}
 
 static char* all_tests() {
     mu_run_test(test_parse_empty);
     mu_run_test(test_parse_one);
     mu_run_test(test_parse_quoted);
+    mu_run_test(test_white_to_move);
+    mu_run_test(test_black_to_move);
     return 0;
 }
 
@@ -74,7 +104,7 @@ int parser_test() {
     if (result != 0) {
         printf("%s\n", result);
     } else {
-        printf("ALL TESTS PASSED\n");
+        printf("ALL TESTS RUN\n");
     }
     printf("Tests run: %d\n", tests_run);
 

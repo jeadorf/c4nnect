@@ -20,6 +20,8 @@ Player other(Player p);
 
 /* The board representation. Pieces are stored separately for each side in a
  * bitfield representation similar to the Bitboards used in some chess programs.
+ * Intentionally, there is a lot of information duplicated. A position fits into
+ * 64-bit, but the information is not as easy to extract, thus the duplication.
  */
 struct Board {
     /* Stores all positions of white (columns[WHITE]) and black (columns[BLACK])
@@ -44,7 +46,7 @@ struct Board {
      * [51-53] number of pieces in column 5, bit 53 MSB
      * [54-59] column 6, bit 54 corresponds to row 0
      * [60-62] number of pieces in column 6, bit 62 MSB
-     * [63   ] must be set to zero
+     * [63   ] 0 if it is WHITE, 1 if it is BLACK to move
      *   MSB
      * 0: corresponds to white player
      * 1: corresponds to black player
@@ -59,12 +61,12 @@ struct Board {
      *       (it's BLACK's move)
      *  encodes to
      *  0 (LSB)                                                                  62 63 (MSB)
-     *  000100-001-100100-001-100000-100-000000-000-100000-100-000000-000-000000-100-0
+     *  000100-001-100100-001-100000-100-000000-000-100000-100-000000-000-000000-100-1
      *  In hex this would be
      *  0 LSB                                                                       63 MSB
-     *  8    0    3    1    6    0    1    0    0    1    4    0    0    0    0    1
+     *  8    0    3    1    6    0    1    0    0    1    4    0    0    0    0    9
      *  which is printed with the most-significant byte at the left as
-     *  0x1000041001061308
+     *  0x9000041001061308
      */
     uint64_t code;
     /* Stores the bit of the topmost pieces in each column. 0 means emoty and
@@ -72,6 +74,8 @@ struct Board {
     int8_t tops[NUM_COLS];
     /* number of moves already done */
     int8_t move_cnt;
+    /* The player to move */
+    Player turn;
     /* The player who gained four in a row, column or diagonal */
     Player winner;
 };
@@ -80,15 +84,19 @@ typedef struct Board Board;
 
 void board_init(Board *b);
 
-void board_put(Board *b, Player p, int8_t col);
+void board_put(Board *b, int8_t col);
+
+/* This method puts a piece of a certain Player into the col-th column. This
+ * might cause the board to e.g. have more black pieces than possible in a
+ * normal game. Afterwards, it is the other player's (other(p)) turn. Be
+ * careful if you use this method, as it breaks the natural undo mechanism */
+void board_put_forced(Board *b, Player p, int8_t col);
 
 void board_undo(Board *b, int8_t col);
 
 Player board_get(Board *b, int8_t row, int8_t col);
 
 Player board_get_top(Board *b, int8_t col);
-
-Player board_winner(Board *b);
 
 bool board_column_full(Board *b, int8_t col);
 

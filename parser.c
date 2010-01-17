@@ -2,6 +2,7 @@
 #define _GNU_SOURCE
 
 #include <ctype.h>
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +10,7 @@
 #include "util.h"
 
 // TODO: fix problem with modifications to NUM_COL (and test cases and so on)
+
 void parser_read(Board *b, char *data) {
     FILE *stream;
     stream = fmemopen(data, strlen(data), "r");
@@ -18,7 +20,7 @@ void parser_read(Board *b, char *data) {
 
 void parser_fread(Board *b, FILE *stream) {
     Player pieces[NUM_ROWS][NUM_COLS];
-    memset(pieces, 0, NUM_ROWS * NUM_COLS);
+    memset(pieces, 0, sizeof (pieces));
 
     // We start at the top left corner, walking along the data, keeping track
     // of which row and column information is expected. We stop either at the
@@ -58,15 +60,25 @@ void parser_fread(Board *b, FILE *stream) {
         }
     } while (row >= 0);
 
-    // now replay board
-    board_init(b);
+    // TODO: validate board, count black and white pieces
 
+    // Now replay board. As long as we proceed from bottom to top, it does not
+    // matter which piece in the current row we put. The player turn changes
+    // a constant number of times, no matter in which order the moves are
+    // replayed (in theory). In practice board_put_forced will change the player
+    // relatively after each turn, depending on who made the move, so we have
+    // to count ourselves.
+    board_init(b);
+    Player turn = WHITE;
     for (row = 0; row < NUM_ROWS; row++) {
         for (col = 0; col < NUM_COLS; col++) {
             p = pieces[row][col];
             if (p != NOBODY) {
-                board_put(b, p, col);
+                board_put_forced(b, p, col);
+                turn = other(turn);
             }
         }
     }
+    // Forcibly set turn, this is sort of a workaround
+    b->turn = turn;
 }

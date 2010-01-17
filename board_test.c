@@ -11,8 +11,10 @@ static char* test_board_put() {
     printf("test_board_put\n");
     Board b;
     board_init(&b);
-    board_put(&b, BLACK, 3);
-    mu_assert("error, could not place white piece", board_get(&b, 0, 3) == BLACK);
+    board_put(&b, 3);
+    mu_assert("error, could not place white piece", board_get(&b, 0, 3) == WHITE);
+    board_put(&b, 3);
+    mu_assert("error, could not place black piece", board_get(&b, 1, 3) == BLACK);
     mu_assert("error, slot should be empty", board_get(&b, 0, 0) == NOBODY);
     return 0;
 }
@@ -27,7 +29,7 @@ static char* test_board_undo() {
             "w w - - - - -"
             "w w - - - - -"
             "w b b - b - -");
-    board_put(&b, BLACK, 3);
+    board_put(&b, 3);
     mu_assert("error, game should be won by BLACK", b.winner == BLACK);
     board_undo(&b, 3);
     mu_assert("error, game should be ongoing", b.winner == NOBODY);
@@ -35,7 +37,7 @@ static char* test_board_undo() {
 }
 
 static char* test_board_undo_full() {
-    printf("test_board_undo\n");
+    printf("test_board_undo_full\n");
     Board b;
     parser_read(&b,
             "- w - - - - -"
@@ -59,8 +61,8 @@ static char* test_board_undo_win() {
             "- - - - - - -"
             "- - - - w b -"
             "- - - w b b -"
-            "- - w b w b -");
-    board_put(&b, WHITE, 5);
+            "w - w b w b -");
+    board_put(&b, 5);
     mu_assert("error, game should be won by WHITE", b.winner == WHITE);
     board_undo(&b, 5);
     mu_assert("error, game should be ongoing", b.winner == NOBODY);
@@ -77,8 +79,8 @@ static char* test_board_undo_multiple() {
             "- - - - - - -"
             "- - - w b - -"
             "- - w b w b -");
-    board_put(&b, WHITE, 5);
-    board_put(&b, BLACK, 1);
+    board_put(&b, 5); // white
+    board_put(&b, 1); // black
     board_undo(&b, 1);
     board_undo(&b, 5);
     mu_assert("error, expected no piece here", board_get_top(&b, 1) == NOBODY);
@@ -93,7 +95,7 @@ static char* test_board_column_full() {
     board_init(&b);
     for (r = 0; r < NUM_ROWS; r++) {
         mu_assert("error, column cannot be full", !board_column_full(&b, 3));
-        board_put(&b, BLACK, 3);
+        board_put(&b, 3);
     }
     mu_assert("error, column must be full", board_column_full(&b, 3));
     return 0;
@@ -133,11 +135,15 @@ static char* test_board_move_wins_col() {
     printf("test_board_move_wins_col\n");
     Board b;
     board_init(&b);
-    for (int8_t i = 0; i < 4; i++) {
+    for (int8_t i = 0; i <= 6; i++) {
         mu_assert("error, game is still drawn", b.winner == NOBODY);
-        board_put(&b, BLACK, 3);
+        if (i % 2 == 0) {
+            board_put(&b, 3); // white
+        } else {
+            board_put(&b, 2); // black
+        }
     }
-    mu_assert("error, game is won", b.winner == BLACK);
+    mu_assert("error, game is won", b.winner == WHITE);
     return 0;
 }
 
@@ -145,11 +151,15 @@ static char* test_board_move_wins_row() {
     printf("test_board_move_wins_row\n");
     Board b;
     board_init(&b);
-    for (int8_t i = 1; i < 5; i++) {
+    for (int8_t i = 0; i <= 6; i++) {
         mu_assert("error, game is still drawn", b.winner == NOBODY);
-        board_put(&b, BLACK, i);
+        if (i % 2 == 0) {
+            board_put(&b, i / 2); // white
+        } else {
+            board_put(&b, 6); // black
+        }
     }
-    mu_assert("error, game is won", b.winner == BLACK);
+    mu_assert("error, game is won", b.winner == WHITE);
     return 0;
 }
 
@@ -159,12 +169,12 @@ static char* test_board_move_wins_row2() {
     parser_read(&b,
             "- - - - - - -"
             "- - - - - - -"
-            "- b - - - - -"
+            "- - - - - - -"
+            "w b - - - - -"
             "w w - - - - -"
-            "w w - - - - -"
-            "w b b - b b -");
+            "w w b - b b -");
     mu_assert("error, game is still drawn", b.winner == NOBODY);
-    board_put(&b, BLACK, 3);
+    board_put(&b, 3);
     mu_assert("error, black should have won", b.winner == BLACK);
     return 0;
 }
@@ -243,7 +253,7 @@ static char* test_board_compare() {
     mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b3, sizeof (Board)));
     Board b4;
     board_init(&b4);
-    board_put(&b4, WHITE, 3);
+    board_put(&b4, 3);
     mu_assert("error, expected boards to differ", 0 != memcmp(&b1, &b4, sizeof (Board)));
     return 0;
 }
@@ -260,7 +270,7 @@ static char* test_board_hash() {
     mu_assert("error, expected secondary hash to be zero", snd_hash == 0UL);
     mu_assert("error, expected hash to be zero", hash == 0UL);
 
-    board_put(&b, WHITE, 0);
+    board_put(&b, 0);
     board_hash(&b, &prim_hash, &snd_hash, &hash);
 
     mu_assert("error, expected primary hash to be non-zero", prim_hash != 0UL);
@@ -293,8 +303,9 @@ static char* test_board_decode() {
             "w b b - b - w");
     Board b2;
     board_init(&b2);
-    uint64_t n = 0x1000041001061308;
+    uint64_t n = 0x9000041001061308;
     board_decode(&b2, n);
+    mu_assert("error, expected codes to match", b1.code == b2.code);
     mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof (Board)));
     return 0;
 }
@@ -323,8 +334,9 @@ static char* test_board_encode() {
     board_init(&b2);
     board_decode(&b2, n);
 
+    print_uint64_rev(n);
     mu_assert("error, expected boards to match", 0 == memcmp(&b, &b2, sizeof (Board)));
-    mu_assert("error, encoding went wrong", 0x1000041001061308 == n);
+    mu_assert("error, encoding went wrong", 0x9000041001061308 == n);
     return 0;
 }
 
@@ -332,25 +344,14 @@ static char* test_board_encode_incremental() {
     printf("test_board_encode_incremental\n");
     Board b;
     board_init(&b);
-    print_uint64_rev(b.code);
-    putchar('\n');
     mu_assert("error, expected board to map to code 0x0", 0UL == b.code);
-    board_put(&b, WHITE, 3);
-    print_uint64_rev(b.code);
-    putchar('\n');
+    board_put(&b, 3);
     mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
-    board_put(&b, BLACK, 5);
-    print_uint64_rev(b.code);
-    putchar('\n');
-    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
-    // The order of undo operations shall be of no importance
-    board_undo(&b, 3);
-    print_uint64_rev(b.code);
-    putchar('\n');
+    board_put(&b, 5);
     mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
     board_undo(&b, 5);
-    print_uint64_rev(b.code);
-    putchar('\n');
+    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
+    board_undo(&b, 3);
     mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
     return 0;
 }
@@ -386,7 +387,7 @@ int board_test() {
     if (result != 0) {
         printf("%s\n", result);
     } else {
-        printf("ALL TESTS PASSED\n");
+        printf("ALL TESTS RUN\n");
     }
     printf("Tests run: %d\n", tests_run);
 

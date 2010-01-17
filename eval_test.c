@@ -70,7 +70,7 @@ int eval_test() {
     if (result != 0) {
         printf("%s\n", result);
     } else {
-        printf("ALL TESTS PASSED\n");
+        printf("ALL TESTS RUN\n");
     }
     printf("Tests run: %d\n", tests_run);
 

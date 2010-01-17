@@ -19,8 +19,7 @@ void benchmark_run(FILE *fdin, FILE *fdout) {
 
         SearchRecord rec;
         searchrecord_init(&rec);
-        // FIXME: encode the player that is to move into board code
-        search(&b, WHITE, &rec);
+        search(&b, &rec);
         // TODO: fix rating infinity / big value problem
         float rating = (rec.rating >= BONUS_WIN ? INFINITY : (rec.rating <= -BONUS_WIN ? -INFINITY : rec.rating));
         fprintf(fdout, "0x%-.16lX , %4d , %6.1f , %11ld , %11ld , %10ld , %10ld , %10d , %10d , %7ld\n",

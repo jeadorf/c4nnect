@@ -9,18 +9,18 @@
 #include "util.h"
 
 #ifdef DEBUG
-void stats_print(Board *b, Player p, SearchRecord *rec);
+void stats_print(Board *b, SearchRecord *rec);
 #endif
 
 void alphabeta_negamax(
-        Board *b, Player p,
+        Board *b,
         float alpha, float beta,
         int8_t depth, int8_t max_depth,
         SearchRecord *rec) {
     if (b->winner != NOBODY
             || board_full(b)
             || depth == max_depth) {
-        rec->rating = (p == WHITE ? 1 : -1) * eval(b);
+        rec->rating = (b->turn == WHITE ? 1 : -1) * eval(b);
         rec->eval_cnt++;
     } else {
         float bestval = alpha;
@@ -36,11 +36,10 @@ void alphabeta_negamax(
         for (int8_t i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col += s * i) {
             if (!board_column_full(b, col)) {
                 // Make move
-                board_put(b, p, col);
+                board_put(b, col);
 
                 // Search subposition
-                alphabeta_negamax(b, other(p), -beta, -bestval,
-                        depth + 1, max_depth, rec);
+                alphabeta_negamax(b, -beta, -bestval, depth + 1, max_depth, rec);
                 rec->rating *= -1;
                 // Undo move
                 board_undo(b, col);
@@ -81,14 +80,14 @@ void alphabeta_negamax(
 #endif
 }
 
-int8_t searchm(Board *b, Player p) {
+int8_t searchm(Board *b) {
     SearchRecord rec;
     searchrecord_init(&rec);
-    search(b, p, &rec);
+    search(b, &rec);
     return rec.move;
 }
 
-void search(Board *b, Player p, SearchRecord *rec) {
+void search(Board *b, SearchRecord *rec) {
     int8_t last_move = 0;
     rec->cpu_time = clock();
 
@@ -108,7 +107,7 @@ void search(Board *b, Player p, SearchRecord *rec) {
     for (int8_t max_depth = 1; max_depth < iterations; max_depth++) {
         last_move = rec->move;
         // TODO: Use results for move ordering or killer moves or something like this
-        alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, max_depth, rec);
+        alphabeta_negamax(b, -FLT_MAX, FLT_MAX, 0, max_depth, rec);
         // Check whether we have found a winning move. If we have there is no point
         // in looking for more complicated ways to victory.
         if (rec->winner_identified) {
@@ -130,20 +129,20 @@ void search(Board *b, Player p, SearchRecord *rec) {
 
     rec->cpu_time = clock() - rec->cpu_time;
 #ifdef DEBUG
-    stats_print(b, p, rec);
+    stats_print(b, rec);
 #endif
 }
 
 #ifdef DEBUG
 
-void stats_print(Board *b, Player p, SearchRecord *rec) {
+void stats_print(Board *b, SearchRecord *rec) {
     // Print statistics
     board_print(b);
     printf("%18s : %d\n", "Move", rec->move);
     if (rec->rating >= BONUS_WIN) {
-        printf("%18s : %s\n", "Rating", p == WHITE ? "White will win" : "Black will win");
+        printf("%18s : %s\n", "Rating", b->turn == WHITE ? "White will win" : "Black will win");
     } else if (rec->rating <= -BONUS_WIN) {
-        printf("%18s : %s\n", "Rating", other(p) == WHITE ? "White will win" : "Black will win");
+        printf("%18s : %s\n", "Rating", other(b->turn) == WHITE ? "White will win" : "Black will win");
     } else {
         printf("%18s : %.1f\n", "Rating", rec->rating);
     }

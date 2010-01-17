@@ -20,7 +20,7 @@ static char* test_abn_white_win() {
             "- w w - w - -");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, WHITE, -FLT_MAX, FLT_MAX, 0, 2, &rec);
+    alphabeta_negamax(&b, -FLT_MAX, FLT_MAX, 0, 2, &rec);
     mu_assert("error, minimax value should be very big", rec.rating  > 90);
     mu_assert("error, should find winning move", rec.move == 3);
     return 0;
@@ -30,7 +30,7 @@ static char* test_abn_white_win2() {
     printf("test_abn_white_win2\n");
     Board b;
     parser_read(&b,
-            "- - - - - - -"
+            "b - - - - - -"
             "b - - - - - -"
             "w - - b - - -"
             "b - - w w - -"
@@ -38,7 +38,7 @@ static char* test_abn_white_win2() {
             "b - b w w w b");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, WHITE, -FLT_MAX, FLT_MAX, 0, 1, &rec);
+    alphabeta_negamax(&b, -FLT_MAX, FLT_MAX, 0, 1, &rec);
     mu_assert("error, should find winning move", rec.move == 4);
     mu_assert("error, minimax value should be very big", rec.rating > 90);
     return 0;
@@ -52,11 +52,11 @@ static char* test_abn_black_win() {
             "- - - - - - -"
             "- - - - - - -"
             "- - - - - - -"
-            "- w w - w - -"
-            "- b b - b - -");
+            "w w - - w - -"
+            "w b b - b - -");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, BLACK, -FLT_MAX, FLT_MAX, 0, 1, &rec);
+    alphabeta_negamax(&b, -FLT_MAX, FLT_MAX, 0, 1, &rec);
     mu_assert("error, should find winning move", rec.move == 3);
     mu_assert("error, minimax value should be very big", rec.rating > 90);
     return 0;
@@ -72,10 +72,10 @@ static char* test_search_white_win() {
             "- - - - - - -"
             "- b b - b - -"
             "- w w - w - -");
-    mu_assert("error, should find winning move", searchm(&b, WHITE) == 3);
+    mu_assert("error, should find winning move", searchm(&b) == 3);
     // This is dangerous to test. There might be no way for black to avoid
     // defeat in this position though this is rather unlikely.
-    mu_assert("error, should find saving move", searchm(&b, BLACK) == 3);
+    mu_assert("error, should find saving move", searchm(&b) == 3); // FIXME
     return 0;
 }
 
@@ -96,7 +96,7 @@ static char* test_search_white_win2() {
             "b - - w w - -"
             "b - b w w w b");
 
-    mu_assert("error, should find fastest winning move", searchm(&b, WHITE) == 4);
+    mu_assert("error, should find fastest winning move", searchm(&b) == 4);
     return 0;
 }
 
@@ -110,8 +110,8 @@ static char* test_search_black_win() {
             "- - - - - - -"
             "- w w - w - -"
             "- b b - b w -");
-    mu_assert("error, should find winning move", searchm(&b, BLACK) == 3);
-    mu_assert("error, should find saving move", searchm(&b, WHITE) == 3);
+    mu_assert("error, should find winning move", searchm(&b) == 3);
+    mu_assert("error, should find saving move", searchm(&b) == 3);
     return 0;
 }
 
@@ -125,7 +125,7 @@ static char* test_search_white_win3() {
             "b b b w w b -"
             "b w b w w w -"
             "b b b w w b -");
-    mu_assert("error, should find winning move h", searchm(&b, WHITE) == 1);
+    mu_assert("error, should find winning move h", searchm(&b) == 1);
     return 0;
 }
 
@@ -144,7 +144,7 @@ static char* test_beginning_trap_white() {
             "- - - - - - -"
             "- - - b - - -"
             "- - w w - - -");
-    int8_t col = searchm(&b, BLACK);
+    int8_t col = searchm(&b);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
     return 0;
 }
@@ -159,7 +159,7 @@ static char* test_beginning_trap_black() {
             "- - - - - - -"
             "- - - w - - -"
             "- - b b - - -");
-    int8_t col = searchm(&b, WHITE);
+    int8_t col = searchm(&b);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
     return 0;
 }
@@ -174,7 +174,7 @@ static char* test_fast_black_win() {
             "- - b b b - -"
             "- - w b b - -"
             "w w b b w w w");
-    mu_assert("error, should choose 3-ply win", 5 == searchm(&b, BLACK));
+    mu_assert("error, should choose 3-ply win", 5 == searchm(&b));
     return 0;
 }
 
@@ -193,8 +193,8 @@ static char* test_search_defer_defeat() {
             "w - - b - - -"
             "b - - w w - -"
             "b - - w w - -"
-            "b - b w w w b");
-    mu_assert("error, should defer defeat", searchm(&b, BLACK) == 4);
+            "b - b w w w b"); // FIXME
+    mu_assert("error, should defer defeat", searchm(&b) == 4);
     return 0;
 }
 
@@ -212,7 +212,7 @@ static char* test_maximum_search_depth() {
             "w b w w b - -");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, WHITE, -FLT_MAX, FLT_MAX, 0, 42, &rec);
+    alphabeta_negamax(&b, -FLT_MAX, FLT_MAX, 0, 42, &rec);
     
     Board b2;
     parser_read(&b2,
@@ -224,7 +224,7 @@ static char* test_maximum_search_depth() {
             "w b w w b b w");
     SearchRecord rec2;
     searchrecord_init(&rec2);
-    alphabeta_negamax(&b2, WHITE, -FLT_MAX, FLT_MAX, 0, 42, &rec2);
+    alphabeta_negamax(&b2, -FLT_MAX, FLT_MAX, 0, 42, &rec2);
     return 0;
 }
 
@@ -249,7 +249,7 @@ int search_test() {
     if (result != 0) {
         printf("%s\n", result);
     } else {
-        printf("ALL TESTS PASSED\n");
+        printf("ALL TESTS RUN\n");
     }
     printf("Tests run: %d\n", tests_run);
 

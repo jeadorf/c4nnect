@@ -31,7 +31,7 @@ static void play_game() {
         } while (c < 0 || c >= NUM_COLS || board_column_full(&b, c));
 
         // put piece selected by the human player
-        board_put(&b, WHITE, c);
+        board_put(&b, c);
         board_print(&b);
         if (b.winner == WHITE) {
             board_print(&b);
@@ -44,8 +44,8 @@ static void play_game() {
         }
 
         // put piece selected by the engine
-        int8_t col = searchm(&b, BLACK);
-        board_put(&b, BLACK, col);
+        int8_t col = searchm(&b);
+        board_put(&b, col);
         if (b.winner == BLACK) {
             board_print(&b);
             printf("Computer wins!\n");
