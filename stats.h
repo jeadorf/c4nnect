@@ -20,7 +20,14 @@ struct SearchRecord {
     int64_t abcut_cnt;
     /* The search depth. */
     int8_t max_depth;
+    /* The maximum reached search depth. */
     int8_t reached_depth;
+    /* The number of successful transposition table lookups */
+    int64_t ttcut_cnt;
+    /* The number of read collisions transposition table lookups. This counts the
+     * number of times an entry was read in the transposition table but belonged
+     * to another position than the one currently evaluated */
+    int64_t ttrcoll_cnt;
     /* Denotes whether the search has lead to a winning strategy for one of
      * the players. */
     bool winner_identified;
@@ -29,7 +36,7 @@ struct SearchRecord {
      * as long as possible. */
     bool defeat_deferred;
     /* Used processor time. */
-    clock_t cpu_time;
+    clock_t cpu_time; // TODO: naming clock vs. milliseconds
 };
 
 typedef struct SearchRecord SearchRecord;

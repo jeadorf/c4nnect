@@ -74,6 +74,7 @@ static void play_game() {
 int main(int argc, char** argv) {
     // TODO: move benchmarking to own suite
 
+/*
     FILE *boards_out = fopen("boards", "w");
     benchmark_sample(boards_out);
     fclose(boards_out);
@@ -85,8 +86,8 @@ int main(int argc, char** argv) {
     fclose(boards_in);
     fclose(eval_out);
     fclose(summ_out);
-
-
+*/
+    
 #if DEBUG
     board_test();
     eval_test();

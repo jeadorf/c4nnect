@@ -31,18 +31,19 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/benchmark.o \
-	${OBJECTDIR}/parser.o \
 	${OBJECTDIR}/stats.o \
 	${OBJECTDIR}/board_test.o \
+	${OBJECTDIR}/board.o \
+	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/search_test.o \
+	${OBJECTDIR}/eval_test.o \
+	${OBJECTDIR}/benchmark.o \
+	${OBJECTDIR}/parser.o \
+	${OBJECTDIR}/ttable.o \
 	${OBJECTDIR}/search.o \
 	${OBJECTDIR}/parser_test.o \
-	${OBJECTDIR}/board.o \
 	${OBJECTDIR}/eval.o \
-	${OBJECTDIR}/search_test.o \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/util.o \
-	${OBJECTDIR}/eval_test.o
+	${OBJECTDIR}/util.o
 
 # C Compiler Flags
 CFLAGS=-m64 -std=c99 -Wextra -pedantic-errors -DDEBUG
@@ -68,6 +69,36 @@ dist/Debug/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/GNU-Linux-x86
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
+${OBJECTDIR}/stats.o: nbproject/Makefile-${CND_CONF}.mk stats.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/stats.o stats.c
+
+${OBJECTDIR}/board_test.o: nbproject/Makefile-${CND_CONF}.mk board_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
+
+${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
+
+${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+
+${OBJECTDIR}/search_test.o: nbproject/Makefile-${CND_CONF}.mk search_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
+
+${OBJECTDIR}/eval_test.o: nbproject/Makefile-${CND_CONF}.mk eval_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
+
 ${OBJECTDIR}/benchmark.o: nbproject/Makefile-${CND_CONF}.mk benchmark.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -78,15 +109,10 @@ ${OBJECTDIR}/parser.o: nbproject/Makefile-${CND_CONF}.mk parser.c
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser.o parser.c
 
-${OBJECTDIR}/stats.o: nbproject/Makefile-${CND_CONF}.mk stats.c 
+${OBJECTDIR}/ttable.o: nbproject/Makefile-${CND_CONF}.mk ttable.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/stats.o stats.c
-
-${OBJECTDIR}/board_test.o: nbproject/Makefile-${CND_CONF}.mk board_test.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/ttable.o ttable.c
 
 ${OBJECTDIR}/search.o: nbproject/Makefile-${CND_CONF}.mk search.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -98,35 +124,15 @@ ${OBJECTDIR}/parser_test.o: nbproject/Makefile-${CND_CONF}.mk parser_test.c
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser_test.o parser_test.c
 
-${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
-
 ${OBJECTDIR}/eval.o: nbproject/Makefile-${CND_CONF}.mk eval.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval.o eval.c
 
-${OBJECTDIR}/search_test.o: nbproject/Makefile-${CND_CONF}.mk search_test.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
-
-${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
-
 ${OBJECTDIR}/util.o: nbproject/Makefile-${CND_CONF}.mk util.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/util.o util.c
-
-${OBJECTDIR}/eval_test.o: nbproject/Makefile-${CND_CONF}.mk eval_test.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
 
 # Subprojects
 .build-subprojects:

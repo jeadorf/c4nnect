@@ -7,22 +7,37 @@
 #include "board.h"
 #include "eval.h"
 #include "util.h"
+#include "ttable.h"
 
 #ifdef DEBUG
 void stats_print(Board *b, SearchRecord *rec);
 #endif
+
+extern TTEntry ttable[];
 
 void alphabeta_negamax(
         Board *b,
         float alpha, float beta,
         int8_t depth, int8_t max_depth,
         SearchRecord *rec) {
+    uint8_t hash = b->code % TRANSPOS_SIZE;
+    TTEntry *ttentry = &(ttable[hash]);
+
     if (b->winner != NOBODY
             || board_full(b)
             || depth == max_depth) {
         rec->rating = (b->turn == WHITE ? 1 : -1) * eval(b);
+        rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
         rec->eval_cnt++;
+    } else if (ttentry->code == b->code) {
+        rec->rating = ttentry->rating;
+        rec->move = ttentry->move;
+        rec->winner_identified = true;
+        rec->ttcut_cnt++;
     } else {
+        if (ttentry->code != b->code && ttentry->code != 0) {
+            rec->ttrcoll_cnt++;
+        }
         float bestval = alpha;
         int bestcol = -1;
         // Simple move ordering, start with checking the moves in the center and
@@ -59,11 +74,17 @@ void alphabeta_negamax(
 
         rec->rating = bestval;
         rec->move = bestcol;
+        rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
+
+        if (rec->winner_identified) {
+            ttentry->code = b->code;
+            ttentry->rating = rec->rating;
+            ttentry->move = rec->move;
+        }
     }
 
     rec->visited_cnt++;
     rec->max_depth = max_depth;
-    rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
     if (depth > rec->reached_depth) {
         rec->reached_depth = depth;
     }
@@ -146,7 +167,9 @@ void stats_print(Board *b, SearchRecord *rec) {
     printf("%18s : %d\n", "Reached depth", rec->reached_depth);
     printf("%18s : %ld\n", "Evaluations", rec->eval_cnt);
     printf("%18s : %ld\n", "Positions", rec->visited_cnt);
-    printf("%18s : %ld\n", "Alpha-Beta cuts:", rec->abcut_cnt);
+    printf("%18s : %ld\n", "Alpha-Beta cuts", rec->abcut_cnt);
+    printf("%18s : %ld\n", "TTable cuts", rec->ttcut_cnt);
+    printf("%18s : %ld\n", "TTable read colls.", rec->ttrcoll_cnt);
     printf("%18s : %d ms\n", "CPU time", (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)));
     printf("%18s : 0x%.16lX\n", "Board", board_encode(b));
     putchar('\n');
