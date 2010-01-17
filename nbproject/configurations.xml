@@ -58,7 +58,7 @@
       <compileType>
         <cTool>
           <architecture>2</architecture>
-          <commandLine>-std=c99 -DDEBUG</commandLine>
+          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
         <linkerTool>
@@ -78,7 +78,7 @@
           <developmentMode>5</developmentMode>
           <architecture>2</architecture>
           <commandlineTool>gcc</commandlineTool>
-          <commandLine>-std=c99 -DDEBUG</commandLine>
+          <commandLine>-std=c99 -Wextra -pedantic-errors</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
         <ccTool>

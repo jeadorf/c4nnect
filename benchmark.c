@@ -16,7 +16,7 @@ void benchmark_generate(FILE *fdin, FILE *fdout) {
     Board b;
     board_init(&b);
     Player p = WHITE;
-    uint8_t winmv = -1;
+    int8_t winmv = -1;
     uint64_t prim_hash, snd_hash, hash;
     unsigned long acc_cpu_time = 0UL;
     while (!board_full(&b) && b.winner == NOBODY) {

@@ -133,7 +133,7 @@ static char* test_board_move_wins_col() {
     printf("test_board_move_wins_col\n");
     Board b;
     board_init(&b);
-    for (uint8_t i = 0; i < 4; i++) {
+    for (int8_t i = 0; i < 4; i++) {
         mu_assert("error, game is still drawn", b.winner == NOBODY);
         board_put(&b, BLACK, 3);
     }
@@ -145,7 +145,7 @@ static char* test_board_move_wins_row() {
     printf("test_board_move_wins_row\n");
     Board b;
     board_init(&b);
-    for (uint8_t i = 1; i < 5; i++) {
+    for (int8_t i = 1; i < 5; i++) {
         mu_assert("error, game is still drawn", b.winner == NOBODY);
         board_put(&b, BLACK, i);
     }

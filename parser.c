@@ -25,7 +25,7 @@ void parser_fread(Board *b, FILE *stream) {
     // end of string (error) or when all data is read.
     int row = NUM_ROWS - 1;
     int col = 0;
-    Player p;
+    Player p = NOBODY;
     int d;
     do {
         d = fgetc(stream);

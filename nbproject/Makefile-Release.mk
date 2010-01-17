@@ -45,7 +45,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/eval_test.o
 
 # C Compiler Flags
-CFLAGS=-m64 -std=c99 -DDEBUG
+CFLAGS=-m64 -std=c99 -Wextra -pedantic-errors
 
 # CC Compiler Flags
 CCFLAGS=

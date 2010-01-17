@@ -10,7 +10,7 @@ void handle_error(char *msg) {
 }
 
 void print_uint64_rev(uint64_t n) {
-    for (uint8_t i = 0; i < 64; i++) {
+    for (int8_t i = 0; i < 64; i++) {
         if (i != 0 && (i % 9 == 0 || i % 9 == 6)) {
             putchar('-');
         }

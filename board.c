@@ -20,15 +20,15 @@ void board_init(Board *b) {
     b->winner = NOBODY;
 }
 
-static bool board_move_wins_col(Board *b, Player p, uint8_t row, uint8_t col) {
-    return ((row -= 3) >= 0) && (((b->cols[p][col] >> row) ^ 0xF) == 0);
+static bool board_move_wins_col(Board *b, Player p, int8_t row, int8_t col) {
+    return ((row >= 3) && (((b->cols[p][col] >> (row-3)) ^ 0xF) == 0));
 }
 
-static bool board_move_wins_row(Board *b, Player p, uint8_t row, uint8_t col) {
-    register uint8_t count = 0;
+static bool board_move_wins_row(Board *b, Player p, int8_t row, int8_t col) {
+    register int8_t count = 0;
     // Walk to the left maximum three steps and as long as the pieces match
     // the player, increment the line counter.
-    register uint8_t currentcol = col;
+    register int8_t currentcol = col;
     while (currentcol >= 0
             && currentcol >= col - 3
             && p == board_get(b, row, currentcol)) {
@@ -48,12 +48,12 @@ static bool board_move_wins_row(Board *b, Player p, uint8_t row, uint8_t col) {
     return count >= 4;
 }
 
-static bool board_move_wins_diagup(Board *b, Player p, uint8_t row, uint8_t col) {
-    register uint8_t count = 0;
+static bool board_move_wins_diagup(Board *b, Player p, int8_t row, int8_t col) {
+    register int8_t count = 0;
     // Walk left down for maximum three steps and as long as the pieces match the
     // player increment the line counter.
-    register uint8_t currentrow = row;
-    register uint8_t currentcol = col;
+    register int8_t currentrow = row;
+    register int8_t currentcol = col;
     while (currentcol >= 0
             && currentcol >= col - 3
             && currentrow >= 0
@@ -79,12 +79,12 @@ static bool board_move_wins_diagup(Board *b, Player p, uint8_t row, uint8_t col)
     return count >= 4;
 }
 
-static bool board_move_wins_diagdown(Board *b, Player p, uint8_t row, uint8_t col) {
-    register uint8_t count = 0;
+static bool board_move_wins_diagdown(Board *b, Player p, int8_t row, int8_t col) {
+    register int8_t count = 0;
     // Walk left up for maximum three steps and as long as the pieces match the
     // player increment the line counter.
-    register uint8_t currentrow = row;
-    register uint8_t currentcol = col;
+    register int8_t currentrow = row;
+    register int8_t currentcol = col;
     while (currentcol >= 0
             && currentcol >= col - 3
             && currentrow < NUM_ROWS
@@ -101,7 +101,7 @@ static bool board_move_wins_diagdown(Board *b, Player p, uint8_t row, uint8_t co
     while (currentcol < NUM_COLS
             && currentcol <= col + 3
             && currentrow >= 0
-            && currentrow >= row - 3
+            && currentrow + 3 >= row
             && p == board_get(b, currentrow, currentcol)) {
         count++;
         currentcol++;
@@ -114,15 +114,15 @@ static bool board_move_wins_diagdown(Board *b, Player p, uint8_t row, uint8_t co
 // win line. Thus, we just need to check rows, columns and diagonals
 // starting from the new piece.
 
-static bool board_move_wins(Board *b, Player p, uint8_t row, uint8_t col) {
+static bool board_move_wins(Board *b, Player p, int8_t row, int8_t col) {
     return board_move_wins_row(b, p, row, col)
             || board_move_wins_col(b, p, row, col)
             || board_move_wins_diagup(b, p, row, col)
             || board_move_wins_diagdown(b, p, row, col);
 }
 
-void board_put(Board *b, Player p, uint8_t col) {
-    uint8_t row = b->tops[col];
+void board_put(Board *b, Player p, int8_t col) {
+    int8_t row = b->tops[col];
     if (row == NUM_ROWS) {
         handle_error("Column is already full, cannot put another piece in this column!");
     }
@@ -137,8 +137,8 @@ void board_put(Board *b, Player p, uint8_t col) {
     b->move_cnt++;
 }
 
-void board_undo(Board *b, uint8_t col) {
-    uint8_t row = b->tops[col] - 1;
+void board_undo(Board *b, int8_t col) {
+    int8_t row = b->tops[col] - 1;
     Player p = board_get(b, row, col);
     b->winner = NOBODY;
     // Kill bit at row
@@ -147,7 +147,7 @@ void board_undo(Board *b, uint8_t col) {
     b->move_cnt--;
 }
 
-Player board_get(Board *b, uint8_t row, uint8_t col) {
+Player board_get(Board *b, int8_t row, int8_t col) {
     // no faster 2 - (((b->cols[WHITE][col] >> row) & 1) << 1) - ((b->cols[BLACK][col] >> row) & 1);
     if (b->cols[WHITE][col] & (1 << row)) {
         return WHITE;
@@ -158,12 +158,12 @@ Player board_get(Board *b, uint8_t row, uint8_t col) {
     }
 }
 
-Player board_get_top(Board *b, uint8_t col) {
+Player board_get_top(Board *b, int8_t col) {
     return board_get(b, b->tops[col - 1], col);
 }
 
 bool board_full(Board *b) {
-    uint8_t c;
+    int8_t c;
     for (c = 0; c < NUM_COLS; c++) {
         if (!board_column_full(b, c)) {
             return false;
@@ -172,7 +172,7 @@ bool board_full(Board *b) {
     return true;
 }
 
-bool board_column_full(Board *b, uint8_t col) {
+bool board_column_full(Board *b, int8_t col) {
     return b->tops[col] == NUM_ROWS;
 }
 
@@ -180,7 +180,7 @@ void board_hash(Board *b, uint64_t *prim_hash, uint64_t *snd_hash, uint64_t *has
     *hash = 0UL;
     *prim_hash = 0UL;
     *snd_hash = 0UL;
-    uint8_t c;
+    int8_t c;
     for (c = 0; c < NUM_COLS; c++) {
         *prim_hash |= ((uint64_t) b->cols[WHITE][c]) << (c * NUM_ROWS);
         *snd_hash |= ((uint64_t) b->cols[BLACK][c]) << (c * NUM_ROWS);
@@ -190,12 +190,12 @@ void board_hash(Board *b, uint64_t *prim_hash, uint64_t *snd_hash, uint64_t *has
 
 uint64_t board_encode(Board *b) {
     uint64_t n = 0UL;
-    uint64_t top = 0UL;
-    for (uint8_t c = 0; c < NUM_COLS; c++) {
+    int8_t top = 0UL;
+    for (int8_t c = 0; c < NUM_COLS; c++) {
         // Save number of pieces in this column
         top = b->tops[c];
         n = SET_TOP(n, top);
-        for (uint8_t r = 0; r < top; r++) {
+        for (int8_t r = 0; r < top; r++) {
             if (board_get(b, r, c) == BLACK) {
                 // Must be careful not to shift bits out at the right (MSB) of
                 // an integer value, have to specify UL explicitly.
@@ -207,10 +207,10 @@ uint64_t board_encode(Board *b) {
 }
 
 void board_decode(Board *b, uint64_t n) {
-    for (uint8_t c = 0; c < NUM_COLS; c++) {
+    for (int8_t c = 0; c < NUM_COLS; c++) {
         // Extract number of pieces in this column
-        uint8_t top = GET_TOP(n, c);
-        for (uint8_t r = 0; r < top; r++) {
+        int8_t top = GET_TOP(n, c);
+        for (int8_t r = 0; r < top; r++) {
             if (GET(n, r, c) & 1) {
                 board_put(b, BLACK, c);
             } else {
@@ -224,8 +224,8 @@ void board_print(Board *b) {
     board_printd(b, 0);
 }
 
-void board_printd(Board *b, uint8_t depth) {
-    int r, c; //
+void board_printd(Board *b, int8_t depth) {
+    int32_t r, c; //
     for (r = NUM_ROWS - 1; r >= 0; r--) {
         for (c = 0; c < depth * 4; c++) {
             putchar(' ');
@@ -248,18 +248,6 @@ void board_printd(Board *b, uint8_t depth) {
         putchar('"');
         putchar('\n');
     }
-
-#if DEBUG
-    putchar('\n');
-    uint64_t prim_hash, snd_hash, hash;
-    board_hash(b, &prim_hash, &snd_hash, &hash);
-    printf("%18s : ", "Primary hash");
-    print_uint64_rev(prim_hash);
-    printf("%18s : ", "Secondary hash");
-    print_uint64_rev(snd_hash);
-    printf("%18s : ", "Combined hash");
-    print_uint64_rev(hash);
-#endif
 
     putchar('\n');
 }

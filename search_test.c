@@ -144,7 +144,7 @@ static char* test_beginning_trap_white() {
             "- - - - - - -"
             "- - - b - - -"
             "- - w w - - -");
-    uint8_t col = searchm(&b, BLACK);
+    int8_t col = searchm(&b, BLACK);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
     return 0;
 }
@@ -159,7 +159,7 @@ static char* test_beginning_trap_black() {
             "- - - - - - -"
             "- - - w - - -"
             "- - b b - - -");
-    uint8_t col = searchm(&b, WHITE);
+    int8_t col = searchm(&b, WHITE);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
     return 0;
 }
@@ -174,9 +174,7 @@ static char* test_fast_black_win() {
             "- - b b b - -"
             "- - w b b - -"
             "w w b b w w w");
-
-    uint8_t col = searchm(&b, BLACK);
-    mu_assert("error, should choose 3-ply win", col == 5);
+    mu_assert("error, should choose 3-ply win", 5 == searchm(&b, BLACK));
     return 0;
 }
 

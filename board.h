@@ -10,7 +10,7 @@
 #define BLACK 1
 #define NOBODY 2
 
-typedef uint8_t Player;
+typedef int8_t Player;
 
 Player other(Player p);
 
@@ -29,9 +29,9 @@ struct Board {
     uint8_t cols[2][NUM_COLS];
     /* Stores the bit of the topmost pieces in each column. 0 means emoty and
      * (1 << NUM_ROWS) */
-    uint8_t tops[NUM_COLS];
+    int8_t tops[NUM_COLS];
     /* number of moves already done */
-    uint8_t move_cnt;
+    int8_t move_cnt;
     /* The player who gained four in a row, column or diagonal */
     Player winner;
 };
@@ -40,17 +40,17 @@ typedef struct Board Board;
 
 void board_init(Board *b);
 
-void board_put(Board *b, Player p, uint8_t col);
+void board_put(Board *b, Player p, int8_t col);
 
-void board_undo(Board *b, uint8_t col);
+void board_undo(Board *b, int8_t col);
 
-Player board_get(Board *b, uint8_t row, uint8_t col);
+Player board_get(Board *b, int8_t row, int8_t col);
 
-Player board_get_top(Board *b, uint8_t col);
+Player board_get_top(Board *b, int8_t col);
 
 Player board_winner(Board *b);
 
-bool board_column_full(Board *b, uint8_t col);
+bool board_column_full(Board *b, int8_t col);
 
 bool board_full(Board *b);
 
@@ -100,7 +100,7 @@ void board_decode(Board *b, uint64_t n);
 
 void board_print(Board *b);
 
-void board_printd(Board *b, uint8_t depth);
+void board_printd(Board *b, int8_t depth);
 
 #endif	/* _BOARD_H */
 
