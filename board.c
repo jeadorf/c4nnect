@@ -5,12 +5,18 @@
 #include "board.h"
 #include "util.h"
 
-#define GET_TOP(n, c) ((n >> (NUM_ROWS + c * 9)) & 0x7)
-#define SET_TOP(n, c, t) (n | (((uint64_t) t) << (NUM_ROWS + c * 9)))
-#define CLEAR_TOP(n, c) (n & ~(((uint64_t) 0x7) << (NUM_ROWS + c * 9)))
-#define GET(n, r, c) (n >> (c * 9 + r) & 1)
-#define SET(n, r, c, p) (n | (((uint64_t) p) << (c * 9 + r)))
-#define CLEAR(n, r, c) (n & ~(((uint64_t) 1) << (c * 9 + r)))
+/* Returns the number of pieces in the c-th column of a board with code n. You
+ * MUST NOT call this macro with parameters that contain side-effects. */
+#define GET_TOP(n, c) (((n) >> (NUM_ROWS + (c) * 9)) & 0x7)
+/* Encodes the number of pieces in the c-th column of a board with code n. You
+ * MUST NOT call this macro with parameters that contain side-effects. */
+#define SET_TOP(n, c, t) (((n) & ~(((uint64_t) 0x7) << (NUM_ROWS + (c) * 9))) | (((uint64_t) (t) << (NUM_ROWS + (c) * 9))))
+/* Returns the bit at row r and column c of a board with code n. You
+ * MUST NOT call this macro with parameters that contain side-effects. */
+#define GET(n, r, c) ((n) >> ((c) * 9 + (r)) & 1)
+/* Sets or deletes a bit at row r and column c of a board with code n. You
+ * MUST NOT call this macro with parameters that contain side-effects. */
+#define SET(n, r, c, p) (((n) & ~(((uint64_t) 1) << ((c) * 9 + (r)))) | (((uint64_t) (p)) << ((c) * 9 + (r))))
 
 inline Player other(Player p) {
     return p == WHITE ? BLACK : WHITE;
@@ -135,7 +141,6 @@ void board_put(Board *b, Player p, int8_t col) {
 
     // Update perfect hash
     int nr = row + 1;
-    b->code = CLEAR_TOP(b->code, col);
     b->code = SET_TOP(b->code, col, nr);
     b->code = SET(b->code, row, col, p);
 
@@ -156,9 +161,9 @@ void board_undo(Board *b, int8_t col) {
 
     // Restore perfect hash by decrementing top counter and zeroing out the bit
     // that might be set at row,col.
-    b->code = CLEAR_TOP(b->code, col);
+   // b->code = CLEAR_TOP(b->code, col);
     b->code = SET_TOP(b->code, col, row);
-    b->code = CLEAR(b->code, row, col);
+    b->code = SET(b->code, row, col, 0);
 
     b->move_cnt--;
 }
