@@ -72,15 +72,22 @@ static void play_game() {
  * 
  */
 int main(int argc, char** argv) {
-#if DEBUG
-    /*FILE *boards_in = fopen("boards", "r");
+    // TODO: move benchmarking to own suite
+
+    FILE *boards_out = fopen("boards", "w");
+    benchmark_sample(boards_out);
+    fclose(boards_out);
+
+    FILE *boards_in = fopen("boards", "r");
     FILE *eval_out = fopen("eval.csv", "w");
     FILE *summ_out = fopen("summ.csv", "w");
     benchmark_run(boards_in, eval_out, summ_out);
     fclose(boards_in);
     fclose(eval_out);
-    fclose(summ_out);*/
+    fclose(summ_out);
 
+
+#if DEBUG
     board_test();
     eval_test();
     search_test();

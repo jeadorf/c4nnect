@@ -9,5 +9,9 @@
  */
 void benchmark_run(FILE *boards_in, FILE *stats_out, FILE *summary_out);
 
+/* Generate a bunch of sample positions. The generated positions should be
+ * well-distributed. */
+void benchmark_sample(FILE *boards_out);
+
 #endif	/* _BENCHMARK_H */
 

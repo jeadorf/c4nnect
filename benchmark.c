@@ -1,5 +1,8 @@
 #include <math.h>
+#include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
+#include <time.h>
 #include "benchmark.h"
 #include "stats.h"
 #include "board.h"
@@ -17,7 +20,7 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     // TODO: check whether we can
     int32_t cnt = 0;
     double_t visited_cnt = 0, eval_cnt = 0, abcut_cnt = 0,
-            max_depth = 0, reached_depth = 0, cpu_time = 0;
+            max_depth = 0, reached_depth = 0, cpu_time = 0, solved = 0;
     while (fscanf(positions_in, "%lX", &n) == 1) {
         Board b;
         board_init(&b);
@@ -37,18 +40,58 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
         max_depth += rec.max_depth;
         reached_depth += rec.reached_depth;
         cpu_time += rec.cpu_time;
+        solved += rec.winner_identified;
         cnt++;
     }
 
-    fprintf(summary_out, "%11s , %11s , %10s , %10s , %10s , %13s , %7s\n",
-            "visited_cnt", "eval_cnt", "abcut_cnt", "wincut_cnt", "max_depth", "reached_depth", "cpu_time");
+    fprintf(summary_out, "%7s , %11s , %11s , %10s , %10s , %13s , %7s\n",
+            "solved", "visited_cnt", "eval_cnt", "abcut_cnt", "max_depth", "reached_depth", "cpu_time");
     if (cnt > 0) {
-        fprintf(summary_out, "%11ld , %11ld , %10ld , %10.2f , %13.2f , %7ld\n",
+        fprintf(summary_out, "%6.3f%% , %11ld , %11ld , %10ld , %10.2f , %13.2f , %7ld\n",
+                (solved / cnt),
                 (int64_t) (visited_cnt / cnt),
                 (int64_t) (eval_cnt / cnt),
                 (int64_t) (abcut_cnt / cnt),
                 max_depth / cnt,
                 reached_depth / cnt,
                 (int64_t) (cpu_time / cnt));
+    }
+}
+
+void benchmark_sample(FILE *boards_out) {
+    srand(time(0));
+    // Idea: generate random move sequence with a fixed number of moves. It is
+    // wasted if it leads to a win for one of the players, otherwise written
+    // to the list of positions.
+    int32_t remaining_samples = 250;
+    while (remaining_samples > 0) {
+        int8_t npieces = rand() % (int) (NUM_ROWS * NUM_COLS);
+        bool failed = true;
+        Board b;
+
+        do {
+            failed = false;
+            board_init(&b);
+            putchar('.');
+            for (int i = 0; i < npieces; i++) {
+                int8_t col = rand() % 6;
+                while (board_column_full(&b, col)) {
+                    col += 3;
+                    col %= NUM_COLS;
+                }
+                board_put(&b, col);
+                if (b.winner != NOBODY) {
+                    failed = true;
+                    break;
+                }
+            }
+        } while (failed);
+
+        fprintf(boards_out, "0x%.16lX\n", b.code);
+        fflush(boards_out);
+        printf("\n0x%.16lX\n", b.code);
+        board_print(&b);
+
+        remaining_samples--;
     }
 }
