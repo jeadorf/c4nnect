@@ -27,6 +27,8 @@ struct Board {
      * inserted in a column is represented by the least significant bit of the
      * column value. */
     uint8_t cols[2][NUM_COLS];
+    /* Perfect hash value */
+    uint64_t code;
     /* Stores the bit of the topmost pieces in each column. 0 means emoty and
      * (1 << NUM_ROWS) */
     int8_t tops[NUM_COLS];

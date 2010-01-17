@@ -28,6 +28,11 @@ void alphabeta_negamax(
         // Simple move ordering, start with checking the moves in the center and
         // then circle to the outer columns
         // TODO: find better move ordering such that we can use negascout (PVS) here
+        // it's probably best to evaluate the column first where the opponent has
+        // put his piece - because it's likely to influence the game locally and
+        // threats are detected more easily. Secondly, we can use information from
+        // previous searches or even create a killer move table or some other
+        // history heuristic
         for (int8_t i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col += s * i) {
             if (!board_column_full(b, col)) {
                 // Make move

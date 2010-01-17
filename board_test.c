@@ -328,6 +328,33 @@ static char* test_board_encode() {
     return 0;
 }
 
+static char* test_board_encode_incremental() {
+    printf("test_board_encode_incremental\n");
+    Board b;
+    board_init(&b);
+    print_uint64_rev(b.code);
+    putchar('\n');
+    mu_assert("error, expected board to map to code 0x0", 0UL == b.code);
+    board_put(&b, WHITE, 3);
+    print_uint64_rev(b.code);
+    putchar('\n');
+    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
+    board_put(&b, BLACK, 5);
+    print_uint64_rev(b.code);
+    putchar('\n');
+    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
+    // The order of undo operations shall be of no importance
+    board_undo(&b, 3);
+    print_uint64_rev(b.code);
+    putchar('\n');
+    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
+    board_undo(&b, 5);
+    print_uint64_rev(b.code);
+    putchar('\n');
+    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
+    return 0;
+}
+
 static char* all_tests() {
     mu_run_test(test_board_put);
     mu_run_test(test_board_undo);
@@ -350,6 +377,7 @@ static char* all_tests() {
     mu_run_test(test_board_decode);
     mu_run_test(test_board_encode_empty);
     mu_run_test(test_board_encode);
+    mu_run_test(test_board_encode_incremental);
     return 0;
 }
 

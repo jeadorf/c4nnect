@@ -67,7 +67,6 @@ int main(int argc, char** argv) {
     eval_test();
     search_test();
     parser_test();
-    exit(-1);
 #endif
 
     puts("Welcome to 'Four in a Row'!");

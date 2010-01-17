@@ -5,10 +5,12 @@
 #include "board.h"
 #include "util.h"
 
-#define GET_TOP(n, c) (((n) >> (NUM_ROWS + (c) * 9)) & 0x7)
-#define SET_TOP(n, t) ((n) | (((uint64_t) t) << (NUM_ROWS + (c) * 9)))
-#define GET(n, r, c) ((n) >> ((c) * 9 + (r)) & 1)
-#define SET(n, r, c) ((n) | (((uint64_t) 1) << ((c) * 9 + (r))))
+#define GET_TOP(n, c) ((n >> (NUM_ROWS + c * 9)) & 0x7)
+#define SET_TOP(n, c, t) (n | (((uint64_t) t) << (NUM_ROWS + c * 9)))
+#define CLEAR_TOP(n, c) (n & ~(((uint64_t) 0x7) << (NUM_ROWS + c * 9)))
+#define GET(n, r, c) (n >> (c * 9 + r) & 1)
+#define SET(n, r, c, p) (n | (((uint64_t) p) << (c * 9 + r)))
+#define CLEAR(n, r, c) (n & ~(((uint64_t) 1) << (c * 9 + r)))
 
 inline Player other(Player p) {
     return p == WHITE ? BLACK : WHITE;
@@ -21,7 +23,7 @@ void board_init(Board *b) {
 }
 
 static bool board_move_wins_col(Board *b, Player p, int8_t row, int8_t col) {
-    return ((row >= 3) && (((b->cols[p][col] >> (row-3)) ^ 0xF) == 0));
+    return ((row >= 3) && (((b->cols[p][col] >> (row - 3)) ^ 0xF) == 0));
 }
 
 static bool board_move_wins_row(Board *b, Player p, int8_t row, int8_t col) {
@@ -131,6 +133,12 @@ void board_put(Board *b, Player p, int8_t col) {
     b->cols[p][col] |= (1 << row);
     b->tops[col]++;
 
+    // Update perfect hash
+    int nr = row + 1;
+    b->code = CLEAR_TOP(b->code, col);
+    b->code = SET_TOP(b->code, col, nr);
+    b->code = SET(b->code, row, col, p);
+
     if (board_move_wins(b, p, row, col)) {
         b->winner = p;
     }
@@ -141,9 +149,17 @@ void board_undo(Board *b, int8_t col) {
     int8_t row = b->tops[col] - 1;
     Player p = board_get(b, row, col);
     b->winner = NOBODY;
+    
     // Kill bit at row
     b->cols[p][col] ^= (1 << row);
     b->tops[col]--;
+
+    // Restore perfect hash by decrementing top counter and zeroing out the bit
+    // that might be set at row,col.
+    b->code = CLEAR_TOP(b->code, col);
+    b->code = SET_TOP(b->code, col, row);
+    b->code = CLEAR(b->code, row, col);
+
     b->move_cnt--;
 }
 
@@ -163,13 +179,7 @@ Player board_get_top(Board *b, int8_t col) {
 }
 
 bool board_full(Board *b) {
-    int8_t c;
-    for (c = 0; c < NUM_COLS; c++) {
-        if (!board_column_full(b, c)) {
-            return false;
-        }
-    }
-    return true;
+    return b->move_cnt >= 42;
 }
 
 bool board_column_full(Board *b, int8_t col) {
@@ -191,16 +201,16 @@ void board_hash(Board *b, uint64_t *prim_hash, uint64_t *snd_hash, uint64_t *has
 uint64_t board_encode(Board *b) {
     uint64_t n = 0UL;
     int8_t top = 0UL;
+    Player p;
     for (int8_t c = 0; c < NUM_COLS; c++) {
         // Save number of pieces in this column
         top = b->tops[c];
-        n = SET_TOP(n, top);
+        n = SET_TOP(n, c, top);
         for (int8_t r = 0; r < top; r++) {
-            if (board_get(b, r, c) == BLACK) {
-                // Must be careful not to shift bits out at the right (MSB) of
-                // an integer value, have to specify UL explicitly.
-                n = SET(n, r, c);
-            }
+            // Must be careful not to shift bits out at the right (MSB) of
+            // an integer value, have to specify UL explicitly.
+            p = board_get(b, r, c);
+            n = SET(n, r, c, p);
         }
     }
     return n;
