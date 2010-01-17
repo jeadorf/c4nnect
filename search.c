@@ -146,6 +146,7 @@ void stats_print(Board *b, Player p, SearchRecord *rec) {
     printf("%18s : %ld\n", "Alpha-Beta cuts:", rec->abcut_cnt);
     printf("%18s : %ld\n", "Win cuts:", rec->wincut_cnt);
     printf("%18s : %d ms\n", "CPU time", (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)));
+    printf("%18s : 0x%.16lX\n", "Board", board_encode(b));
     putchar('\n');
 }
 #endif

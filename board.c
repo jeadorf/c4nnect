@@ -106,6 +106,7 @@ static bool board_move_wins_diagdown(Board *b, Player p, int row, int col) {
 // Check for win situation. The new piece must have been involved in a
 // win line. Thus, we just need to check rows, columns and diagonals
 // starting from the new piece.
+
 static bool board_move_wins(Board *b, Player p, int row, int col) {
     return board_move_wins_row(b, p, row, col)
             || board_move_wins_col(b, p, row, col)
@@ -180,6 +181,38 @@ void board_hash(Board *b, unsigned long *prim_hash, unsigned long *snd_hash, uns
     *hash = (*prim_hash * *prim_hash) ^ (*snd_hash * *snd_hash);
 }
 
+unsigned long board_encode(Board *b) {
+    unsigned long n = 0UL;
+    unsigned long top = 0UL;
+    for (int c = 0; c < NUM_COLS; c++) {
+        // Save number of pieces in this column
+        top = b->tops[c];
+        n |= top << (NUM_ROWS + c * 9);
+        for (int r = 0; r < top; r++) {
+            if (board_get(b, r, c) == BLACK) {
+                // Must be careful not to shift bits out at the right (MSB) of
+                // an integer value, have to specify UL explicitly.
+                n |= (1UL << (c * 9 + r));
+            }
+        }
+    }
+    return n;
+}
+
+void board_decode(Board *b, unsigned long n) {
+    for (int c = 0; c < NUM_COLS; c++) {
+        // Extract number of pieces in this column
+        unsigned long top = (n >> (NUM_ROWS + c * 9)) & 0x7;
+        for (int r = 0; r < top; r++) {
+            if (n >> (c * 9 + r) & 1) {
+                board_put(b, BLACK, c);
+            } else {
+                board_put(b, WHITE, c);
+            }
+        }
+    }
+}
+
 void board_print(Board *b) {
     board_printd(b, 0);
 }
@@ -209,7 +242,7 @@ void board_printd(Board *b, int depth) {
         putchar('\n');
     }
 
-    #if DEBUG
+#if DEBUG
     putchar('\n');
     unsigned long prim_hash, snd_hash, hash;
     board_hash(b, &prim_hash, &snd_hash, &hash);
@@ -219,7 +252,7 @@ void board_printd(Board *b, int depth) {
     print_unsigned_long_rev(snd_hash);
     printf("%18s : ", "Combined hash");
     print_unsigned_long_rev(hash);
-    #endif
-    
+#endif
+
     putchar('\n');
 }

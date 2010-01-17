@@ -76,6 +76,7 @@
         <cTool>
           <developmentMode>5</developmentMode>
           <architecture>2</architecture>
+          <commandlineTool>gcc</commandlineTool>
           <commandLine>-std=c99 -DDEBUG</commandLine>
         </cTool>
         <ccTool>

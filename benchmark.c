@@ -18,6 +18,7 @@ void benchmark_generate(FILE *fdin, FILE *fdout) {
     Player p = WHITE;
     int winmv = -1;
     unsigned long prim_hash, snd_hash, hash;
+    unsigned long acc_cpu_time = 0UL;
     while (!board_full(&b) && b.winner == NOBODY) {
         SearchRecord rec;
         searchrecord_init(&rec);
@@ -28,6 +29,7 @@ void benchmark_generate(FILE *fdin, FILE *fdout) {
                 prim_hash, snd_hash, rec.move, rating, rec.visited_cnt, rec.eval_cnt,
                 rec.abcut_cnt, rec.wincut_cnt, rec.max_depth, rec.reached_depth, rec.cpu_time);
         board_hash(&b, &prim_hash, &snd_hash, &hash);
+        acc_cpu_time += rec.cpu_time;
         if (rec.winner_identified && winmv == -1) {
             winmv = b.move_cnt;
         }
@@ -36,4 +38,5 @@ void benchmark_generate(FILE *fdin, FILE *fdout) {
         board_print(&b);
     }
     printf("Winner identified in ply %d\n", winmv);
+    printf("cpu_time: %d\n", (1000 * acc_cpu_time / CLOCKS_PER_SEC));
 }

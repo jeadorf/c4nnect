@@ -19,6 +19,7 @@ static void play_game() {
     while (true) {
         board_print(&b);
 
+        // TODO: fix problem when char is not LF (as expected)
         do {
             printf("[%d-%d] > ", 1, NUM_COLS);
             c = getchar() - '1';

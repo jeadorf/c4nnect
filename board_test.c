@@ -5,6 +5,7 @@
 #include "minunit.h"
 #include "board.h"
 #include "parser.h"
+#include "util.h"
 
 static char* test_board_put() {
     printf("test_board_put\n");
@@ -269,6 +270,64 @@ static char* test_board_hash() {
     return 0;
 }
 
+static char* test_board_decode_empty() {
+    printf("test_board_decode_empty\n");
+    Board b1;
+    board_init(&b1);
+    Board b2;
+    board_init(&b2);
+    board_decode(&b2, 0x0);
+    mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof (Board)));
+    return 0;
+}
+
+static char* test_board_decode() {
+    printf("test_board_decode\n");
+    Board b1;
+    parser_read(&b1,
+            "- - - - - - -"
+            "- - - - - - -"
+            "b b - - - - -"
+            "w w - - - - -"
+            "w w - - - - -"
+            "w b b - b - w");
+    Board b2;
+    board_init(&b2);
+    unsigned long n = 0x1000041001061308;
+    board_decode(&b2, n);
+    mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof (Board)));
+    return 0;
+}
+
+static char* test_board_encode_empty() {
+    printf("test_board_encode_empty\n");
+    Board b;
+    board_init(&b);
+    unsigned long n = board_encode(&b);
+    mu_assert("error, encoding wrent wrong", 0UL == n);
+    return 0;
+}
+
+static char* test_board_encode() {
+    printf("test_board_encode\n");
+    Board b;
+    parser_read(&b,
+            "- - - - - - -"
+            "- - - - - - -"
+            "b b - - - - -"
+            "w w - - - - -"
+            "w w - - - - -"
+            "w b b - b - w");
+    unsigned long n = board_encode(&b);
+    Board b2;
+    board_init(&b2);
+    board_decode(&b2, n);
+
+    mu_assert("error, expected boards to match", 0 == memcmp(&b, &b2, sizeof (Board)));
+    mu_assert("error, encoding went wrong", 0x1000041001061308 == n);
+    return 0;
+}
+
 static char* all_tests() {
     mu_run_test(test_board_put);
     mu_run_test(test_board_undo);
@@ -287,6 +346,10 @@ static char* all_tests() {
     mu_run_test(test_board_move_wins_diagdown2);
     mu_run_test(test_board_compare);
     mu_run_test(test_board_hash);
+    mu_run_test(test_board_decode_empty);
+    mu_run_test(test_board_decode);
+    mu_run_test(test_board_encode_empty);
+    mu_run_test(test_board_encode);
     return 0;
 }
 

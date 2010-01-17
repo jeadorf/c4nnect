@@ -12,9 +12,12 @@ void handle_error(char *msg) {
 }
 
 void print_unsigned_long_rev(unsigned long n) {
-    for (int i = 0; i < 63; i++) {
+    for (int i = 0; i < 64; i++) {
+        if (i != 0 && (i % 9 == 0 || i % 9 == 6)) {
+            putchar('-');
+        }
         putchar((n & (1UL << i)) ? '1' : '0');
-    }
-    putchar('\n');
+    };
+    printf(" --- 0x%.16lX\n", n);
 
 }
