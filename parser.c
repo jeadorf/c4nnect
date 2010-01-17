@@ -9,8 +9,6 @@
 #include "parser.h"
 #include "util.h"
 
-// TODO: fix problem with modifications to NUM_COL (and test cases and so on)
-
 void parser_read(Board *b, char *data) {
     FILE *stream;
     stream = fmemopen(data, strlen(data), "r");
@@ -60,8 +58,6 @@ void parser_fread(Board *b, FILE *stream) {
         }
     } while (row >= 0);
 
-    // TODO: validate board, count black and white pieces
-
     // Now replay board. As long as we proceed from bottom to top, it does not
     // matter which piece in the current row we put. The player turn changes
     // a constant number of times, no matter in which order the moves are
@@ -69,16 +65,26 @@ void parser_fread(Board *b, FILE *stream) {
     // relatively after each turn, depending on who made the move, so we have
     // to count ourselves.
     board_init(b);
-    Player turn = WHITE;
+    int white_cnt = 0;
+    int black_cnt = 0;
     for (row = 0; row < NUM_ROWS; row++) {
         for (col = 0; col < NUM_COLS; col++) {
             p = pieces[row][col];
             if (p != NOBODY) {
                 board_put_forced(b, p, col);
-                turn = other(turn);
+                if (p == WHITE) {
+                    white_cnt++;
+                } else {
+                    black_cnt++;
+                }
             }
         }
     }
+    if (black_cnt > white_cnt) {
+        handle_error("too many black pieces on board");
+    } else if (white_cnt > black_cnt + 1) {
+        handle_error("too many white pieces on board");
+    }
     // Forcibly set turn, this is sort of a workaround
-    b->turn = turn;
+    b->turn = ((white_cnt + black_cnt) % 2 == 1);
 }

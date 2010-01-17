@@ -18,9 +18,6 @@ struct SearchRecord {
     int64_t visited_cnt;
     /* Number of times a subtree has been pruned by alpha beta */
     int64_t abcut_cnt;
-    /* Number of times a subtree has been pruned because a winning move has been
-     * found */
-    int64_t wincut_cnt;
     /* The search depth. */
     int8_t max_depth;
     int8_t reached_depth;

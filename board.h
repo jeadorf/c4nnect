@@ -14,9 +14,10 @@ typedef int8_t Player;
 
 Player other(Player p);
 
+// The number of rows and columns MUST NOT be changed (e.g. the perfect hashing
+// onto a 64-bit integer relies on a 6x7 board.
 #define NUM_ROWS 6
 #define NUM_COLS 7
-#define NUM_DIAGS NUM_ROWS + NUM_COLS - 1
 
 /* The board representation. Pieces are stored separately for each side in a
  * bitfield representation similar to the Bitboards used in some chess programs.

@@ -1,7 +1,9 @@
 #include <float.h>
+#include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include "board.h"
+#include "eval.h"
 #include "minunit.h"
 #include "parser.h"
 #include "stats.h"
@@ -20,7 +22,7 @@ static char* test_abn_white_win() {
             "- w w - w - -");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, -FLT_MAX, FLT_MAX, 0, 2, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, &rec);
     mu_assert("error, minimax value should be very big", rec.rating  > 90);
     mu_assert("error, should find winning move", rec.move == 3);
     return 0;
@@ -38,7 +40,7 @@ static char* test_abn_white_win2() {
             "b - b w w w b");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, -FLT_MAX, FLT_MAX, 0, 1, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, &rec);
     mu_assert("error, should find winning move", rec.move == 4);
     mu_assert("error, minimax value should be very big", rec.rating > 90);
     return 0;
@@ -56,7 +58,7 @@ static char* test_abn_black_win() {
             "w b b - b - -");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, -FLT_MAX, FLT_MAX, 0, 1, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, &rec);
     mu_assert("error, should find winning move", rec.move == 3);
     mu_assert("error, minimax value should be very big", rec.rating > 90);
     return 0;
@@ -75,7 +77,8 @@ static char* test_search_white_win() {
     mu_assert("error, should find winning move", searchm(&b) == 3);
     // This is dangerous to test. There might be no way for black to avoid
     // defeat in this position though this is rather unlikely.
-    mu_assert("error, should find saving move", searchm(&b) == 3); // FIXME
+    board_put(&b, 1); // add white piece, let black move
+    mu_assert("error, should find saving move", searchm(&b) == 3);
     return 0;
 }
 
@@ -157,7 +160,7 @@ static char* test_beginning_trap_black() {
             "- - - - - - -"
             "- - - - - - -"
             "- - - - - - -"
-            "- - - w - - -"
+            "- - w w - - -"
             "- - b b - - -");
     int8_t col = searchm(&b);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
@@ -193,7 +196,7 @@ static char* test_search_defer_defeat() {
             "w - - b - - -"
             "b - - w w - -"
             "b - - w w - -"
-            "b - b w w w b"); // FIXME
+            "b - b w w w b");
     mu_assert("error, should defer defeat", searchm(&b) == 4);
     return 0;
 }
@@ -201,7 +204,7 @@ static char* test_search_defer_defeat() {
 static char* test_maximum_search_depth() {
     printf("test_maximum_search_depth\n");
     // The idea of this test is to determine how deep we can search without
-    // wasting too much time.
+    // wasting too much time. It's not in the standard set of tests
     Board b;
     parser_read(&b,
             "w - - - - - -"
@@ -212,7 +215,7 @@ static char* test_maximum_search_depth() {
             "w b w w b - -");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, -FLT_MAX, FLT_MAX, 0, 42, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 42, &rec);
     
     Board b2;
     parser_read(&b2,
@@ -224,7 +227,7 @@ static char* test_maximum_search_depth() {
             "w b w w b b w");
     SearchRecord rec2;
     searchrecord_init(&rec2);
-    alphabeta_negamax(&b2, -FLT_MAX, FLT_MAX, 0, 42, &rec2);
+    alphabeta_negamax(&b2, ALPHA_MIN, BETA_MAX, 0, 42, &rec2);
     return 0;
 }
 
@@ -240,7 +243,6 @@ static char* all_tests() {
     mu_run_test(test_beginning_trap_black);
     mu_run_test(test_search_defer_defeat);
     mu_run_test(test_fast_black_win);
-    mu_run_test(test_maximum_search_depth);
     return 0;
 }
 

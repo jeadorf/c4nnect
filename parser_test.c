@@ -30,13 +30,13 @@ static char* test_parse_one() {
             "- - - - - - -"
             "- - - - - - -"
             "- - - - - - -"
-            "- - - b - - -");
+            "- - - w - - -");
     for (int8_t i = 0; i < NUM_COLS; i++) {
         if (i != 3) {
             mu_assert("error, column expected to be empty", board_get_top(&b, i) == NOBODY);
         }
     }
-    mu_assert("error, expected black piece", board_get_top(&b, 3) == BLACK);
+    mu_assert("error, expected white piece", board_get_top(&b, 3) == WHITE);
 
     return 0;
 }
@@ -50,13 +50,14 @@ static char* test_parse_quoted() {
             "\"- - - - - - -\""
             "\"- - - - - - -\""
             "\"- - - - - - -\""
-            "\"- - - b - - -\"");
-    for (int8_t i = 0; i < NUM_COLS; i++) {
+            "\"w - - b - - -\"");
+    for (int8_t i = 1; i < NUM_COLS; i++) {
         if (i != 3) {
             mu_assert("error, column expected to be empty", board_get_top(&b, i) == NOBODY);
         }
     }
     mu_assert("error, expected black piece", board_get_top(&b, 3) == BLACK);
+    mu_assert("error, expected black piece", board_get_top(&b, 0) == WHITE);
 
     return 0;
 }
@@ -85,7 +86,6 @@ static char* test_black_to_move() {
             "- - - - - - -"
             "w w - - w - -"
             "w b b - b - -");
-    board_print(&b);
     mu_assert("error, it should be black's turn", b.turn == BLACK);
     return 0;
 }

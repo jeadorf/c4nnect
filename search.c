@@ -54,12 +54,6 @@ void alphabeta_negamax(
                     rec->abcut_cnt++;
                     break;
                 }
-                // Check for a win situation, there is no need to look for a
-                // better move than one that already wins.
-                if (bestval >= BONUS_WIN) {
-                    rec->wincut_cnt++;
-                    break;
-                }
             }
         }
 
@@ -69,7 +63,7 @@ void alphabeta_negamax(
 
     rec->visited_cnt++;
     rec->max_depth = max_depth;
-    rec->winner_identified = (rec->rating <= -BONUS_WIN || rec->rating >= BONUS_WIN);
+    rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
     if (depth > rec->reached_depth) {
         rec->reached_depth = depth;
     }
@@ -107,7 +101,7 @@ void search(Board *b, SearchRecord *rec) {
     for (int8_t max_depth = 1; max_depth < iterations; max_depth++) {
         last_move = rec->move;
         // TODO: Use results for move ordering or killer moves or something like this
-        alphabeta_negamax(b, -FLT_MAX, FLT_MAX, 0, max_depth, rec);
+        alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, rec);
         // Check whether we have found a winning move. If we have there is no point
         // in looking for more complicated ways to victory.
         if (rec->winner_identified) {
@@ -122,7 +116,7 @@ void search(Board *b, SearchRecord *rec) {
     // is greater than the value returned by the deep search then the lookahead
     // simply did not discover the threats hidden some plies ahead. And it
     // therefore just avoids being defeated in the next two steps.
-    if (rec->winner_identified && rec->rating <= -BONUS_WIN) {
+    if (rec->winner_identified && rec->rating <= ALPHA_MIN) {
         rec->move = last_move;
         rec->defeat_deferred = true;
     }
@@ -139,9 +133,9 @@ void stats_print(Board *b, SearchRecord *rec) {
     // Print statistics
     board_print(b);
     printf("%18s : %d\n", "Move", rec->move);
-    if (rec->rating >= BONUS_WIN) {
+    if (rec->rating >= BETA_MAX) {
         printf("%18s : %s\n", "Rating", b->turn == WHITE ? "White will win" : "Black will win");
-    } else if (rec->rating <= -BONUS_WIN) {
+    } else if (rec->rating <= ALPHA_MIN) {
         printf("%18s : %s\n", "Rating", other(b->turn) == WHITE ? "White will win" : "Black will win");
     } else {
         printf("%18s : %.1f\n", "Rating", rec->rating);
@@ -153,7 +147,6 @@ void stats_print(Board *b, SearchRecord *rec) {
     printf("%18s : %ld\n", "Evaluations", rec->eval_cnt);
     printf("%18s : %ld\n", "Positions", rec->visited_cnt);
     printf("%18s : %ld\n", "Alpha-Beta cuts:", rec->abcut_cnt);
-    printf("%18s : %ld\n", "Win cuts:", rec->wincut_cnt);
     printf("%18s : %d ms\n", "CPU time", (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)));
     printf("%18s : 0x%.16lX\n", "Board", board_encode(b));
     putchar('\n');

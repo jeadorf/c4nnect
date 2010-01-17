@@ -11,20 +11,30 @@
 #include "parser_test.h"
 #include "search_test.h"
 #include "benchmark.h"
+#include "eval.h"
 
 static void play_game() {
     Board b;
     board_init(&b);
-    char c;
+    char c, d;
     while (true) {
         board_print(&b);
 
-        // TODO: fix problem when char is not LF (as expected)
         do {
             printf("[%d-%d] > ", 1, NUM_COLS);
             c = getchar() - '1';
-            // Read line feed
-            getchar();
+            if (c == '\n' - '1') {
+                c = -1;
+                continue;
+            }
+            d = getchar();
+            if (d != '\n') {
+                while ((d = getchar()) != '\n') {
+                    // wait
+                }
+                c = -1;
+                continue;
+            }
             if (board_column_full(&b, c)) {
                 printf("You can no longer put a piece in this column!\n");
             }
@@ -63,6 +73,14 @@ static void play_game() {
  */
 int main(int argc, char** argv) {
 #if DEBUG
+    /*FILE *boards_in = fopen("boards", "r");
+    FILE *eval_out = fopen("eval.csv", "w");
+    FILE *summ_out = fopen("summ.csv", "w");
+    benchmark_run(boards_in, eval_out, summ_out);
+    fclose(boards_in);
+    fclose(eval_out);
+    fclose(summ_out);*/
+
     board_test();
     eval_test();
     search_test();

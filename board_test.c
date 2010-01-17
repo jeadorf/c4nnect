@@ -262,7 +262,7 @@ static char* test_board_hash() {
     printf("test_board_hash\n");
     Board b;
     board_init(&b);
-    // TODO: more exactly: expect hash to have no bit set
+    
     uint64_t prim_hash, snd_hash, hash;
     board_hash(&b, &prim_hash, &snd_hash, &hash);
 
@@ -334,7 +334,6 @@ static char* test_board_encode() {
     board_init(&b2);
     board_decode(&b2, n);
 
-    print_uint64_rev(n);
     mu_assert("error, expected boards to match", 0 == memcmp(&b, &b2, sizeof (Board)));
     mu_assert("error, encoding went wrong", 0x9000041001061308 == n);
     return 0;

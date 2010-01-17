@@ -78,7 +78,7 @@
           <developmentMode>5</developmentMode>
           <architecture>2</architecture>
           <commandlineTool>gcc</commandlineTool>
-          <commandLine>-std=c99 -Wextra -pedantic-errors</commandLine>
+          <commandLine>-std=c99 -Wextra</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
         <ccTool>

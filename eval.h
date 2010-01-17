@@ -1,11 +1,11 @@
 #ifndef _EVAL_H
 #define	_EVAL_H
 
-#include <float.h>
+#include <math.h>
 #include "board.h"
 
-/* Ultimate evaluation result that denotes a win. */
-#define BONUS_WIN 10e8
+#define ALPHA_MIN -INFINITY
+#define BETA_MAX INFINITY
 
 /*
  * Evaluates the position on the board from the view of player WHITE. A positive

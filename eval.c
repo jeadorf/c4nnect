@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "eval.h"
+#include <math.h>
 
 #define BONUS_CENTER 5
 
@@ -12,9 +13,9 @@
 float eval(Board *b) {
     float value = 0;
     if (b->winner == WHITE) {
-        return BONUS_WIN;
+        return BETA_MAX;
     } else if (b->winner == BLACK) {
-        return -BONUS_WIN;
+        return ALPHA_MIN;
     }
 
     Player p = board_get_top(b, 2);

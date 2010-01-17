@@ -29,7 +29,6 @@ inline Player other(Player p) {
 }
 
 void board_init(Board *b) {
-    // TODO: do board initialization in a safe manner
     memset(b, 0, sizeof (Board));
     b->winner = NOBODY;
 }
@@ -136,11 +135,16 @@ static bool board_move_wins(Board *b, Player p, int8_t row, int8_t col) {
 }
 
 inline void board_put(Board *b, int8_t col) {
-    // TODO: check limits of col
     board_put_forced(b, b->turn, col);
 }
 
 void board_put_forced(Board *b, Player p, int8_t col) {
+#if DEBUG
+    if (col < 0 || col >= NUM_COLS) {
+        handle_error("column out of range");
+    }
+#endif
+    
     int8_t row = b->tops[col];
     if (row == NUM_ROWS) {
         handle_error("Column is already full, cannot put another piece in this column!");
