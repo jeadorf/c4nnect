@@ -7,7 +7,7 @@
  * data maps input data (board position) to search outcomes and statistics about
  * time, number of positions, search depth, cpu time, and so on.
  */
-void benchmark_generate(FILE *fdin, FILE *fdout);
+void benchmark_run(FILE *fdin, FILE *fdout);
 
 #endif	/* _BENCHMARK_H */
 
