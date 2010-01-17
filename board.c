@@ -5,6 +5,11 @@
 #include "board.h"
 #include "util.h"
 
+#define GET_TOP(n, c) (((n) >> (NUM_ROWS + (c) * 9)) & 0x7)
+#define SET_TOP(n, t) ((n) | (((uint64_t) t) << (NUM_ROWS + (c) * 9)))
+#define GET(n, r, c) ((n) >> ((c) * 9 + (r)) & 1)
+#define SET(n, r, c) ((n) | (((uint64_t) 1) << ((c) * 9 + (r))))
+
 inline Player other(Player p) {
     return p == WHITE ? BLACK : WHITE;
 }
@@ -189,12 +194,12 @@ uint64_t board_encode(Board *b) {
     for (uint8_t c = 0; c < NUM_COLS; c++) {
         // Save number of pieces in this column
         top = b->tops[c];
-        n |= top << (NUM_ROWS + c * 9);
+        n = SET_TOP(n, top);
         for (uint8_t r = 0; r < top; r++) {
             if (board_get(b, r, c) == BLACK) {
                 // Must be careful not to shift bits out at the right (MSB) of
                 // an integer value, have to specify UL explicitly.
-                n |= (((uint64_t) 1) << (c * 9 + r));
+                n = SET(n, r, c);
             }
         }
     }
@@ -204,9 +209,9 @@ uint64_t board_encode(Board *b) {
 void board_decode(Board *b, uint64_t n) {
     for (uint8_t c = 0; c < NUM_COLS; c++) {
         // Extract number of pieces in this column
-        uint8_t top = (n >> (NUM_ROWS + c * 9)) & 0x7;
+        uint8_t top = GET_TOP(n, c);
         for (uint8_t r = 0; r < top; r++) {
-            if (n >> (c * 9 + r) & 1) {
+            if (GET(n, r, c) & 1) {
                 board_put(b, BLACK, c);
             } else {
                 board_put(b, WHITE, c);
