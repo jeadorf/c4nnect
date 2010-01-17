@@ -14,7 +14,7 @@ static char* test_parse_empty() {
             "- - - - - - -"
             "- - - - - - -"
             "- - - - - - -");
-    int i;
+    uint8_t i;
     for (i = 0; i < NUM_COLS; i++) {
         mu_assert("error, column expected to be empty", board_get_top(&b, i) == NOBODY);
     }
@@ -32,7 +32,7 @@ static char* test_parse_one() {
             "- - - - - - -"
             "- - - - - - -"
             "- - - b - - -");
-    int i;
+    uint8_t i;
     for (i = 0; i < NUM_COLS; i++) {
         if (i != 3) {
             mu_assert("error, column expected to be empty", board_get_top(&b, i) == NOBODY);
@@ -53,7 +53,7 @@ static char* test_parse_quoted() {
             "\"- - - - - - -\""
             "\"- - - - - - -\""
             "\"- - - b - - -\"");
-    int i;
+    uint8_t i;
     for (i = 0; i < NUM_COLS; i++) {
         if (i != 3) {
             mu_assert("error, column expected to be empty", board_get_top(&b, i) == NOBODY);

@@ -44,7 +44,7 @@ static void play_game() {
         }
 
         // put piece selected by the engine
-        int col = searchm(&b, BLACK);
+        uint8_t col = searchm(&b, BLACK);
         board_put(&b, BLACK, col);
         if (b.winner == BLACK) {
             board_print(&b);

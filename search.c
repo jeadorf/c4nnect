@@ -15,7 +15,7 @@ void stats_print(Board *b, Player p, SearchRecord *rec);
 void alphabeta_negamax(
         Board *b, Player p,
         float alpha, float beta,
-        int depth, int max_depth,
+        uint8_t depth, uint8_t max_depth,
         SearchRecord *rec) {
     if (b->winner != NOBODY
             || board_full(b)
@@ -24,11 +24,11 @@ void alphabeta_negamax(
         rec->eval_cnt++;
     } else {
         float bestval = alpha;
-        int bestcol = -1;
+        uint8_t bestcol = -1;
         // Simple move ordering, start with checking the moves in the center and
         // then circle to the outer columns
         // TODO: find better move ordering such that we can use negascout (PVS) here
-        for (int i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col += s * i) {
+        for (uint8_t i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col += s * i) {
             if (!board_column_full(b, col)) {
                 // Make move
                 board_put(b, p, col);
@@ -71,7 +71,7 @@ void alphabeta_negamax(
     }
 }
 
-int searchm(Board *b, Player p) {
+uint8_t searchm(Board *b, Player p) {
     SearchRecord rec;
     searchrecord_init(&rec);
     search(b, p, &rec);
@@ -79,7 +79,7 @@ int searchm(Board *b, Player p) {
 }
 
 void search(Board *b, Player p, SearchRecord *rec) {
-    int last_move;
+    uint8_t last_move;
     rec->cpu_time = clock();
 
     // Now perform an iterative-deepening alphabeta search. First, look ahead
@@ -94,8 +94,8 @@ void search(Board *b, Player p, SearchRecord *rec) {
     // Thus, it does not hurt to increase the search depth at later times in the
     // game.
     // The iterative approach implies that max_depth will never exceed reached_depth
-    int iterations = 10 + (b->move_cnt * b->move_cnt) / (NUM_COLS * NUM_ROWS);
-    for (int max_depth = 1; max_depth < iterations; max_depth++) {
+    uint8_t iterations = 10 + (b->move_cnt * b->move_cnt) / (NUM_COLS * NUM_ROWS);
+    for (uint8_t max_depth = 1; max_depth < iterations; max_depth++) {
         last_move = rec->move;
         // TODO: Use results for move ordering or killer moves or something like this
         alphabeta_negamax(b, p, -FLT_MAX, FLT_MAX, 0, max_depth, rec);

@@ -8,22 +8,22 @@
 
 struct SearchRecord {
     /* Recommended move */
-    int move;
+    uint8_t move;
     /* Rating of the move */
     float rating;
     /* Number of evaluated positions during search */
-    unsigned long eval_cnt;
+    uint64_t eval_cnt;
     /* Number of visited positions during search. This includes both leaves and
      * inner nodes of the search tree.*/
-    unsigned long visited_cnt;
+    uint64_t visited_cnt;
     /* Number of times a subtree has been pruned by alpha beta */
-    unsigned long abcut_cnt;
+    uint64_t abcut_cnt;
     /* Number of times a subtree has been pruned because a winning move has been
      * found */
-    unsigned long wincut_cnt;
+    uint64_t wincut_cnt;
     /* The search depth. */
-    int max_depth;
-    int reached_depth;
+    uint8_t max_depth;
+    uint8_t reached_depth;
     /* Denotes whether the search has lead to a winning strategy for one of
      * the players. */
     bool winner_identified;

@@ -133,7 +133,7 @@ static char* test_board_move_wins_col() {
     printf("test_board_move_wins_col\n");
     Board b;
     board_init(&b);
-    for (int i = 0; i < 4; i++) {
+    for (uint8_t i = 0; i < 4; i++) {
         mu_assert("error, game is still drawn", b.winner == NOBODY);
         board_put(&b, BLACK, 3);
     }
@@ -145,7 +145,7 @@ static char* test_board_move_wins_row() {
     printf("test_board_move_wins_row\n");
     Board b;
     board_init(&b);
-    for (int i = 1; i < 5; i++) {
+    for (uint8_t i = 1; i < 5; i++) {
         mu_assert("error, game is still drawn", b.winner == NOBODY);
         board_put(&b, BLACK, i);
     }
@@ -253,7 +253,7 @@ static char* test_board_hash() {
     Board b;
     board_init(&b);
     // TODO: more exactly: expect hash to have no bit set
-    unsigned long prim_hash, snd_hash, hash;
+    uint64_t prim_hash, snd_hash, hash;
     board_hash(&b, &prim_hash, &snd_hash, &hash);
 
     mu_assert("error, expected primary hash to be zero", prim_hash == 0UL);
@@ -293,7 +293,7 @@ static char* test_board_decode() {
             "w b b - b - w");
     Board b2;
     board_init(&b2);
-    unsigned long n = 0x1000041001061308;
+    uint64_t n = 0x1000041001061308;
     board_decode(&b2, n);
     mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof (Board)));
     return 0;
@@ -303,7 +303,7 @@ static char* test_board_encode_empty() {
     printf("test_board_encode_empty\n");
     Board b;
     board_init(&b);
-    unsigned long n = board_encode(&b);
+    uint64_t n = board_encode(&b);
     mu_assert("error, encoding wrent wrong", 0UL == n);
     return 0;
 }
@@ -318,7 +318,7 @@ static char* test_board_encode() {
             "w w - - - - -"
             "w w - - - - -"
             "w b b - b - w");
-    unsigned long n = board_encode(&b);
+    uint64_t n = board_encode(&b);
     Board b2;
     board_init(&b2);
     board_decode(&b2, n);

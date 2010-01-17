@@ -40,21 +40,21 @@ typedef struct Board Board;
 
 void board_init(Board *b);
 
-void board_put(Board *b, Player p, int col);
+void board_put(Board *b, Player p, uint8_t col);
 
-void board_undo(Board *b, int col);
+void board_undo(Board *b, uint8_t col);
 
-Player board_get(Board *b, int row, int col);
+Player board_get(Board *b, uint8_t row, uint8_t col);
 
-Player board_get_top(Board *b, int col);
+Player board_get_top(Board *b, uint8_t col);
 
 Player board_winner(Board *b);
 
-bool board_column_full(Board *b, int col);
+bool board_column_full(Board *b, uint8_t col);
 
 bool board_full(Board *b);
 
-void board_hash(Board *b, unsigned long *prim_hash, unsigned long *snd_hash, unsigned long *hash);
+void board_hash(Board *b, uint64_t *prim_hash, uint64_t *snd_hash, uint64_t *hash);
 
 /* Reads a binary representation and compiles it into a Board struct object. The
  * board is encoded as follows:
@@ -94,13 +94,13 @@ void board_hash(Board *b, unsigned long *prim_hash, unsigned long *snd_hash, uns
  *  which is printed with the most-significant byte at the left as
  *  0x1000041001061308
  */
-unsigned long board_encode(Board *b);
+uint64_t board_encode(Board *b);
 
-void board_decode(Board *b, unsigned long n);
+void board_decode(Board *b, uint64_t n);
 
 void board_print(Board *b);
 
-void board_printd(Board *b, int depth);
+void board_printd(Board *b, uint8_t depth);
 
 #endif	/* _BOARD_H */
 

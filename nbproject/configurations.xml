@@ -59,6 +59,7 @@
         <cTool>
           <architecture>2</architecture>
           <commandLine>-std=c99 -DDEBUG</commandLine>
+          <warningLevel>3</warningLevel>
         </cTool>
         <linkerTool>
           <linkerLibItems>
@@ -78,6 +79,7 @@
           <architecture>2</architecture>
           <commandlineTool>gcc</commandlineTool>
           <commandLine>-std=c99 -DDEBUG</commandLine>
+          <warningLevel>3</warningLevel>
         </cTool>
         <ccTool>
           <developmentMode>5</developmentMode>

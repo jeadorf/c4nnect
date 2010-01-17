@@ -1,8 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
-#include <sys/socket.h>
-#include <string.h>
-#include <unistd.h>
+#include <stdint.h>
 
 void handle_error(char *msg) {
     fputs("ERROR: ", stderr);
@@ -11,8 +9,8 @@ void handle_error(char *msg) {
     exit(EXIT_FAILURE);
 }
 
-void print_unsigned_long_rev(unsigned long n) {
-    for (int i = 0; i < 64; i++) {
+void print_uint64_rev(uint64_t n) {
+    for (uint8_t i = 0; i < 64; i++) {
         if (i != 0 && (i % 9 == 0 || i % 9 == 6)) {
             putchar('-');
         }
