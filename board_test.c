@@ -6,14 +6,18 @@
 #include "board.h"
 #include "parser.h"
 #include "util.h"
+#include "board2eps.h"
 
 static char* test_board_put() {
     printf("test_board_put\n");
     Board b;
     board_init(&b);
+    fboard2eps(&b, "build/test_board_put-1.eps");
     board_put(&b, 3);
+    fboard2eps(&b, "build/test_board_put-2.eps");
     mu_assert("error, could not place white piece", board_get(&b, 0, 3) == WHITE);
     board_put(&b, 3);
+    fboard2eps(&b, "build/test_board_put-3.eps");
     mu_assert("error, could not place black piece", board_get(&b, 1, 3) == BLACK);
     mu_assert("error, slot should be empty", board_get(&b, 0, 0) == NOBODY);
     return 0;
@@ -29,9 +33,12 @@ static char* test_board_undo() {
             "w w - - - - -"
             "w w - - - - -"
             "w b b - b - -");
+    fboard2eps(&b, "build/test_board_undo-1.eps");
     board_put(&b, 3);
+    fboard2eps(&b, "build/test_board_undo-2.eps");
     mu_assert("error, game should be won by BLACK", b.winner == BLACK);
     board_undo(&b, 3);
+    fboard2eps(&b, "build/test_board_undo-3.eps");
     mu_assert("error, game should be ongoing", b.winner == NOBODY);
     return 0;
 }
@@ -46,8 +53,10 @@ static char* test_board_undo_full() {
             "w w - - - - -"
             "w w - - - - -"
             "w b b - b - -");
+    fboard2eps(&b, "build/test_board_undo_full-1.eps");
     mu_assert("error, column should be full", board_column_full(&b, 1));
     board_undo(&b, 1);
+    fboard2eps(&b, "build/test_board_undo_full-2.eps");
     mu_assert("error, column should no longer be full", !board_column_full(&b, 1));
     return 0;
 }
@@ -62,9 +71,12 @@ static char* test_board_undo_win() {
             "- - - - w b -"
             "- - - w b b -"
             "w - w b w b -");
+    fboard2eps(&b, "build/test_board_undo_win-1.eps");
     board_put(&b, 5);
+    fboard2eps(&b, "build/test_board_undo_win-2.eps");
     mu_assert("error, game should be won by WHITE", b.winner == WHITE);
     board_undo(&b, 5);
+    fboard2eps(&b, "build/test_board_undo_win-3.eps");
     mu_assert("error, game should be ongoing", b.winner == NOBODY);
     return 0;
 }
@@ -79,10 +91,15 @@ static char* test_board_undo_multiple() {
             "- - - - - - -"
             "- - - w b - -"
             "- - w b w b -");
+    fboard2eps(&b, "build/test_board_undo_multiple-1.eps");
     board_put(&b, 5); // white
+    fboard2eps(&b, "build/test_board_undo_multiple-2.eps");
     board_put(&b, 1); // black
-    board_undo(&b, 1);
-    board_undo(&b, 5);
+    fboard2eps(&b, "build/test_board_undo_multiple-3.eps");
+    board_undo(&b, 1); // black
+    fboard2eps(&b, "build/test_board_undo_multiple-4.eps");
+    board_undo(&b, 5); // white
+    fboard2eps(&b, "build/test_board_undo_multiple-5.eps");
     mu_assert("error, expected no piece here", board_get_top(&b, 1) == NOBODY);
     mu_assert("error, expected no piece here", board_get(&b, 1, 5) == NOBODY);
     return 0;
@@ -93,10 +110,12 @@ static char* test_board_column_full() {
     int r;
     Board b;
     board_init(&b);
+    fboard2eps(&b, "build/test_board_column_full-1.eps");
     for (r = 0; r < NUM_ROWS; r++) {
         mu_assert("error, column cannot be full", !board_column_full(&b, 3));
         board_put(&b, 3);
     }
+    fboard2eps(&b, "build/test_board_column_full-2.eps");
     mu_assert("error, column must be full", board_column_full(&b, 3));
     return 0;
 }
@@ -111,6 +130,7 @@ static char* test_board_full() {
             "w w w b b b w"
             "w w b w w w b"
             "w b b w b b w");
+    fboard2eps(&b, "build/test_board_full-2.eps");
     mu_assert("error, board should be full", board_full(&b));
     mu_assert("error, game should be drawn", b.winner == NOBODY);
     return 0;
@@ -126,6 +146,7 @@ static char* test_board_not_full() {
             "w w w b b b w"
             "w w b w w w b"
             "w b b w b b w");
+    fboard2eps(&b, "build/test_board_not_full.eps");
     mu_assert("error, board should not be full", !board_full(&b));
     mu_assert("error, game should be drawn", b.winner == NOBODY);
     return 0;
@@ -135,6 +156,7 @@ static char* test_board_move_wins_col() {
     printf("test_board_move_wins_col\n");
     Board b;
     board_init(&b);
+    fboard2eps(&b, "build/test_board_move_wins_col-1.eps");
     for (int8_t i = 0; i <= 6; i++) {
         mu_assert("error, game is still drawn", b.winner == NOBODY);
         if (i % 2 == 0) {
@@ -143,6 +165,7 @@ static char* test_board_move_wins_col() {
             board_put(&b, 2); // black
         }
     }
+    fboard2eps(&b, "build/test_board_move_wins_col-2.eps");
     mu_assert("error, game is won", b.winner == WHITE);
     return 0;
 }
@@ -151,6 +174,7 @@ static char* test_board_move_wins_row() {
     printf("test_board_move_wins_row\n");
     Board b;
     board_init(&b);
+    fboard2eps(&b, "build/test_board_move_wins_row-1.eps");
     for (int8_t i = 0; i <= 6; i++) {
         mu_assert("error, game is still drawn", b.winner == NOBODY);
         if (i % 2 == 0) {
@@ -159,6 +183,7 @@ static char* test_board_move_wins_row() {
             board_put(&b, 6); // black
         }
     }
+    fboard2eps(&b, "build/test_board_move_wins_row-2.eps");
     mu_assert("error, game is won", b.winner == WHITE);
     return 0;
 }
@@ -173,8 +198,10 @@ static char* test_board_move_wins_row2() {
             "w b - - - - -"
             "w w - - - - -"
             "w w b - b b -");
+    fboard2eps(&b, "build/test_board_move_wins_row2-1.eps");
     mu_assert("error, game is still drawn", b.winner == NOBODY);
     board_put(&b, 3);
+    fboard2eps(&b, "build/test_board_move_wins_row2-2.eps");
     mu_assert("error, black should have won", b.winner == BLACK);
     return 0;
 }
@@ -189,6 +216,7 @@ static char* test_board_move_wins_diagup() {
             "- - - - w b -"
             "- - - w b b -"
             "- - w b w b -");
+    fboard2eps(&b, "build/test_board_move_wins_diagup.eps");
     mu_assert("error, white should have won", b.winner == WHITE);
     return 0;
 }
@@ -203,6 +231,7 @@ static char* test_board_move_wins_diagup2() {
             "- - - - b w -"
             "- - - b w w -"
             "- - b w b w -");
+    fboard2eps(&b, "build/test_board_move_wins_diagup2.eps");
     mu_assert("error, black should have won", b.winner == BLACK);
     return 0;
 }
@@ -217,6 +246,7 @@ static char* test_board_move_wins_diagdown() {
             "- - b w - - -"
             "- - b b w - -"
             "- - b w b w -");
+    fboard2eps(&b, "build/test_board_move_wins_diagdown.eps");
     mu_assert("error, white should have won", b.winner == WHITE);
     return 0;
 }
@@ -231,6 +261,7 @@ static char* test_board_move_wins_diagdown2() {
             "- - w b - - -"
             "- - w w b - -"
             "- - w b w b -");
+    fboard2eps(&b, "build/test_board_move_wins_diagdown2.eps");
     mu_assert("error, black should have won", b.winner == BLACK);
     return 0;
 }
@@ -301,10 +332,12 @@ static char* test_board_decode() {
             "w w - - - - -"
             "w w - - - - -"
             "w b b - b - w");
+    fboard2eps(&b1, "build/test_board_decode-1.eps");
     Board b2;
     board_init(&b2);
     uint64_t n = 0x9000041001061308;
     board_decode(&b2, n);
+    fboard2eps(&b2, "build/test_board_decode-2.eps");
     mu_assert("error, expected codes to match", b1.code == b2.code);
     mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof (Board)));
     return 0;
@@ -329,10 +362,12 @@ static char* test_board_encode() {
             "w w - - - - -"
             "w w - - - - -"
             "w b b - b - w");
+    fboard2eps(&b, "build/test_board_encode-1.eps");
     uint64_t n = board_encode(&b);
     Board b2;
     board_init(&b2);
     board_decode(&b2, n);
+    fboard2eps(&b, "build/test_board_encode-2.eps");
 
     mu_assert("error, expected boards to match", 0 == memcmp(&b, &b2, sizeof (Board)));
     mu_assert("error, encoding went wrong", 0x9000041001061308 == n);

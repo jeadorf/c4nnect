@@ -9,9 +9,10 @@
 #include "stats.h"
 #include "search.h"
 #include "search_test.h"
+#include "board2eps.h"
 
 static char* test_abn_white_win() {
-    printf("test_abn_white_win\n");
+    printf("build/test_abn_white_win\n");
     Board b;
     parser_read(&b,
             "- - - - - - -"
@@ -20,6 +21,7 @@ static char* test_abn_white_win() {
             "- - - - - - -"
             "- b b - b - -"
             "- w w - w - -");
+    fboard2eps(&b, "build/test_abn_white_win.eps");
     SearchRecord rec;
     searchrecord_init(&rec);
     alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, &rec);
@@ -38,6 +40,7 @@ static char* test_abn_white_win2() {
             "b - - w w - -"
             "b - - w w - -"
             "b - b w w w b");
+    fboard2eps(&b, "build/test_abn_white_win2.eps");
     SearchRecord rec;
     searchrecord_init(&rec);
     alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, &rec);
@@ -56,6 +59,7 @@ static char* test_abn_black_win() {
             "- - - - - - -"
             "w w - - w - -"
             "w b b - b - -");
+    fboard2eps(&b, "build/test_abn_black_win.eps");
     SearchRecord rec;
     searchrecord_init(&rec);
     alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, &rec);
@@ -74,6 +78,7 @@ static char* test_search_white_win() {
             "- - - - - - -"
             "- b b - b - -"
             "- w w - w - -");
+    fboard2eps(&b, "build/test_search_white_win.eps");
     mu_assert("error, should find winning move", searchm(&b) == 3);
     // This is dangerous to test. There might be no way for black to avoid
     // defeat in this position though this is rather unlikely.
@@ -98,7 +103,7 @@ static char* test_search_white_win2() {
             "b - - w w - -"
             "b - - w w - -"
             "b - b w w w b");
-
+    fboard2eps(&b, "build/test_search_white_win2.eps");
     mu_assert("error, should find fastest winning move", searchm(&b) == 4);
     return 0;
 }
@@ -113,6 +118,7 @@ static char* test_search_black_win() {
             "- - - - - - -"
             "- w w - w - -"
             "- b b - b w -");
+    fboard2eps(&b, "build/test_search_black_win.eps");
     mu_assert("error, should find winning move", searchm(&b) == 3);
     mu_assert("error, should find saving move", searchm(&b) == 3);
     return 0;
@@ -128,6 +134,7 @@ static char* test_search_white_win3() {
             "b b b w w b -"
             "b w b w w w -"
             "b b b w w b -");
+    fboard2eps(&b, "build/test_search_white_win3.eps");
     mu_assert("error, should find winning move h", searchm(&b) == 1);
     return 0;
 }
@@ -147,6 +154,7 @@ static char* test_beginning_trap_white() {
             "- - - - - - -"
             "- - - b - - -"
             "- - w w - - -");
+    fboard2eps(&b, "build/test_beginning_trap_white.eps");
     int8_t col = searchm(&b);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
     return 0;
@@ -162,6 +170,7 @@ static char* test_beginning_trap_black() {
             "- - - - - - -"
             "- - w w - - -"
             "- - b b - - -");
+    fboard2eps(&b, "build/test_beginning_trap_black.eps");
     int8_t col = searchm(&b);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
     return 0;
@@ -177,6 +186,7 @@ static char* test_fast_black_win() {
             "- - b b b - -"
             "- - w b b - -"
             "w w b b w w w");
+    fboard2eps(&b, "build/test_fast_black_win.eps");
     mu_assert("error, should choose 3-ply win", 5 == searchm(&b));
     return 0;
 }
@@ -197,10 +207,12 @@ static char* test_search_defer_defeat() {
             "b - - w w - -"
             "b - - w w - -"
             "b - b w w w b");
+    fboard2eps(&b, "build/test_search_defer_defeat.eps");
     mu_assert("error, should defer defeat", searchm(&b) == 4);
     return 0;
 }
 
+// TODO: need me or delete me
 static char* test_maximum_search_depth() {
     printf("test_maximum_search_depth\n");
     // The idea of this test is to determine how deep we can search without
@@ -213,6 +225,7 @@ static char* test_maximum_search_depth() {
             "w - b b - - -"
             "w - b b - - -"
             "w b w w b - -");
+    fboard2eps(&b, "build/test_maximum_search_depth-1.eps");
     SearchRecord rec;
     searchrecord_init(&rec);
     alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 42, &rec);
@@ -225,6 +238,7 @@ static char* test_maximum_search_depth() {
             "w - b b - - -"
             "w - b b w w b"
             "w b w w b b w");
+    fboard2eps(&b, "build/test_maximum_search_depth-2.eps");
     SearchRecord rec2;
     searchrecord_init(&rec2);
     alphabeta_negamax(&b2, ALPHA_MIN, BETA_MAX, 0, 42, &rec2);

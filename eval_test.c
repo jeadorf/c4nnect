@@ -5,6 +5,7 @@
 #include "minunit.h"
 #include "parser.h"
 #include "eval.h"
+#include "board2eps.h"
 
 static char* test_eval_white_win() {
     printf("test_eval_white_win\n");
@@ -16,6 +17,7 @@ static char* test_eval_white_win() {
             "- - - - - - -"
             "- - b - b - -"
             "- w w w w b -");
+    fboard2eps(&b, "build/test_eval_white_win.eps");
     mu_assert("error, evaluation value should be positive", eval(&b) >= 0);
     mu_assert("error, evaluation value should be big", eval(&b) >= BETA_MAX);
     return 0;
@@ -31,6 +33,7 @@ static char* test_eval_black_win() {
             "- - - - - - -"
             "- - w w w - -"
             "- w b b b b -");
+    fboard2eps(&b, "build/test_eval_black_win.eps");
     mu_assert("error, evaluation value should be negative", eval(&b) < 0);
     mu_assert("error, evaluation value should be negative "
               "with big absolute value", eval(&b) <= ALPHA_MIN);
@@ -47,6 +50,7 @@ static char* test_eval_center_bonus() {
             "- - - - - - -"
             "- - - - - - -"
             "b - - w - - -");
+    fboard2eps(&b1, "build/test_eval_center_bonus-1.eps");
     Board b2;
     parser_read(&b2,
             "- - - - - - -"
@@ -55,6 +59,7 @@ static char* test_eval_center_bonus() {
             "- - - - - - -"
             "- - - - - - -"
             "b w - - - - -");
+    fboard2eps(&b2, "build/test_eval_center_bonus-2.eps");
     mu_assert("error, center moves should be rewarded", eval(&b1) > eval(&b2));
     return 0;
 }

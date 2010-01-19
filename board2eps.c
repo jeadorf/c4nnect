@@ -2,8 +2,15 @@
 #include "board.h"
 #include "util.h"
 
-int board2eps(Board *b, FILE *eps_out) {
+ void fboard2eps(Board *b, char *filename) {
+    FILE *eps_out = fopen(filename, "w");
+    board2eps(b, eps_out);
+    fclose(eps_out);
+}
+
+void board2eps(Board *b, FILE *eps_out) {
     // TODO: where to read template from?
+     // TODO: might be advisable to memory map the template file
     FILE *template_in = fopen("board.eps", "r");
     if (template_in == NULL) {
         handle_error("Cannot read PostScript board template file");
