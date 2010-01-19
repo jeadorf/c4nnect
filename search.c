@@ -20,7 +20,7 @@ void alphabeta_negamax(
         float alpha, float beta,
         int8_t depth, int8_t max_depth,
         SearchRecord *rec) {
-    uint8_t hash = b->code % TRANSPOS_SIZE;
+    uint8_t hash = b->code % TTABLE_SIZE;
     TTEntry *ttentry = &(ttable[hash]);
 
     if (b->winner != NOBODY
@@ -118,7 +118,7 @@ void search(Board *b, SearchRecord *rec) {
     // Thus, it does not hurt to increase the search depth at later times in the
     // game.
     // The iterative approach implies that max_depth will never exceed reached_depth
-    int8_t iterations = 10 + (b->move_cnt * b->move_cnt) / (NUM_COLS * NUM_ROWS);
+    int8_t iterations = 10 + (b->move_cnt * b->move_cnt) * 0.9 / (NUM_COLS * NUM_ROWS);
     for (int8_t max_depth = 1; max_depth < iterations; max_depth++) {
         last_move = rec->move;
         // TODO: Use results for move ordering or killer moves or something like this

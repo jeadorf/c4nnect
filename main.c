@@ -11,7 +11,7 @@
 #include "parser_test.h"
 #include "search_test.h"
 #include "benchmark.h"
-#include "eval.h"
+#include "search.h"
 
 static void play_game() {
     Board b;
@@ -43,6 +43,7 @@ static void play_game() {
         // put piece selected by the human player
         board_put(&b, c);
         board_print(&b);
+
         if (b.winner == WHITE) {
             board_print(&b);
             printf("You win!\n");
@@ -73,7 +74,6 @@ static void play_game() {
  */
 int main(int argc, char** argv) {
     // TODO: move benchmarking to own suite
-
 /*
     FILE *boards_out = fopen("boards", "w");
     benchmark_sample(boards_out);

@@ -6,6 +6,7 @@
                    projectFiles="true">
       <itemPath>benchmark.h</itemPath>
       <itemPath>board.h</itemPath>
+      <itemPath>board2eps.h</itemPath>
       <itemPath>eval.h</itemPath>
       <itemPath>minunit.h</itemPath>
       <itemPath>parser.h</itemPath>
@@ -17,12 +18,14 @@
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
                    projectFiles="true">
+      <itemPath>board.eps</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>benchmark.c</itemPath>
       <itemPath>board.c</itemPath>
+      <itemPath>board2eps.c</itemPath>
       <itemPath>eval.c</itemPath>
       <itemPath>main.c</itemPath>
       <itemPath>parser.c</itemPath>

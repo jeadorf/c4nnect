@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define TRANSPOS_SIZE 524287 // 104729
+#define TTABLE_SIZE 104729
 
 struct TTEntry {
     uint64_t code;

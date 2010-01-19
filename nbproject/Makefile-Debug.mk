@@ -34,14 +34,15 @@ OBJECTFILES= \
 	${OBJECTDIR}/stats.o \
 	${OBJECTDIR}/board_test.o \
 	${OBJECTDIR}/board.o \
-	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/search_test.o \
+	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/eval_test.o \
 	${OBJECTDIR}/benchmark.o \
 	${OBJECTDIR}/parser.o \
 	${OBJECTDIR}/ttable.o \
 	${OBJECTDIR}/search.o \
 	${OBJECTDIR}/parser_test.o \
+	${OBJECTDIR}/board2eps.o \
 	${OBJECTDIR}/eval.o \
 	${OBJECTDIR}/util.o
 
@@ -84,15 +85,15 @@ ${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
 
-${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
-
 ${OBJECTDIR}/search_test.o: nbproject/Makefile-${CND_CONF}.mk search_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
+
+${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
 
 ${OBJECTDIR}/eval_test.o: nbproject/Makefile-${CND_CONF}.mk eval_test.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -123,6 +124,11 @@ ${OBJECTDIR}/parser_test.o: nbproject/Makefile-${CND_CONF}.mk parser_test.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser_test.o parser_test.c
+
+${OBJECTDIR}/board2eps.o: nbproject/Makefile-${CND_CONF}.mk board2eps.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board2eps.o board2eps.c
 
 ${OBJECTDIR}/eval.o: nbproject/Makefile-${CND_CONF}.mk eval.c 
 	${MKDIR} -p ${OBJECTDIR}
