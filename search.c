@@ -20,8 +20,10 @@ void alphabeta_negamax(
         float alpha, float beta,
         int8_t depth, int8_t max_depth,
         SearchRecord *rec) {
+#ifndef DISABLE_TTABLE
     uint8_t hash = b->code % TTABLE_SIZE;
     TTEntry *ttentry = &(ttable[hash]);
+#endif
 
     if (b->winner != NOBODY
             || board_full(b)
@@ -29,15 +31,20 @@ void alphabeta_negamax(
         rec->rating = (b->turn == WHITE ? 1 : -1) * eval(b);
         rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
         rec->eval_cnt++;
+#ifndef DISABLE_TTABLE
     } else if (ttentry->code == b->code) {
         rec->rating = ttentry->rating;
         rec->move = ttentry->move;
         rec->winner_identified = true;
         rec->ttcut_cnt++;
+#endif
     } else {
+        #ifndef DISABLE_TTABLE
         if (ttentry->code != b->code && ttentry->code != 0) {
             rec->ttrcoll_cnt++;
         }
+        #endif
+
         float bestval = alpha;
         int bestcol = -1;
         // Simple move ordering, start with checking the moves in the center and
@@ -64,23 +71,27 @@ void alphabeta_negamax(
                     bestval = rec->rating;
                     bestcol = col;
                 }
+
+                #ifndef DISABLE_ABCUTS
                 // Check for a beta cutoff
                 if (bestval >= beta) {
                     rec->abcut_cnt++;
                     break;
                 }
+                #endif
             }
         }
 
         rec->rating = bestval;
         rec->move = bestcol;
         rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
-
+#ifndef DISABLE_TTABLE
         if (rec->winner_identified) {
             ttentry->code = b->code;
             ttentry->rating = rec->rating;
             ttentry->move = rec->move;
         }
+#endif
     }
 
     rec->visited_cnt++;

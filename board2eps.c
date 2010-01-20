@@ -34,6 +34,12 @@ void board2eps(Board *b, FILE *eps_out) {
         }
     }
 
+    if  (b->turn == WHITE) {
+        fputs("whitetomove\n", eps_out);
+    } else {
+        fputs("blacktomove\n", eps_out);
+    }
+
     if (b->winner == WHITE) {
         fputs("whitewins\n", eps_out);
     } else if (b->winner == BLACK) {

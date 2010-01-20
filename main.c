@@ -12,6 +12,7 @@
 #include "search_test.h"
 #include "benchmark.h"
 #include "search.h"
+#include "board2eps.h"
 
 static void play_game() {
     Board b;
@@ -94,6 +95,17 @@ int main(int argc, char** argv) {
     search_test();
     parser_test();
 #endif
+
+    Board b;
+    board_init(&b);
+    board_decode(&b, 0x000000040A040000);
+    searchm(&b);
+    board_init(&b);
+    board_decode(&b, 0x8000081413080000);
+    searchm(&b);
+    board_init(&b);
+    board_decode(&b, 0x90101B1DD4288240);
+    searchm(&b);
 
     puts("Welcome to 'Four in a Row'!");
     while (true) {
