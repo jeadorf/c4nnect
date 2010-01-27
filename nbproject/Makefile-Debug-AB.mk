@@ -20,7 +20,7 @@ AS=as
 
 # Macros
 CND_PLATFORM=GNU-Linux-x86
-CND_CONF=Debug
+CND_CONF=Debug-AB
 CND_DISTDIR=dist
 
 # Include project Makefile
@@ -47,7 +47,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/util.o
 
 # C Compiler Flags
-CFLAGS=-m32 -std=c99 -Wextra -pedantic-errors -DDEBUG
+CFLAGS=-m32 -std=c99 -Wextra -pedantic-errors -DDISABLE_ABCUTS -DDEBUG
 
 # CC Compiler Flags
 CCFLAGS=
@@ -64,10 +64,10 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	${MAKE}  -f nbproject/Makefile-Debug.mk dist/Debug/GNU-Linux-x86/fourinarow
+	${MAKE}  -f nbproject/Makefile-Debug-AB.mk dist/Debug-AB/GNU-Linux-x86/fourinarow
 
-dist/Debug/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
-	${MKDIR} -p dist/Debug/GNU-Linux-x86
+dist/Debug-AB/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
+	${MKDIR} -p dist/Debug-AB/GNU-Linux-x86
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/stats.o: nbproject/Makefile-${CND_CONF}.mk stats.c 
@@ -145,8 +145,8 @@ ${OBJECTDIR}/util.o: nbproject/Makefile-${CND_CONF}.mk util.c
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
-	${RM} -r build/Debug
-	${RM} dist/Debug/GNU-Linux-x86/fourinarow
+	${RM} -r build/Debug-AB
+	${RM} dist/Debug-AB/GNU-Linux-x86/fourinarow
 
 # Subprojects
 .clean-subprojects:

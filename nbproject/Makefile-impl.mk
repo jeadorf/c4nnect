@@ -27,11 +27,11 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=fourinarow
 
 # Active Configuration
-DEFAULTCONF=Debug
+DEFAULTCONF=Release-64
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug Release Release-TT Release-TT-AB Release-AB 
+ALLCONFS=Release-64 Release Debug-64 Debug Debug-TT Debug-AB Debug-AB-TT 
 
 
 # build

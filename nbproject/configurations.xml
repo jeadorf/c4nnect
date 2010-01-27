@@ -54,25 +54,7 @@
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="Debug" type="1">
-      <toolsSet>
-        <developmentServer>localhost</developmentServer>
-        <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
-      </toolsSet>
-      <compileType>
-        <cTool>
-          <architecture>2</architecture>
-          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG</commandLine>
-          <warningLevel>3</warningLevel>
-        </cTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
-      </compileType>
-    </conf>
-    <conf name="Release" type="1">
+    <conf name="Release-64" type="1">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <compilerSet>GNU|GNU</compilerSet>
@@ -98,7 +80,7 @@
         </linkerTool>
       </compileType>
     </conf>
-    <conf name="Release-TT" type="1">
+    <conf name="Release" type="1">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <compilerSet>GNU|GNU</compilerSet>
@@ -107,9 +89,9 @@
       <compileType>
         <cTool>
           <developmentMode>5</developmentMode>
-          <architecture>2</architecture>
+          <architecture>1</architecture>
           <commandlineTool>gcc</commandlineTool>
-          <commandLine>-std=c99 -Wextra -DDISABLE_TTABLE</commandLine>
+          <commandLine>-std=c99 -Wextra</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
         <ccTool>
@@ -124,7 +106,7 @@
         </linkerTool>
       </compileType>
     </conf>
-    <conf name="Release-TT-AB" type="1">
+    <conf name="Debug-64" type="1">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <compilerSet>GNU|GNU</compilerSet>
@@ -132,25 +114,17 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <developmentMode>5</developmentMode>
           <architecture>2</architecture>
-          <commandlineTool>gcc</commandlineTool>
-          <commandLine>-std=c99 -Wextra -DDISABLE_TTABLE -DDISABLE_ABCUTS</commandLine>
+          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
-        <ccTool>
-          <developmentMode>5</developmentMode>
-        </ccTool>
-        <fortranCompilerTool>
-          <developmentMode>5</developmentMode>
-        </fortranCompilerTool>
         <linkerTool>
           <linkerLibItems>
           </linkerLibItems>
         </linkerTool>
       </compileType>
     </conf>
-    <conf name="Release-AB" type="1">
+    <conf name="Debug" type="1">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <compilerSet>GNU|GNU</compilerSet>
@@ -158,18 +132,64 @@
       </toolsSet>
       <compileType>
         <cTool>
-          <developmentMode>5</developmentMode>
-          <architecture>2</architecture>
-          <commandlineTool>gcc</commandlineTool>
-          <commandLine>-std=c99 -Wextra -DDISABLE_ABCUTS</commandLine>
+          <architecture>1</architecture>
+          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
-        <ccTool>
-          <developmentMode>5</developmentMode>
-        </ccTool>
-        <fortranCompilerTool>
-          <developmentMode>5</developmentMode>
-        </fortranCompilerTool>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Debug-TT" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>1</architecture>
+          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_TTABLE</commandLine>
+          <warningLevel>3</warningLevel>
+        </cTool>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Debug-AB" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>1</architecture>
+          <commandLine>-std=c99 -Wextra -pedantic-errors -DDISABLE_ABCUTS -DDEBUG</commandLine>
+          <warningLevel>3</warningLevel>
+        </cTool>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Debug-AB-TT" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>1</architecture>
+          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_ABCUTS -DDISABLE_TTABLE</commandLine>
+          <warningLevel>3</warningLevel>
+        </cTool>
         <linkerTool>
           <linkerLibItems>
           </linkerLibItems>

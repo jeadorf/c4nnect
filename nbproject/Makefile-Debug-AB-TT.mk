@@ -20,7 +20,7 @@ AS=as
 
 # Macros
 CND_PLATFORM=GNU-Linux-x86
-CND_CONF=Release-TT
+CND_CONF=Debug-AB-TT
 CND_DISTDIR=dist
 
 # Include project Makefile
@@ -47,7 +47,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/util.o
 
 # C Compiler Flags
-CFLAGS=-m64 -std=c99 -Wextra -DDISABLE_TTABLE
+CFLAGS=-m32 -std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_ABCUTS -DDISABLE_TTABLE
 
 # CC Compiler Flags
 CCFLAGS=
@@ -64,89 +64,89 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	${MAKE}  -f nbproject/Makefile-Release-TT.mk dist/Release-TT/GNU-Linux-x86/fourinarow
+	${MAKE}  -f nbproject/Makefile-Debug-AB-TT.mk dist/Debug-AB-TT/GNU-Linux-x86/fourinarow
 
-dist/Release-TT/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
-	${MKDIR} -p dist/Release-TT/GNU-Linux-x86
+dist/Debug-AB-TT/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
+	${MKDIR} -p dist/Debug-AB-TT/GNU-Linux-x86
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/stats.o: nbproject/Makefile-${CND_CONF}.mk stats.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/stats.o stats.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/stats.o stats.c
 
 ${OBJECTDIR}/board_test.o: nbproject/Makefile-${CND_CONF}.mk board_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
 
 ${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
 
 ${OBJECTDIR}/search_test.o: nbproject/Makefile-${CND_CONF}.mk search_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
 
 ${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
 
 ${OBJECTDIR}/eval_test.o: nbproject/Makefile-${CND_CONF}.mk eval_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
 
 ${OBJECTDIR}/benchmark.o: nbproject/Makefile-${CND_CONF}.mk benchmark.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/benchmark.o benchmark.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/benchmark.o benchmark.c
 
 ${OBJECTDIR}/parser.o: nbproject/Makefile-${CND_CONF}.mk parser.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser.o parser.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser.o parser.c
 
 ${OBJECTDIR}/ttable.o: nbproject/Makefile-${CND_CONF}.mk ttable.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/ttable.o ttable.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/ttable.o ttable.c
 
 ${OBJECTDIR}/search.o: nbproject/Makefile-${CND_CONF}.mk search.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search.o search.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search.o search.c
 
 ${OBJECTDIR}/parser_test.o: nbproject/Makefile-${CND_CONF}.mk parser_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser_test.o parser_test.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser_test.o parser_test.c
 
 ${OBJECTDIR}/board2eps.o: nbproject/Makefile-${CND_CONF}.mk board2eps.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board2eps.o board2eps.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board2eps.o board2eps.c
 
 ${OBJECTDIR}/eval.o: nbproject/Makefile-${CND_CONF}.mk eval.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval.o eval.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval.o eval.c
 
 ${OBJECTDIR}/util.o: nbproject/Makefile-${CND_CONF}.mk util.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/util.o util.c
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/util.o util.c
 
 # Subprojects
 .build-subprojects:
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
-	${RM} -r build/Release-TT
-	${RM} dist/Release-TT/GNU-Linux-x86/fourinarow
+	${RM} -r build/Debug-AB-TT
+	${RM} dist/Debug-AB-TT/GNU-Linux-x86/fourinarow
 
 # Subprojects
 .clean-subprojects:
