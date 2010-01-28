@@ -210,18 +210,6 @@ bool board_column_full(Board *b, int8_t col) {
     return b->tops[col] == NUM_ROWS;
 }
 
-void board_hash(Board *b, uint64_t *prim_hash, uint64_t *snd_hash, uint64_t *hash) {
-    *hash = 0UL;
-    *prim_hash = 0UL;
-    *snd_hash = 0UL;
-    int8_t c;
-    for (c = 0; c < NUM_COLS; c++) {
-        *prim_hash |= ((uint64_t) b->cols[WHITE][c]) << (c * NUM_ROWS);
-        *snd_hash |= ((uint64_t) b->cols[BLACK][c]) << (c * NUM_ROWS);
-    }
-    *hash = (*prim_hash * *prim_hash) ^ (*snd_hash * *snd_hash);
-}
-
 uint64_t board_encode(Board *b) {
     uint64_t n = 0UL;
     int8_t top = 0UL;

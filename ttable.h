@@ -8,7 +8,6 @@
 struct TTEntry {
     uint64_t code;
     float rating;
-    int8_t move;
 };
 
 typedef struct TTEntry TTEntry;

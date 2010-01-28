@@ -64,11 +64,11 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	${MAKE}  -f nbproject/Makefile-Debug-AB-TT.mk dist/Debug-AB-TT/GNU-Linux-x86/fourinarow
+	${MAKE}  -f nbproject/Makefile-Debug-AB-TT.mk dist/Debug-AB-TT/GNU-Linux-x86/c4nnect
 
-dist/Debug-AB-TT/GNU-Linux-x86/fourinarow: ${OBJECTFILES}
+dist/Debug-AB-TT/GNU-Linux-x86/c4nnect: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug-AB-TT/GNU-Linux-x86
-	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/fourinarow ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/c4nnect ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/stats.o: nbproject/Makefile-${CND_CONF}.mk stats.c 
 	${MKDIR} -p ${OBJECTDIR}
@@ -146,7 +146,7 @@ ${OBJECTDIR}/util.o: nbproject/Makefile-${CND_CONF}.mk util.c
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r build/Debug-AB-TT
-	${RM} dist/Debug-AB-TT/GNU-Linux-x86/fourinarow
+	${RM} dist/Debug-AB-TT/GNU-Linux-x86/c4nnect
 
 # Subprojects
 .clean-subprojects:

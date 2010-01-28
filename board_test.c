@@ -289,28 +289,6 @@ static char* test_board_compare() {
     return 0;
 }
 
-static char* test_board_hash() {
-    printf("test_board_hash\n");
-    Board b;
-    board_init(&b);
-    
-    uint64_t prim_hash, snd_hash, hash;
-    board_hash(&b, &prim_hash, &snd_hash, &hash);
-
-    mu_assert("error, expected primary hash to be zero", prim_hash == 0UL);
-    mu_assert("error, expected secondary hash to be zero", snd_hash == 0UL);
-    mu_assert("error, expected hash to be zero", hash == 0UL);
-
-    board_put(&b, 0);
-    board_hash(&b, &prim_hash, &snd_hash, &hash);
-
-    mu_assert("error, expected primary hash to be non-zero", prim_hash != 0UL);
-    mu_assert("error, expected secondary hash to be zero", snd_hash == 0UL);
-    mu_assert("error, expected hash to be non-zero", hash != 0UL);
-
-    return 0;
-}
-
 static char* test_board_decode_empty() {
     printf("test_board_decode_empty\n");
     Board b1;
@@ -407,7 +385,6 @@ static char* all_tests() {
     mu_run_test(test_board_move_wins_diagdown);
     mu_run_test(test_board_move_wins_diagdown2);
     mu_run_test(test_board_compare);
-    mu_run_test(test_board_hash);
     mu_run_test(test_board_decode_empty);
     mu_run_test(test_board_decode);
     mu_run_test(test_board_encode_empty);

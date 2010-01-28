@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=fourinarow
+PROJECTNAME=c4nnect
 
 # Active Configuration
 DEFAULTCONF=Release-64
