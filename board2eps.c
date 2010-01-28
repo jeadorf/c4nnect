@@ -25,7 +25,6 @@ void board2eps(Board *b, FILE *eps_out) {
     fputs("\n% board data\n", eps_out);
     for (int c = 0; c < NUM_COLS; c++) {
         for (int r = 0; r < NUM_ROWS; r++) {
-            // FIXME: fix board_get and board_get_top
             if (board_get(b, r, c) == WHITE) {
                 fprintf(eps_out, "%d %d putwhite\n", r, c);
             } else if (board_get(b, r, c) == BLACK) {

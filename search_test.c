@@ -212,39 +212,6 @@ static char* test_search_defer_defeat() {
     return 0;
 }
 
-// TODO: need me or delete me
-static char* test_maximum_search_depth() {
-    printf("test_maximum_search_depth\n");
-    // The idea of this test is to determine how deep we can search without
-    // wasting too much time. It's not in the standard set of tests
-    Board b;
-    parser_read(&b,
-            "w - - - - - -"
-            "w - - - - - -"
-            "b - - - - - -"
-            "w - b b - - -"
-            "w - b b - - -"
-            "w b w w b - -");
-    fboard2eps(&b, "build/test_maximum_search_depth-1.eps");
-    SearchRecord rec;
-    searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 42, &rec);
-    
-    Board b2;
-    parser_read(&b2,
-            "- - - - - - -"
-            "b - - - - - -"
-            "b - - - - - -"
-            "w - b b - - -"
-            "w - b b w w b"
-            "w b w w b b w");
-    fboard2eps(&b, "build/test_maximum_search_depth-2.eps");
-    SearchRecord rec2;
-    searchrecord_init(&rec2);
-    alphabeta_negamax(&b2, ALPHA_MIN, BETA_MAX, 0, 42, &rec2);
-    return 0;
-}
-
 static char* all_tests() {
     mu_run_test(test_abn_white_win);
     mu_run_test(test_abn_black_win);
