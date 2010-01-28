@@ -32,10 +32,11 @@ void alphabeta_negamax(
         rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
         rec->eval_cnt++;
 #ifndef DISABLE_TTABLE
-    } else if (ttentry->code == b->code && depth > 0) {
+    } else if (ttentry->code == b->code && depth > 1) {
         // The transposition entry does not contain information about the move
         // that lead to the position, so we cannot check the transposition table
-        // at the root of the search tree.
+        // at the root of the search tree. The first level is excluded, too -
+        // a workaroundin order to defer 2-ply defeats.
         rec->rating = ttentry->rating;
         rec->winner_identified = true;
         rec->ttcut_cnt++;
@@ -118,19 +119,15 @@ void search(Board *b, SearchRecord *rec) {
     int8_t last_move = 0;
     rec->cpu_time = clock();
 
-    // Now perform an iterative-deepening alphabeta search. First, look ahead
-    // for quick ways to victory. This makes the computer's moves much more
-    // predictible if it is on the road to victory otherwise the computer might
-    // create additional threats that will later lead to victory instead of
-    // winning by simply completing a row. The maximum numbers of iterations
-    // (or plies) the search will do depends on the current stage of the game.
+    //  The maximum numbers of iterations (or plies) the search will do depends
+    // on the current stage of the game.
     // If the game is at its very beginning, there is no use in doing a lot of
     // research if no forced variation can be found. In later stages, the number
     // of possible moves decreases with the board getting fuller and fuller.
     // Thus, it does not hurt to increase the search depth at later times in the
     // game.
     // The iterative approach implies that max_depth will never exceed reached_depth
-    int8_t iterations = 10 + (b->move_cnt * b->move_cnt) * 1.1 / (NUM_COLS * NUM_ROWS);
+    int8_t iterations = 8 + (b->move_cnt * b->move_cnt) * 1.15 / (NUM_COLS * NUM_ROWS);
     for (int8_t max_depth = 1; max_depth < iterations; max_depth++) {
         last_move = rec->move;
         // TODO: Use results for move ordering or killer moves or something like this
@@ -142,6 +139,8 @@ void search(Board *b, SearchRecord *rec) {
         }
     }
 
+    // TODO: Deferring defeats does no longer work because of the usage of
+    //       transposition tables that are not cleared between subsequent searches.
     // Defer defeats that are unavoidable. The computer should at least not to
     // lose in the next move even if the computer sees that he will lose
     // whatever moves he plays (hey, that is not correct, he will only lose

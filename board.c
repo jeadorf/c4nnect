@@ -144,7 +144,7 @@ void board_put_forced(Board *b, Player p, int8_t col) {
         handle_error("column out of range");
     }
 #endif
-    
+
     int8_t row = b->tops[col];
     if (row == NUM_ROWS) {
         handle_error("Column is already full, cannot put another piece in this column!");
@@ -189,24 +189,27 @@ void board_undo(Board *b, int8_t col) {
 
 Player board_get(Board *b, int8_t row, int8_t col) {
     // no faster 2 - (((b->cols[WHITE][col] >> row) & 1) << 1) - ((b->cols[BLACK][col] >> row) & 1);
-    if (b->cols[WHITE][col] & (1 << row)) {
-        return WHITE;
-    } else if (b->cols[BLACK][col] & (1 << row)) {
-        return BLACK;
+    if (row < b->tops[col]) {
+        return GET(b->code, row, col) & 1;
     } else {
         return NOBODY;
     }
 }
 
-Player board_get_top(Board *b, int8_t col) {
-    return board_get(b, b->tops[col - 1], col);
+inline Player board_get_top(Board *b, int8_t col) {
+    int8_t top = b->tops[col];
+    if (top > 0) {
+        return board_get(b, top - 1, col);
+    } else {
+        return NOBODY;
+    }
 }
 
-bool board_full(Board *b) {
+inline bool board_full(Board *b) {
     return b->move_cnt >= 42;
 }
 
-bool board_column_full(Board *b, int8_t col) {
+inline bool board_column_full(Board *b, int8_t col) {
     return b->tops[col] == NUM_ROWS;
 }
 

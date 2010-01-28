@@ -4,40 +4,16 @@
 #include "eval.h"
 #include <math.h>
 
-#define BONUS_CENTER 5
-
 // TODO: We need some sort of randomization but generating random numbers is a
 // really expensive operation that slows down the whole evaluation process.
 // float value = rand() % 3 - 1.5;
 
 float eval(Board *b) {
-    float value = 0;
     if (b->winner == WHITE) {
         return BETA_MAX;
     } else if (b->winner == BLACK) {
         return ALPHA_MIN;
+    } else {
+        return 0;
     }
-
-    Player p = board_get_top(b, 2);
-    if (p == WHITE) {
-        value += BONUS_CENTER;
-    } else if (p == BLACK) {
-        value -= BONUS_CENTER;
-    }
-
-    p = board_get_top(b, 3);
-    if (p == WHITE) {
-        value += BONUS_CENTER << 1;
-    } else if (p == BLACK) {
-        value -= BONUS_CENTER << 1;
-    }
-
-    p = board_get_top(b, 4);
-    if (p == WHITE) {
-        value += BONUS_CENTER;
-    } else if (p == BLACK) {
-        value -= BONUS_CENTER;
-    }
-
-    return value;
 }

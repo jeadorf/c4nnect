@@ -70,7 +70,7 @@ struct Board {
      *  0x9000041001061308
      */
     uint64_t code;
-    /* Stores the bit of the topmost pieces in each column. 0 means emoty and
+    /* Stores the bit of the topmost pieces in each column. 0 means empty and
      * (1 << NUM_ROWS) */
     int8_t tops[NUM_COLS];
     /* number of moves already done */

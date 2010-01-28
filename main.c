@@ -96,17 +96,6 @@ int main(int argc, char** argv) {
     parser_test();
 #endif
 
-    Board b;
-    board_init(&b);
-    board_decode(&b, 0x000000040A040000);
-    searchm(&b);
-    board_init(&b);
-    board_decode(&b, 0x8000081413080000);
-    searchm(&b);
-    board_init(&b);
-    board_decode(&b, 0x90101B1DD4288240);
-    searchm(&b);
-
     puts("Welcome to 'Four in a Row'!");
     while (true) {
         puts("A new game starts!");
