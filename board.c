@@ -34,7 +34,16 @@ void board_init(Board *b) {
 }
 
 static bool board_move_wins_col(Board *b, Player p, int8_t row, int8_t col) {
-    return ((row >= 3) && (((b->cols[p][col] >> (row - 3)) ^ 0xF) == 0));
+    if (row >= 3) {
+        // TODO: Read bitmask with one operation
+        return GET(b->pos[p], row, col)
+                && GET(b->pos[p], row-1, col)
+                && GET(b->pos[p], row-2, col)
+                && GET(b->pos[p], row-3, col);
+
+    } else {
+        return false;
+    }
 }
 
 static bool board_move_wins_row(Board *b, Player p, int8_t row, int8_t col) {
@@ -150,8 +159,7 @@ void board_put_forced(Board *b, Player p, int8_t col) {
         handle_error("Column is already full, cannot put another piece in this column!");
     }
 
-    // Put a piece on the column
-    b->cols[p][col] |= (1 << row);
+    b->pos[p] = SET(b->pos[p], row, col, 1);
     b->tops[col]++;
     b->turn = other(p);
 
@@ -174,7 +182,7 @@ void board_undo(Board *b, int8_t col) {
     b->turn = other(b->turn);
 
     // Kill bit at row
-    b->cols[p][col] ^= (1 << row);
+    b->pos[p] = SET(b->pos[p], row, col, 0);
     b->tops[col]--;
 
     // Restore perfect hash by decrementing top counter and zeroing out the bit
@@ -188,9 +196,10 @@ void board_undo(Board *b, int8_t col) {
 }
 
 Player board_get(Board *b, int8_t row, int8_t col) {
-    // no faster 2 - (((b->cols[WHITE][col] >> row) & 1) << 1) - ((b->cols[BLACK][col] >> row) & 1);
-    if (row < b->tops[col]) {
-        return GET(b->code, row, col) & 1;
+    if (GET(b->pos[WHITE], row, col)) {
+        return WHITE;
+    } else if (GET(b->pos[BLACK], row, col)) {
+        return BLACK;
     } else {
         return NOBODY;
     }
