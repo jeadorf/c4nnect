@@ -3,7 +3,6 @@
 
 #include <time.h>
 #include <stdbool.h>
-#include <sys/types.h>
 #include <stdint.h>
 
 struct SearchRecord {

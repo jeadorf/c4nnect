@@ -1,8 +1,5 @@
-#include <float.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include "eval.h"
 #include <math.h>
+#include "eval.h"
 
 // TODO: We need some sort of randomization but generating random numbers is a
 // really expensive operation that slows down the whole evaluation process.

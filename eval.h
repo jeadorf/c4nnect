@@ -1,7 +1,6 @@
 #ifndef _EVAL_H
 #define	_EVAL_H
 
-#include <math.h>
 #include "board.h"
 
 #define ALPHA_MIN -INFINITY

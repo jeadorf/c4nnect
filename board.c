@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
-#include <sys/types.h>
 #include "board.h"
 #include "util.h"
 
@@ -37,9 +36,9 @@ static bool board_move_wins_col(Board *b, Player p, int8_t row, int8_t col) {
     if (row >= 3) {
         // TODO: Read bitmask with one operation
         return GET(b->pos[p], row, col)
-                && GET(b->pos[p], row-1, col)
-                && GET(b->pos[p], row-2, col)
-                && GET(b->pos[p], row-3, col);
+                && GET(b->pos[p], row - 1, col)
+                && GET(b->pos[p], row - 2, col)
+                && GET(b->pos[p], row - 3, col);
 
     } else {
         return false;
@@ -285,6 +284,17 @@ void board_printd(Board *b, int8_t depth) {
         putchar('"');
         putchar('\n');
     }
-
+    putchar(' ');
+    for (c = 0; c < NUM_COLS; c++) {
+        putchar('"');
+        putchar(' ');
+    }
+    putchar('\n');
+    putchar(' ');
+    for (c = 0; c < NUM_COLS; c++) {
+        putchar('0' + c);
+        putchar(' ');
+    }
+    putchar('\n');
     putchar('\n');
 }

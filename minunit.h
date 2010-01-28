@@ -6,10 +6,11 @@
 #ifndef _MINUNIT_H
 #define	_MINUNIT_H
 
-#define mu_assert(message, test) do { if (!(test)) return message; } while (0)
+#define mu_assert(message, test) do { if (!(test)) { tests_failed++; return message; } } while (0)
 #define mu_run_test(test) do { char *message = test(); tests_run++; \
                                 if (message) return message; } while (0)
 int tests_run;
+int tests_failed;
 
 
 #endif	/* _MINUNIT_H */

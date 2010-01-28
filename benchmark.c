@@ -7,7 +7,6 @@
 #include "stats.h"
 #include "board.h"
 #include "search.h"
-#include "eval.h"
 
 void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     fprintf(stats_out, "%-18s , %4s , %6s , %11s , %11s , %10s , %10s , %10s , %10s , %13s , %7s\n",
@@ -18,7 +17,6 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     uint64_t n;
     SearchRecord acc;
     searchrecord_init(&acc);
-    // TODO: check whether we can
     int32_t cnt = 0;
     double_t visited_cnt = 0, eval_cnt = 0,
             abcut_cnt = 0, ttcut_cnt = 0, ttrcoll_cnt = 0,
@@ -34,7 +32,8 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
 
         fprintf(stats_out, "0x%-.16lX , %4d , %6.1f , %11ld , %11ld , %10ld , %10ld , %10ld , %10d , %13d , %7ld\n",
                 n, rec.move, rec.rating, rec.visited_cnt, rec.eval_cnt,
-                rec.abcut_cnt, rec.ttcut_cnt, rec.ttrcoll_cnt, rec.max_depth, rec.reached_depth, rec.cpu_time);
+                rec.abcut_cnt, rec.ttcut_cnt, rec.ttrcoll_cnt,
+                rec.max_depth, rec.reached_depth, rec.cpu_time / (CLOCKS_PER_SEC / 1000));
 
         visited_cnt += rec.visited_cnt;
         eval_cnt += rec.eval_cnt;
@@ -60,7 +59,7 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
                 (int64_t) (ttrcoll_cnt / cnt),
                 max_depth / cnt,
                 reached_depth / cnt,
-                (int64_t) (cpu_time / cnt));
+                (int64_t) (cpu_time / cnt / (CLOCKS_PER_SEC / 1000)));
     }
 }
 

@@ -62,3 +62,19 @@ CND_ARTIFACT_PATH_Debug-AB-TT=dist/Debug-AB-TT/GNU-Linux-x86/c4nnect
 CND_PACKAGE_DIR_Debug-AB-TT=dist/Debug-AB-TT/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Debug-AB-TT=c4nnect.tar
 CND_PACKAGE_PATH_Debug-AB-TT=dist/Debug-AB-TT/GNU-Linux-x86/package/c4nnect.tar
+# Benchmark-64 configuration
+CND_PLATFORM_Benchmark-64=GNU-Linux-x86
+CND_ARTIFACT_DIR_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86
+CND_ARTIFACT_NAME_Benchmark-64=c4nnect
+CND_ARTIFACT_PATH_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86/c4nnect
+CND_PACKAGE_DIR_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86/package
+CND_PACKAGE_NAME_Benchmark-64=c4nnect.tar
+CND_PACKAGE_PATH_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86/package/c4nnect.tar
+# Benchmark configuration
+CND_PLATFORM_Benchmark=GNU-Linux-x86
+CND_ARTIFACT_DIR_Benchmark=dist/Benchmark/GNU-Linux-x86
+CND_ARTIFACT_NAME_Benchmark=c4nnect
+CND_ARTIFACT_PATH_Benchmark=dist/Benchmark/GNU-Linux-x86/c4nnect
+CND_PACKAGE_DIR_Benchmark=dist/Benchmark/GNU-Linux-x86/package
+CND_PACKAGE_NAME_Benchmark=c4nnect.tar
+CND_PACKAGE_PATH_Benchmark=dist/Benchmark/GNU-Linux-x86/package/c4nnect.tar

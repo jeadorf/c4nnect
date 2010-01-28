@@ -1,48 +1,45 @@
-#include <stdbool.h>
+#include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include "board.h"
-#include "parser.h"
 #include "search.h"
-#include "util.h"
+#include "minunit.h"
 #include "board_test.h"
 #include "eval_test.h"
 #include "parser_test.h"
 #include "search_test.h"
 #include "benchmark.h"
 #include "search.h"
-#include "board2eps.h"
 
 static void play_game() {
     Board b;
     board_init(&b);
+    
     char c, d;
     while (true) {
         board_print(&b);
 
         do {
-            printf("[%d-%d] > ", 1, NUM_COLS);
-            c = getchar() - '1';
-            if (c == '\n' - '1') {
-                c = -1;
-                continue;
+            printf("[0-6] > ");
+            c = getchar();
+            while (c == '\n') {
+                putchar('\b');
             }
             d = getchar();
             if (d != '\n') {
                 while ((d = getchar()) != '\n') {
-                    // wait
+                    putchar('\b');
                 }
                 c = -1;
                 continue;
             }
-            if (board_column_full(&b, c)) {
+            if (board_column_full(&b, (c - '0'))) {
                 printf("You can no longer put a piece in this column!\n");
             }
-        } while (c < 0 || c >= NUM_COLS || board_column_full(&b, c));
+        } while (c < 0 || c < '0' || c > '6' || board_column_full(&b, c - '0'));
 
         // put piece selected by the human player
-        board_put(&b, c);
+        board_put(&b, c - '0');
         board_print(&b);
 
         if (b.winner == WHITE) {
@@ -70,12 +67,8 @@ static void play_game() {
     }
 }
 
-/*
- * 
- */
 int main(int argc, char** argv) {
-    // TODO: move benchmarking to own suite
-/*
+#ifdef BENCHMARK
     FILE *boards_out = fopen("boards", "w");
     benchmark_sample(boards_out);
     fclose(boards_out);
@@ -87,21 +80,24 @@ int main(int argc, char** argv) {
     fclose(boards_in);
     fclose(eval_out);
     fclose(summ_out);
-*/
-    
-#if DEBUG
+#endif
+
+#ifdef DEBUG
+    // TODO: Fix tests such that they will show a summary at the end and exit on failure
     board_test();
     eval_test();
     search_test();
     parser_test();
+    if (tests_failed > 0) {
+        printf("TESTS FAILED!");
+    }
 #endif
 
-    puts("Welcome to 'Four in a Row'!");
+    puts("Welcome to 'Connect Four'!");
     while (true) {
-        puts("A new game starts!");
+        puts("A new game starts!\n");
         play_game();
     }
 
     return (EXIT_SUCCESS);
 }
-

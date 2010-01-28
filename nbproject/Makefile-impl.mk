@@ -31,7 +31,7 @@ DEFAULTCONF=Release-64
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Release-64 Release Debug-64 Debug Debug-TT Debug-AB Debug-AB-TT 
+ALLCONFS=Release-64 Release Debug-64 Debug Debug-TT Debug-AB Debug-AB-TT Benchmark-64 Benchmark 
 
 
 # build

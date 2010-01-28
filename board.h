@@ -103,8 +103,6 @@ bool board_column_full(Board *b, int8_t col);
 
 bool board_full(Board *b);
 
-void board_hash(Board *b, uint64_t *prim_hash, uint64_t *snd_hash, uint64_t *hash);
-
 /* Reads a binary representation and compiles it into a Board struct object. The
  * board is encoded as in Board.code.
  * @Deprecated just read Board.code
