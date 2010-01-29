@@ -14,30 +14,19 @@
 static void play_game() {
     Board b;
     board_init(&b);
-    
-    char c, d;
+
+    char c;
     while (true) {
         board_print(&b);
 
         do {
-            printf("[0-6] > ");
+            if (c != '\n') {
+                printf("\n[0-6]> ");
+            }
             c = getchar();
-            while (c == '\n') {
-                putchar('\b');
-            }
-            d = getchar();
-            if (d != '\n') {
-                while ((d = getchar()) != '\n') {
-                    putchar('\b');
-                }
-                c = -1;
-                continue;
-            }
-            if (board_column_full(&b, (c - '0'))) {
-                printf("You can no longer put a piece in this column!\n");
-            }
-        } while (c < 0 || c < '0' || c > '6' || board_column_full(&b, c - '0'));
-
+        } while (c < '0' || c > '6' || board_column_full(&b, c - '0'));
+        putchar('\n');
+        
         // put piece selected by the human player
         board_put(&b, c - '0');
         board_print(&b);
@@ -68,6 +57,15 @@ static void play_game() {
 }
 
 int main(int argc, char** argv) {
+
+    Board b;
+    board_init(&b);
+    // TODO: remove inconsistency board_init + parser_read / board_decode
+    board_decode(&b, 0x9008186DBB148040);
+    board_print(&b);
+    searchm(&b);
+    searchm(&b);
+
 #ifdef BENCHMARK
     FILE *boards_out = fopen("boards", "w");
     benchmark_sample(boards_out);
@@ -89,7 +87,7 @@ int main(int argc, char** argv) {
     search_test();
     parser_test();
     if (tests_failed > 0) {
-        printf("TESTS FAILED!");
+        puts("TESTS FAILED!");
     }
 #endif
 

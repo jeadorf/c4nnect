@@ -23,10 +23,14 @@ struct SearchRecord {
     int8_t reached_depth;
     /* The number of successful transposition table lookups */
     int64_t ttcut_cnt;
+    /* The number of times an entry has been added to the transposition table */
+    int64_t ttadd_cnt;
     /* The number of read collisions transposition table lookups. This counts the
      * number of times an entry was read in the transposition table but belonged
      * to another position than the one currently evaluated */
     int64_t ttrcoll_cnt;
+    /* The percentage to which the transposition table is filled with positions */
+    float ttcharge;
     /* Denotes whether the search has lead to a winning strategy for one of
      * the players. */
     bool winner_identified;

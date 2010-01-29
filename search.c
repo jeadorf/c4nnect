@@ -1,4 +1,6 @@
 #include <math.h>
+#include <malloc.h>
+#include <stdio.h>
 #include <string.h>
 #include "search.h"
 #include "stats.h"
@@ -12,6 +14,7 @@ void stats_print(Board *b, SearchRecord *rec);
 #endif
 
 extern TTEntry ttable[];
+bool ttdisable = false;
 
 void alphabeta_negamax(
         Board *b,
@@ -30,11 +33,10 @@ void alphabeta_negamax(
         rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
         rec->eval_cnt++;
 #ifndef DISABLE_TTABLE
-    } else if (ttentry->code == b->code && depth > 1) {
+    } else if (ttentry->code == b->code && depth > 0 && !ttdisable) {
         // The transposition entry does not contain information about the move
         // that lead to the position, so we cannot check the transposition table
-        // at the root of the search tree. The first level is excluded, too -
-        // a workaroundin order to defer 2-ply defeats.
+        // at the root of the search tree.
         rec->rating = ttentry->rating;
         rec->winner_identified = true;
         rec->ttcut_cnt++;
@@ -64,11 +66,12 @@ void alphabeta_negamax(
                 // Search subposition
                 alphabeta_negamax(b, -beta, -bestval, depth + 1, max_depth, rec);
                 rec->rating *= -1;
+
                 // Undo move
                 board_undo(b, col);
 
-                // Check for better move
                 if (rec->rating > bestval || bestcol == -1) {
+                    // Found a move that is either better than all other moves
                     bestval = rec->rating;
                     bestcol = col;
                 }
@@ -90,6 +93,8 @@ void alphabeta_negamax(
         if (rec->winner_identified) {
             ttentry->code = b->code;
             ttentry->rating = rec->rating;
+            // TODO: this might count some of the entries twice?
+            rec->ttadd_cnt++;
         }
 #endif
     }
@@ -102,7 +107,7 @@ void alphabeta_negamax(
 
 #ifdef DDEBUG
     board_printd(b, depth);
-    stats_print(b, p, rec);
+    stats_print(b, rec);
 #endif
 }
 
@@ -140,18 +145,28 @@ void search(Board *b, SearchRecord *rec) {
     // TODO: Deferring defeats does no longer work because of the usage of
     //       transposition tables that are not cleared between subsequent searches.
     // Defer defeats that are unavoidable. The computer should at least not to
-    // lose in the next move even if the computer sees that he will lose
-    // whatever moves he plays (hey, that is not correct, he will only lose
-    // if the opponent always plays correctly). In the case the lookahead value
-    // is greater than the value returned by the deep search then the lookahead
-    // simply did not discover the threats hidden some plies ahead. And it
-    // therefore just avoids being defeated in the next two steps.
+    // lose in the next move even if the computer sees that he will lose against
+    // the perfect-playing opponent.
     if (rec->winner_identified && rec->rating <= ALPHA_MIN) {
         rec->move = last_move;
+        // Do a re-search with transposition tables disabled.
+        // TODO: remove search-record workarounds
+        // TODO: remove global variable ttdisable
+        SearchRecord backup;
+        backup = *rec;
+        ttdisable = true;
+        alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, rec->reached_depth - 1, rec);
+        ttdisable = false;
+        rec->rating = backup.rating;
+        rec->max_depth = backup.max_depth;
+        rec->reached_depth = backup.reached_depth;
+        rec->winner_identified = true;
         rec->defeat_deferred = true;
     }
 
     rec->cpu_time = clock() - rec->cpu_time;
+    rec->ttcharge = ttable_charge();
+
 #ifdef DEBUG
     stats_print(b, rec);
 #endif
@@ -176,9 +191,25 @@ void stats_print(Board *b, SearchRecord *rec) {
     printf("%18s : %d\n", "Reached depth", rec->reached_depth);
     printf("%18s : %ld\n", "Evaluations", rec->eval_cnt);
     printf("%18s : %ld\n", "Positions", rec->visited_cnt);
+    // The average branching does not give a feedback on good move ordering
+    // since it is not weighted and the inner nodes near the leaves dominate
+    // this calculation
+    printf("%18s : %.2f\n", "Average branching", (rec->visited_cnt - 1.0) / (rec->visited_cnt - rec->eval_cnt));
     printf("%18s : %ld\n", "Alpha-Beta cuts", rec->abcut_cnt);
-    printf("%18s : %ld\n", "TTable cuts", rec->ttcut_cnt);
-    printf("%18s : %ld\n", "TTable read colls.", rec->ttrcoll_cnt);
+    printf("%18s : %ld\n", "TT cuts", rec->ttcut_cnt);
+    printf("%18s : %ld\n", "TT inserts", rec->ttadd_cnt);
+    printf("%18s : %.1f %%\n", "TT inserts / pos", (100.0 * rec->ttadd_cnt) / rec->visited_cnt);
+    printf("%18s : %ld\n", "TT read collisions", rec->ttrcoll_cnt);
+    printf("%18s : %.1f %%\n", "TT charge", rec->ttcharge * 100);
+    printf("%18s : %d\n", "TT entries", ttable_entry_cnt());
+    printf("%18s : %d\n", "TT size", TTABLE_SIZE);
+
+
+    for (int i = 0; i < pline->cmove; i++) {
+        printf("%d -- ", pline->argmove[i]);
+    }
+    puts("");
+
     printf("%18s : %d ms\n", "CPU time", (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)));
     printf("%18s : 0x%.16lX\n", "Board", board_encode(b));
     putchar('\n');

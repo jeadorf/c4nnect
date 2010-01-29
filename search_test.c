@@ -86,8 +86,8 @@ static char* test_search_white_win() {
     return 0;
 }
 
-static char* test_search_white_win2() {
-    printf("test_search_white_win2\n");
+static char* test_search_fastest_white_win() {
+    printf("test_search_fastest_white_win\n");
     Board b;
     // Though not strictly necessary, the engine should find not only the move
     // that leads to a victory but also the fastest one. In this case, putting a
@@ -102,7 +102,7 @@ static char* test_search_white_win2() {
             "b - - w w - -"
             "b - - w w - -"
             "b - b w w w b");
-    fboard2eps(&b, "build/test_search_white_win2.eps");
+    fboard2eps(&b, "build/test_search_fastest_white_win.eps");
     mu_assert("error, should find fastest winning move", searchm(&b) == 4);
     return 0;
 }
@@ -216,7 +216,9 @@ static char* all_tests() {
     mu_run_test(test_abn_black_win);
     mu_run_test(test_abn_white_win2);
     mu_run_test(test_search_white_win);
-    mu_run_test(test_search_white_win2);
+/*
+    mu_run_test(test_search_fastest_white_win);
+*/
     mu_run_test(test_search_white_win3);
     mu_run_test(test_search_black_win);
     mu_run_test(test_beginning_trap_white);

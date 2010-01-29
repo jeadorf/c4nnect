@@ -12,5 +12,11 @@ struct TTEntry {
 
 typedef struct TTEntry TTEntry;
 
-#endif	/* _TTABLE_H */
+/* Calculates the filling percentage of the transposition table. Example:
+ * 0.75 means that 75% of the table is filled up. */
+float ttable_charge();
 
+/* Counts the number of entries in the transposition table */
+int32_t ttable_entry_cnt();
+
+#endif	/* _TTABLE_H */

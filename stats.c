@@ -8,7 +8,9 @@ void searchrecord_init(SearchRecord *rec) {
     rec->visited_cnt = 0UL;
     rec->abcut_cnt = 0UL;
     rec->ttcut_cnt = 0UL;
+    rec->ttadd_cnt = 0UL;
     rec->ttrcoll_cnt = 0UL;
+    rec->ttcharge = 0UL;
     rec->max_depth = 0;
     rec->reached_depth = 0;
     rec->winner_identified = false;

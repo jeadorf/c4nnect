@@ -262,39 +262,43 @@ void board_print(Board *b) {
 
 void board_printd(Board *b, int8_t depth) {
     int32_t r, c; //
-    for (r = NUM_ROWS - 1; r >= 0; r--) {
+    for (r = NUM_ROWS - 1; r >= -2; r--) {
         for (c = 0; c < depth * 4; c++) {
             putchar(' ');
         }
-        putchar('"');
-        for (c = 0; c < NUM_COLS; c++) {
-            switch (board_get(b, r, c)) {
-                case WHITE:
-                    putchar('w');
-                    break;
-                case BLACK:
-                    putchar('b');
-                    break;
-                default:
-                    putchar('-');
-                    break;
+        if (r >= 0) {
+            putchar('"');
+            for (c = 0; c < NUM_COLS; c++) {
+                switch (board_get(b, r, c)) {
+                    case WHITE:
+                        putchar('w');
+                        break;
+                    case BLACK:
+                        putchar('b');
+                        break;
+                    default:
+                        putchar('-');
+                        break;
+                }
+                putchar(' ');
+            }
+            putchar('"');
+        } else if (r == -1) {
+            putchar(' ');
+            for (c = 0; c < NUM_COLS; c++) {
+                putchar('"');
+                putchar(' ');
+            }
+            putchar(' ');
+        } else {
+            putchar(' ');
+            for (c = 0; c < NUM_COLS; c++) {
+                putchar('0' + c);
+                putchar(' ');
             }
             putchar(' ');
         }
-        putchar('"');
         putchar('\n');
     }
-    putchar(' ');
-    for (c = 0; c < NUM_COLS; c++) {
-        putchar('"');
-        putchar(' ');
-    }
-    putchar('\n');
-    putchar(' ');
-    for (c = 0; c < NUM_COLS; c++) {
-        putchar('0' + c);
-        putchar(' ');
-    }
-    putchar('\n');
     putchar('\n');
 }
