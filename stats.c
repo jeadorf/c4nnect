@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include "stats.h"
 
+// TODO: init pv?
 void searchrecord_init(SearchRecord *rec) {
     rec->move = 0;
     rec->rating = 0;

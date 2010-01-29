@@ -4,12 +4,24 @@
 #include <time.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include "board.h"
+
+struct Variation {
+    /* Sequence of moves */
+    int8_t moves[NUM_ROWS * NUM_COLS];
+    /* Number of plies */
+    int8_t length;
+};
+
+typedef struct Variation Variation;
 
 struct SearchRecord {
     /* Recommended move */
     int8_t move;
     /* Rating of the move */
     float rating;
+    /* Principal variation */
+    Variation pv;
     /* Number of evaluated positions during search */
     int64_t eval_cnt;
     /* Number of visited positions during search. This includes both leaves and

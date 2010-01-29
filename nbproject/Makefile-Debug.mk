@@ -43,6 +43,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/search.o \
 	${OBJECTDIR}/parser_test.o \
 	${OBJECTDIR}/board2eps.o \
+	${OBJECTDIR}/stats_test.o \
 	${OBJECTDIR}/eval.o \
 	${OBJECTDIR}/util.o
 
@@ -129,6 +130,11 @@ ${OBJECTDIR}/board2eps.o: nbproject/Makefile-${CND_CONF}.mk board2eps.c
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board2eps.o board2eps.c
+
+${OBJECTDIR}/stats_test.o: nbproject/Makefile-${CND_CONF}.mk stats_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/stats_test.o stats_test.c
 
 ${OBJECTDIR}/eval.o: nbproject/Makefile-${CND_CONF}.mk eval.c 
 	${MKDIR} -p ${OBJECTDIR}

@@ -40,34 +40,9 @@ static char* test_eval_black_win() {
     return 0;
 }
 
-static char* test_eval_center_bonus() {
-    printf("test_eval_center_bonus\n");
-    Board b1;
-    parser_read(&b1,
-            "- - - - - - -"
-            "- - - - - - -"
-            "- - - - - - -"
-            "- - - - - - -"
-            "- - - - - - -"
-            "b - - w - - -");
-    fboard2eps(&b1, "build/test_eval_center_bonus-1.eps");
-    Board b2;
-    parser_read(&b2,
-            "- - - - - - -"
-            "- - - - - - -"
-            "- - - - - - -"
-            "- - - - - - -"
-            "- - - - - - -"
-            "b w - - - - -");
-    fboard2eps(&b2, "build/test_eval_center_bonus-2.eps");
-    mu_assert("error, center moves should be rewarded", eval(&b1) > eval(&b2));
-    return 0;
-}
-
 static char* all_tests() {
     mu_run_test(test_eval_white_win);
     mu_run_test(test_eval_black_win);
-    mu_run_test(test_eval_center_bonus);
     return 0;
 }
 

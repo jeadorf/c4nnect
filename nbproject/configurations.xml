@@ -39,12 +39,14 @@
       <itemPath>eval_test.h</itemPath>
       <itemPath>parser_test.h</itemPath>
       <itemPath>search_test.h</itemPath>
+      <itemPath>stats_test.h</itemPath>
     </logicalFolder>
     <logicalFolder name="f2" displayName="Test Source Files" projectFiles="true">
       <itemPath>board_test.c</itemPath>
       <itemPath>eval_test.c</itemPath>
       <itemPath>parser_test.c</itemPath>
       <itemPath>search_test.c</itemPath>
+      <itemPath>stats_test.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

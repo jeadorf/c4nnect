@@ -23,7 +23,7 @@ static char* test_abn_white_win() {
     fboard2eps(&b, "build/test_abn_white_win.eps");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, true, &rec);
     mu_assert("error, minimax value should be very big", rec.rating  > 90);
     mu_assert("error, should find winning move", rec.move == 3);
     return 0;
@@ -42,7 +42,7 @@ static char* test_abn_white_win2() {
     fboard2eps(&b, "build/test_abn_white_win2.eps");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, &rec);
     mu_assert("error, should find winning move", rec.move == 4);
     mu_assert("error, minimax value should be very big", rec.rating > 90);
     return 0;
@@ -61,7 +61,7 @@ static char* test_abn_black_win() {
     fboard2eps(&b, "build/test_abn_black_win.eps");
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, &rec);
     mu_assert("error, should find winning move", rec.move == 3);
     mu_assert("error, minimax value should be very big", rec.rating > 90);
     return 0;

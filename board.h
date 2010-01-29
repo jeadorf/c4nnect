@@ -19,18 +19,18 @@ Player other(Player p);
 #define NUM_ROWS 6
 #define NUM_COLS 7
 
-/* The board representation. Pieces are stored separately for each side in a
+/*! The board representation. Pieces are stored separately for each side in a
  * bitfield representation similar to the Bitboards used in some chess programs.
  * Intentionally, there is some information duplicated. A position fits into
  * 64-bit, but the information is not as easy to extract, thus the duplication.
  */
 struct Board {
-    /* Stores all positions of white (pos[WHITE]) and black (pos[BLACK])
+    /*! Stores all positions of white (pos[WHITE]) and black (pos[BLACK])
      * pieces present on the board (L means present). The first piece that is
      * inserted in a column is represented by the least significant bit of the
      * column value. */
     uint64_t pos[2];
-    /* Perfect hash value of the board position.
+    /*! Perfect hash value of the board position.
      *
      *   LSB
      * [ 0- 5] column 0,  bit  0 corresponds to row 0, bit 5 to row 5

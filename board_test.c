@@ -320,50 +320,27 @@ static char* test_board_decode() {
     return 0;
 }
 
-static char* test_board_encode_empty() {
-    printf("test_board_encode_empty\n");
-    Board b;
-    board_init(&b);
-    uint64_t n = board_encode(&b);
-    mu_assert("error, encoding wrent wrong", 0UL == n);
-    return 0;
-}
-
-static char* test_board_encode() {
-    printf("test_board_encode\n");
-    Board b;
-    parser_read(&b,
-            "- - - - - - -"
-            "- - - - - - -"
-            "b b - - - - -"
-            "w w - - - - -"
-            "w w - - - - -"
-            "w b b - b - w");
-    fboard2eps(&b, "build/test_board_encode-1.eps");
-    uint64_t n = board_encode(&b);
-    Board b2;
-    board_init(&b2);
-    board_decode(&b2, n);
-    fboard2eps(&b, "build/test_board_encode-2.eps");
-
-    mu_assert("error, expected boards to match", 0 == memcmp(&b, &b2, sizeof (Board)));
-    mu_assert("error, encoding went wrong", 0x9000041001061308 == n);
-    return 0;
-}
-
 static char* test_board_encode_incremental() {
     printf("test_board_encode_incremental\n");
-    Board b;
+    Board b, b2;
     board_init(&b);
     mu_assert("error, expected board to map to code 0x0", 0UL == b.code);
     board_put(&b, 3);
-    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
+    board_init(&b2);
+    board_decode(&b2, b.code);
+    mu_assert("error, expected board code to match encode output", b.code == b2.code);
     board_put(&b, 5);
-    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
+    board_init(&b2);
+    board_decode(&b2, b.code);
+    mu_assert("error, expected board code to match encode output", b.code == b2.code);
     board_undo(&b, 5);
-    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
+    board_init(&b2);
+    board_decode(&b2, b.code);
+    mu_assert("error, expected board code to match encode output", b.code == b2.code);
     board_undo(&b, 3);
-    mu_assert("error, expected board code to match encode output", b.code == board_encode(&b));
+    board_init(&b2);
+    board_decode(&b2, b.code);
+    mu_assert("error, expected board code to match encode output", b.code == b2.code);
     return 0;
 }
 
@@ -386,8 +363,6 @@ static char* all_tests() {
     mu_run_test(test_board_compare);
     mu_run_test(test_board_decode_empty);
     mu_run_test(test_board_decode);
-    mu_run_test(test_board_encode_empty);
-    mu_run_test(test_board_encode);
     mu_run_test(test_board_encode_incremental);
     return 0;
 }

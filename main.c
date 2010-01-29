@@ -1,15 +1,17 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#include "benchmark.h"
 #include "board.h"
-#include "search.h"
 #include "minunit.h"
+#include "search.h"
+
 #include "board_test.h"
 #include "eval_test.h"
 #include "parser_test.h"
 #include "search_test.h"
-#include "benchmark.h"
-#include "search.h"
+#include "stats_test.h"
 
 static void play_game() {
     Board b;
@@ -57,15 +59,6 @@ static void play_game() {
 }
 
 int main(int argc, char** argv) {
-
-    Board b;
-    board_init(&b);
-    // TODO: remove inconsistency board_init + parser_read / board_decode
-    board_decode(&b, 0x9008186DBB148040);
-    board_print(&b);
-    searchm(&b);
-    searchm(&b);
-
 #ifdef BENCHMARK
     FILE *boards_out = fopen("boards", "w");
     benchmark_sample(boards_out);
@@ -81,13 +74,14 @@ int main(int argc, char** argv) {
 #endif
 
 #ifdef DEBUG
-    // TODO: Fix tests such that they will show a summary at the end and exit on failure
     board_test();
     eval_test();
-    search_test();
     parser_test();
+    search_test();
+    stats_test();
     if (tests_failed > 0) {
         puts("TESTS FAILED!");
+        return (EXIT_FAILURE);
     }
 #endif
 
