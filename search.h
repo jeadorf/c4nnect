@@ -1,3 +1,4 @@
+/*! Defines all procedures related to the search algorithm itself */
 #ifndef _SEARCH_H
 #define	_SEARCH_H
 
@@ -5,8 +6,6 @@
 #include "stats.h"
 #include <stdint.h>
 
-/*! Forwards to 'search' but just returns the move and does not expose the
- * full search record. */
 int8_t searchm(Board *b);
 
 /*! Returns a move (i.e. a column) selected by the KI engine. Any changes to the

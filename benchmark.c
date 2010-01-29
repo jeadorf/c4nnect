@@ -28,7 +28,6 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     // FIXME: %llX in Debug-32, %lX in Debug-64
     while (fscanf(positions_in, "%lX", &n) == 1) {
         Board b;
-        board_init(&b);
         board_decode(&b, n);
         
         SearchRecord rec;

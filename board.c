@@ -221,26 +221,8 @@ inline bool board_column_full(Board *b, int8_t col) {
     return b->tops[col] == NUM_ROWS;
 }
 
-uint64_t board_encode(Board *b) {
-    uint64_t n = 0UL;
-    int8_t top = 0UL;
-    Player p;
-    for (int8_t c = 0; c < NUM_COLS; c++) {
-        // Save number of pieces in this column
-        top = b->tops[c];
-        n = SET_TOP(n, c, top);
-        for (int8_t r = 0; r < top; r++) {
-            // Must be careful not to shift bits out at the right (MSB) of
-            // an integer value, have to specify UL explicitly.
-            p = board_get(b, r, c);
-            n = SET(n, r, c, p);
-            n = OTHER(n);
-        }
-    }
-    return n;
-}
-
 void board_decode(Board *b, uint64_t n) {
+    board_init(b);
     // See also parser_fread
     for (int8_t c = 0; c < NUM_COLS; c++) {
         // Extract number of pieces in this column

@@ -293,7 +293,6 @@ static char* test_board_decode_empty() {
     Board b1;
     board_init(&b1);
     Board b2;
-    board_init(&b2);
     board_decode(&b2, 0x0);
     mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof (Board)));
     return 0;
@@ -311,7 +310,6 @@ static char* test_board_decode() {
             "w b b - b - w");
     fboard2eps(&b1, "build/test_board_decode-1.eps");
     Board b2;
-    board_init(&b2);
     uint64_t n = 0x9000041001061308;
     board_decode(&b2, n);
     fboard2eps(&b2, "build/test_board_decode-2.eps");
@@ -326,19 +324,15 @@ static char* test_board_encode_incremental() {
     board_init(&b);
     mu_assert("error, expected board to map to code 0x0", 0UL == b.code);
     board_put(&b, 3);
-    board_init(&b2);
     board_decode(&b2, b.code);
     mu_assert("error, expected board code to match encode output", b.code == b2.code);
     board_put(&b, 5);
-    board_init(&b2);
     board_decode(&b2, b.code);
     mu_assert("error, expected board code to match encode output", b.code == b2.code);
     board_undo(&b, 5);
-    board_init(&b2);
     board_decode(&b2, b.code);
     mu_assert("error, expected board code to match encode output", b.code == b2.code);
     board_undo(&b, 3);
-    board_init(&b2);
     board_decode(&b2, b.code);
     mu_assert("error, expected board code to match encode output", b.code == b2.code);
     return 0;

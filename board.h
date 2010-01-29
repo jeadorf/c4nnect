@@ -19,100 +19,123 @@ Player other(Player p);
 #define NUM_ROWS 6
 #define NUM_COLS 7
 
-/*! The board representation. Pieces are stored separately for each side in a
- * bitfield representation similar to the Bitboards used in some chess programs.
- * Intentionally, there is some information duplicated. A position fits into
- * 64-bit, but the information is not as easy to extract, thus the duplication.
+/*! Represents a position in the game. Theoretically, a position fits well into
+ * a 64-bit long integer (see Board.code). Yet, to make it easier to extract
+ * information from the board, some parts of the board data structure contain
+ * duplicate information.
  */
 struct Board {
-    /*! Stores all positions of white (pos[WHITE]) and black (pos[BLACK])
-     * pieces present on the board (L means present). The first piece that is
-     * inserted in a column is represented by the least significant bit of the
-     * column value. */
+    /*! Positions separated by side. The positions of white (pos[WHITE]) and black
+     * (pos[BLACK]) are stored in bitboards. The encoding used for the position
+     * is similar to Board.code except that the number of pieces is not included
+     * and that both white and black pieces are represented by bit L in their
+     * respective bitboards. See #GET and #SET for further details. */
     uint64_t pos[2];
-    /*! Perfect hash value of the board position.
+    /*! Gödel number of the current board position.
      *
-     *   LSB
-     * [ 0- 5] column 0,  bit  0 corresponds to row 0, bit 5 to row 5
-     * [ 6- 8] number of pieces in column 0, bit  8 MSB
-     * [ 9-14] column 1, bit  9 corresponds to row 0
-     * [15-17] number of pieces in column 1, bit 17 MSB
-     * [18-23] column 2, bit 18 corresponds to row 0
-     * [24-26] number of pieces in column 2, bit 26 MSB
-     * [27-32] column 3, bit 27 corresponds to row 0
-     * [33-35] number of pieces in column 3, bit 35 MSB
-     * [36-41] column 4, bit 36 corresponds to row 0
-     * [42-44] number of pieces in column 4, bit 44 MSB
-     * [45-50] column 5, bit 45 corresponds to row 0
-     * [51-53] number of pieces in column 5, bit 53 MSB
-     * [54-59] column 6, bit 54 corresponds to row 0
-     * [60-62] number of pieces in column 6, bit 62 MSB
-     * [63   ] 0 if it is WHITE, 1 if it is BLACK to move
-     *   MSB
-     * 0: corresponds to white player
-     * 1: corresponds to black player
-     * All bit positions that correspond to empty slots must be zero
+     *   LSB \n
+     * [ 0- 5] column 0,  bit  0 corresponds to row 0, bit 5 to row 5\n
+     * [ 6- 8] number of pieces in column 0, bit  8 MSB\n
+     * [ 9-14] column 1, bit  9 corresponds to row 0\n
+     * [15-17] number of pieces in column 1, bit 17 MSB\n
+     * [18-23] column 2, bit 18 corresponds to row 0\n
+     * [24-26] number of pieces in column 2, bit 26 MSB\n
+     * [27-32] column 3, bit 27 corresponds to row 0\n
+     * [33-35] number of pieces in column 3, bit 35 MSB\n
+     * [36-41] column 4, bit 36 corresponds to row 0\n
+     * [42-44] number of pieces in column 4, bit 44 MSB\n
+     * [45-50] column 5, bit 45 corresponds to row 0\n
+     * [51-53] number of pieces in column 5, bit 53 MSB\n
+     * [54-59] column 6, bit 54 corresponds to row 0\n
+     * [60-62] number of pieces in column 6, bit 62 MSB\n
+     * [63   ] 0 if it is WHITE, 1 if it is BLACK to move\n
+     *
+     *   MSB\n
+     * 0: corresponds to white player\n
+     * 1: corresponds to black player\n
+     *
+     * All bit positions that correspond to empty slots must be zero.
+     *
      *  Example:
+     * \verbatim
      *      - - - - - - -
      *      - - - - - - -
      *      b b - - - - -
      *      w w - - - - -
      *      w w - - - - -
      *      w b b - b - w
-     *       (it's BLACK's move)
+     *
+     *     (it's BLACK's move)
+     * \endverbatim
      *  encodes to
-     *  0 (LSB)                                                                  62 63 (MSB)
+     * \verbatim
+     *  0 LSB                                                                    62 63 MSB
      *  000100-001-100100-001-100000-100-000000-000-100000-100-000000-000-000000-100-1
-     *  In hex this would be
+     * 
      *  0 LSB                                                                       63 MSB
      *  8    0    3    1    6    0    1    0    0    1    4    0    0    0    0    9
-     *  which is printed with the most-significant byte at the left as
-     *  0x9000041001061308
+     * \endverbatim
+     *  This corresponds to the hexadecimal notation of 0x9000041001061308, where
+     * the most significant byte is at the left.
      */
     uint64_t code;
-    /* Stores the bit of the topmost pieces in each column. 0 means empty and
-     * (1 << NUM_ROWS) */
+    /*! Number of pieces in each column. */
     int8_t tops[NUM_COLS];
-    /* number of moves already done */
+    /*! Number of moves already done. */
     int8_t move_cnt;
-    /* The player to move */
+    /*! The player to move. */
     Player turn;
-    /* The player who gained four in a row, column or diagonal */
+    /*! Winner of this game. If the game is still ongoing the winner is set to
+     * NOBODY. */
     Player winner;
 };
 
 typedef struct Board Board;
 
+/*! Initializes a board. This procedure should be applied to all newly allocated
+ * boards. Also, you can reset the board with it. */
 void board_init(Board *b);
 
+/*! Adds a piece to the specified column. The color of the piece is defined by
+ * the player whose turn it is. */
 void board_put(Board *b, int8_t col);
 
-/* This method puts a piece of a certain Player into the col-th column. This
+/*! Puts a piece of a certain Player into the col-th column. This
  * might cause the board to e.g. have more black pieces than possible in a
- * normal game. Afterwards, it is the other player's (other(p)) turn. Be
- * careful if you use this method, as it breaks the natural undo mechanism */
+ * normal game. It might also lead to situations that seem valid on the first
+ * glance but are impossible in real games. After the invocation, it is the
+ * other player's (other(p)) turn. Be careful if you use this method, as it
+ * breaks the natural undo mechanism */
 void board_put_forced(Board *b, Player p, int8_t col);
 
+/*! Reverts a move by removing the top-most piece in the specified column. */
 void board_undo(Board *b, int8_t col);
 
+/*! Gets the owner of the piece at the specified square. If empty, #NOBODY is
+ * returned. */
 Player board_get(Board *b, int8_t row, int8_t col);
 
+/*! Gets the owner of the top-most piece in the specified column. If empty,
+ * #NOBODY is returned. */
 Player board_get_top(Board *b, int8_t col);
 
+/*! Detects whether the specified column is full. */
 bool board_column_full(Board *b, int8_t col);
 
+/*! Detects whether all columns are full and the game is drawn. */
 bool board_full(Board *b);
 
-/* Reads a binary representation and compiles it into a Board struct object. The
- * board is encoded as in Board.code.
- * @Deprecated just read Board.code
+/*! Reconstructs a complete board representation from the given Gödel number,
+ * such that board_decode(*b, b.code) is a no-op.
  */
-uint64_t board_encode(Board *b);
-
 void board_decode(Board *b, uint64_t n);
 
+/*! Prints a textual representation of the board. The quoted parts of the string
+ * representation are compatible with #parser_read, making it easy to import a
+ * board position into code. */
 void board_print(Board *b);
 
+/*! Same as board_print, just with indentation. */
 void board_printd(Board *b, int8_t depth);
 
 #endif	/* _BOARD_H */
