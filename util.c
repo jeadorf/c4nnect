@@ -1,6 +1,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdint.h>
+#include <inttypes.h>
 
 void handle_error(char *msg) {
     fputs("ERROR: ", stderr);
@@ -16,6 +17,5 @@ void print_uint64_rev(uint64_t n) {
         }
         putchar((n & (1UL << i)) ? '1' : '0');
     };
-    printf(" --- 0x%.16lX\n", n);
-
+    printf(" --- 0x%.16" PRId64 "\n", n);
 }

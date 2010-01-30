@@ -3,6 +3,7 @@
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
+#include <inttypes.h>
 #include "benchmark.h"
 #include "stats.h"
 #include "board.h"
@@ -22,11 +23,11 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     SearchRecord acc;
     searchrecord_init(&acc);
     int32_t cnt = 0;
-    double_t visited_cnt = 0, eval_cnt = 0,
+    double visited_cnt = 0, eval_cnt = 0,
             abcut_cnt = 0, ttcut_cnt = 0, ttrcoll_cnt = 0, ttadd_cnt = 0,
             max_depth = 0, reached_depth = 0, cpu_time = 0, solved = 0;
     // FIXME: %llX in Debug-32, %lX in Debug-64
-    while (fscanf(positions_in, "%lX", &n) == 1) {
+    while (fscanf(positions_in, "%" PRIu64, &n) == 1) {
         Board b;
         board_decode(&b, n);
         
@@ -35,12 +36,12 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
         search(&b, &rec);
 
         fprintf(stats_out,
-                "0x%-.16lX , %4d , %6.1f , %11ld , "
-                "%11ld , %10ld , %10ld , %10ld , %10ld , %9.2f, "
-                "%10d , %13d , %7ld\n",
+                "0x%-.16" PRIu64 " , %4d , %6.1f , %11" PRId64 " , "
+                "%11" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , %9.2f, "
+                "%10d , %13d , %7" PRId32 "\n",
                 n, rec.move, rec.rating, rec.visited_cnt, rec.eval_cnt,
                 rec.abcut_cnt, rec.ttcut_cnt, rec.ttadd_cnt, rec.ttrcoll_cnt, rec.ttcharge,
-                rec.max_depth, rec.reached_depth, rec.cpu_time / (CLOCKS_PER_SEC / 1000));
+                rec.max_depth, rec.reached_depth, (int) (rec.cpu_time / (CLOCKS_PER_SEC / 1000)));
 
         visited_cnt += rec.visited_cnt;
         eval_cnt += rec.eval_cnt;
@@ -62,8 +63,8 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
             "abcut_cnt", "ttcut_cnt","ttadd_cnt", "ttrcoll_cnt", "final ttcharge",
             "max_depth", "reached_depth", "cpu_time");
     if (cnt > 0) {
-        fprintf(summary_out, "%6.3f%% , %11ld , %11ld , %10ld , %10ld , %10ld , %10ld , "
-                "%15.2f ,  %10.2f , %13.2f , %7ld\n",
+        fprintf(summary_out, "%6.3f%% , %11" PRId64 " , %11" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , "
+                "%15.2f ,  %10.2f , %13.2f , %7" PRId64 "\n",
                 (solved / cnt),
                 (int64_t) (visited_cnt / cnt),
                 (int64_t) (eval_cnt / cnt),
@@ -107,9 +108,9 @@ void benchmark_sample(FILE *boards_out) {
             }
         } while (failed);
 
-        fprintf(boards_out, "0x%.16lX\n", b.code);
+        fprintf(boards_out, "0x%.16" PRIu64 "\n", b.code);
         fflush(boards_out);
-        printf("\n0x%.16lX\n", b.code);
+        printf("\n0x%.16" PRIu64 "\n", b.code);
         board_print(&b);
 
         remaining_samples--;

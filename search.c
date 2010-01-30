@@ -18,22 +18,20 @@ extern TTEntry ttable[];
 
 // Simple move ordering, start with checking the moves in the center and
 // then circle to the outer columns
-void generate_moves(SearchRecord *rec, int depth, int8_t *moves) {
-    for (int8_t i = 0, col; i < NUM_COLS; i++) {
-        col = (NUM_COLS / 2) + (i % 2 == 0 ? 1 : -1) * (i + 1) / 2;
-        moves[i] = col;
-    }
 
+void generate_moves(SearchRecord *rec, int depth, int8_t *moves) {
+    int8_t i = 0, k = 0, col = 0;
     if (depth < rec->pv.length) {
-        int8_t tmp = moves[0];
         moves[0] = rec->pv.moves[depth];
-        // TODO: merge loops
-        for (int8_t i = 1; i < NUM_COLS; i++) {
-            if (moves[i] == moves[0]) {
-                moves[i] = tmp;
-                break;
-            }
+        i++;
+    }
+    while (k < NUM_COLS) {
+        col = (NUM_COLS / 2) + (k % 2 == 0 ? 1 : -1) * (k + 1) / 2;
+        if (i == 0 || col != moves[0]) {
+            moves[i] = col;
+            i++;
         }
+        k++;
     }
 }
 
@@ -134,6 +132,9 @@ void alphabeta_negamax(
     }
 }
 
+// TODO: use principle variation from last search! Might check whether we
+//      are still in this variation!
+
 int8_t searchm(Board * b) {
     SearchRecord rec;
     searchrecord_init(&rec);
@@ -144,7 +145,7 @@ int8_t searchm(Board * b) {
 void search(Board *b, SearchRecord * rec) {
     rec->cpu_time = clock();
 
-    //  The maximum numbers of iterations (or plies) the search will do depends
+    // The maximum numbers of iterations (or plies) the search will do depends
     // on the current stage of the game.
     // If the game is at its very beginning, there is no use in doing a lot of
     // research if no forced variation can be found. In later stages, the number
@@ -161,7 +162,10 @@ void search(Board *b, SearchRecord * rec) {
     for (int8_t max_depth = 1; max_depth < iterations; max_depth++) {
         alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, rec);
         if (rec->winner_identified) {
-            // We might need to defer a defeat.
+            // Defer defeats that are unavoidable. The computer should at least not to
+            // lose in the next move even if the computer sees that he will lose against
+            // the perfect-playing opponent. Deferring defeats does only work without
+            // transposition tables that are not cleared between subsequent searches.
             if (rec->rating <= ALPHA_MIN) {
                 int8_t reached_depth = rec->reached_depth;
                 SearchRecord defrec;
@@ -184,10 +188,6 @@ void search(Board *b, SearchRecord * rec) {
             break;
         }
     }
-    // Defer defeats that are unavoidable. The computer should at least not to
-    // lose in the next move even if the computer sees that he will lose against
-    // the perfect-playing opponent. Deferring defeats does only work without
-    // transposition tables that are not cleared between subsequent searches.
     rec->cpu_time = clock() - rec->cpu_time;
     rec->ttcharge = ttable_charge();
 }

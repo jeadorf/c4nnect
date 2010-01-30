@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <math.h>
 #include <stdio.h>
+#include <inttypes.h>
 #include "eval.h"
 #include "ttable.h"
 #include "stats.h"
@@ -45,22 +46,22 @@ void stats_print(Board *b, SearchRecord * rec) {
     printf("%19s : %d\n", "Defeat deferred", rec->defeat_deferred);
     printf("%19s : %d\n", "Maximum depth", rec->max_depth);
     printf("%19s : %d\n", "Reached depth", rec->reached_depth);
-    printf("%19s : %ld\n", "Evaluations", rec->eval_cnt);
-    printf("%19s : %ld\n", "Positions", rec->visited_cnt);
+    printf("%19s : %" PRId64 "\n", "Evaluations", rec->eval_cnt);
+    printf("%19s : %" PRId64 "\n", "Positions", rec->visited_cnt);
     // The average branching does not give a feedback on good move ordering
     // since it is not weighted and the inner nodes near the leaves dominate
     // this calculation
     printf("%19s : %.2f\n", "Average branching", (rec->visited_cnt - 1.0) / (rec->visited_cnt - rec->eval_cnt));
-    printf("%19s : %ld\n", "Alpha-Beta cuts", rec->abcut_cnt);
-    printf("%19s : %ld\n", "TT cuts", rec->ttcut_cnt);
-    printf("%19s : %ld\n", "TT inserts", rec->ttadd_cnt);
+    printf("%19s : %" PRId64 "\n", "Alpha-Beta cuts", rec->abcut_cnt);
+    printf("%19s : %" PRId64 "\n", "TT cuts", rec->ttcut_cnt);
+    printf("%19s : %" PRId64 "\n", "TT inserts", rec->ttadd_cnt);
     printf("%19s : %.1f %%\n", "TT inserts / pos", (100.0 * rec->ttadd_cnt) / rec->visited_cnt);
-    printf("%19s : %ld\n", "TT read collisions", rec->ttrcoll_cnt);
+    printf("%19s : %" PRId64 "\n", "TT read collisions", rec->ttrcoll_cnt);
     printf("%19s : %.1f %%\n", "TT charge", rec->ttcharge * 100);
     printf("%19s : %d\n", "TT entries", ttable_entry_cnt());
     printf("%19s : %d\n", "TT size", TTABLE_SIZE);
 
     printf("%19s : %d ms\n", "CPU time", (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)));
-    printf("%19s : 0x%.16lX\n", "Board", b->code);
+    printf("%19s : 0x%.16" PRIu64 "\n", "Board", b->code);
     putchar('\n');
 }
