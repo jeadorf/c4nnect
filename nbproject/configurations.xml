@@ -126,6 +126,60 @@
         </linkerTool>
       </compileType>
     </conf>
+    <conf name="Debug-64-TT" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>2</architecture>
+          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_TTABLE</commandLine>
+          <warningLevel>3</warningLevel>
+        </cTool>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Debug-64-AB" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>2</architecture>
+          <commandLine>-std=c99 -Wextra -pedantic-errors -DDISABLE_ABCUTS -DDEBUG</commandLine>
+          <warningLevel>3</warningLevel>
+        </cTool>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
+    <conf name="Debug-64-AB-TT" type="1">
+      <toolsSet>
+        <developmentServer>localhost</developmentServer>
+        <compilerSet>GNU|GNU</compilerSet>
+        <platform>2</platform>
+      </toolsSet>
+      <compileType>
+        <cTool>
+          <architecture>2</architecture>
+          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_ABCUTS -DDISABLE_TTABLE</commandLine>
+          <warningLevel>3</warningLevel>
+        </cTool>
+        <linkerTool>
+          <linkerLibItems>
+          </linkerLibItems>
+        </linkerTool>
+      </compileType>
+    </conf>
     <conf name="Debug" type="1">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
@@ -136,60 +190,6 @@
         <cTool>
           <architecture>1</architecture>
           <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG</commandLine>
-          <warningLevel>3</warningLevel>
-        </cTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
-      </compileType>
-    </conf>
-    <conf name="Debug-TT" type="1">
-      <toolsSet>
-        <developmentServer>localhost</developmentServer>
-        <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
-      </toolsSet>
-      <compileType>
-        <cTool>
-          <architecture>1</architecture>
-          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_TTABLE</commandLine>
-          <warningLevel>3</warningLevel>
-        </cTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
-      </compileType>
-    </conf>
-    <conf name="Debug-AB" type="1">
-      <toolsSet>
-        <developmentServer>localhost</developmentServer>
-        <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
-      </toolsSet>
-      <compileType>
-        <cTool>
-          <architecture>1</architecture>
-          <commandLine>-std=c99 -Wextra -pedantic-errors -DDISABLE_ABCUTS -DDEBUG</commandLine>
-          <warningLevel>3</warningLevel>
-        </cTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
-      </compileType>
-    </conf>
-    <conf name="Debug-AB-TT" type="1">
-      <toolsSet>
-        <developmentServer>localhost</developmentServer>
-        <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
-      </toolsSet>
-      <compileType>
-        <cTool>
-          <architecture>1</architecture>
-          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_ABCUTS -DDISABLE_TTABLE</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
         <linkerTool>

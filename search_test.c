@@ -10,8 +10,50 @@
 #include "search_test.h"
 #include "board2eps.h"
 
+static char* assert_surjectivity(int8_t *moves) {
+    for (int k = 0; k < NUM_COLS; k++) {
+        bool found = false;
+        for (int l = 0; l < NUM_COLS; l++) {
+            if (moves[l] == k) {
+                found = true;
+            }
+        }
+        mu_assert("Not all moves have been generated!", found);
+    }
+    return 0;
+}
+
+static char* test_genmove_surjectivity_simple() {
+    printf("test_genmove_surjectivity_simple\n");
+    Board b;
+    board_init(&b);
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    int8_t moves[NUM_COLS];
+    generate_moves(&rec, 0, moves);
+    assert_surjectivity(moves);
+    return 0;
+}
+
+static char* test_genmove_pv_first() {
+    printf("test_genmove_pv_first\n");
+    Board b;
+    board_init(&b);
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    rec.pv.length = 1;
+    for (int8_t col = 0; col < NUM_COLS; col++) {
+        rec.pv.moves[0] = col;
+        int8_t moves[NUM_COLS];
+        generate_moves(&rec, 0, moves);
+        assert_surjectivity(moves);
+        mu_assert("Expected move from principal variation to be first", moves[0] == rec.pv.moves[0]);
+    }
+    return 0;
+}
+
 static char* test_abn_white_win() {
-    printf("build/test_abn_white_win\n");
+    printf("test_abn_white_win\n");
     Board b;
     parser_read(&b,
             "- - - - - - -"
@@ -24,8 +66,9 @@ static char* test_abn_white_win() {
     SearchRecord rec;
     searchrecord_init(&rec);
     alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, true, &rec);
-    mu_assert("error, minimax value should be very big", rec.rating  > 90);
+    mu_assert("error, minimax value should be very big", rec.rating > 90);
     mu_assert("error, should find winning move", rec.move == 3);
+
     return 0;
 }
 
@@ -45,6 +88,7 @@ static char* test_abn_white_win2() {
     alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, &rec);
     mu_assert("error, should find winning move", rec.move == 4);
     mu_assert("error, minimax value should be very big", rec.rating > 90);
+
     return 0;
 }
 
@@ -64,6 +108,7 @@ static char* test_abn_black_win() {
     alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, &rec);
     mu_assert("error, should find winning move", rec.move == 3);
     mu_assert("error, minimax value should be very big", rec.rating > 90);
+
     return 0;
 }
 
@@ -83,6 +128,7 @@ static char* test_search_white_win() {
     // defeat in this position though this is rather unlikely.
     board_put(&b, 1); // add white piece, let black move
     mu_assert("error, should find saving move", searchm(&b) == 3);
+
     return 0;
 }
 
@@ -104,6 +150,7 @@ static char* test_search_fastest_white_win() {
             "b - b w w w b");
     fboard2eps(&b, "build/test_search_fastest_white_win.eps");
     mu_assert("error, should find fastest winning move", searchm(&b) == 4);
+
     return 0;
 }
 
@@ -120,6 +167,7 @@ static char* test_search_black_win() {
     fboard2eps(&b, "build/test_search_black_win.eps");
     mu_assert("error, should find winning move", searchm(&b) == 3);
     mu_assert("error, should find saving move", searchm(&b) == 3);
+
     return 0;
 }
 
@@ -135,6 +183,7 @@ static char* test_search_white_win3() {
             "b b b w w b -");
     fboard2eps(&b, "build/test_search_white_win3.eps");
     mu_assert("error, should find winning move h", searchm(&b) == 1);
+
     return 0;
 }
 
@@ -156,6 +205,7 @@ static char* test_beginning_trap_white() {
     fboard2eps(&b, "build/test_beginning_trap_white.eps");
     int8_t col = searchm(&b);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
+
     return 0;
 }
 
@@ -172,6 +222,7 @@ static char* test_beginning_trap_black() {
     fboard2eps(&b, "build/test_beginning_trap_black.eps");
     int8_t col = searchm(&b);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
+
     return 0;
 }
 
@@ -187,6 +238,7 @@ static char* test_fast_black_win() {
             "w w b b w w w");
     fboard2eps(&b, "build/test_fast_black_win.eps");
     mu_assert("error, should choose 3-ply win", 5 == searchm(&b));
+
     return 0;
 }
 
@@ -208,23 +260,55 @@ static char* test_search_defer_defeat() {
             "b - b w w w b");
     fboard2eps(&b, "build/test_search_defer_defeat.eps");
     mu_assert("error, should defer defeat", searchm(&b) == 4);
+
+    return 0;
+}
+
+static char* test_white_difficult_win() {
+    printf("test_white_difficult_win\n");
+    Board b;
+    // TODO: Needs proof that this is a win for white when black is to move
+    parser_read(&b,
+            "- - - b b - - "
+            "- - w w b w - "
+            "- - w w w b - "
+            "- - b b w b - "
+            "- - w w b b - "
+            "- - b w w w b ");
+    fboard2eps(&b, "build/test_white_difficult_win.eps");
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    mu_assert("It should be black's turn", b.turn == BLACK);
+    search(&b, &rec);
+    mu_assert("Position should be classified as a white win", rec.rating <= ALPHA_MIN);
+    while (b.winner == NOBODY && !board_full(&b)) {
+        board_put(&b, searchm(&b));
+    }
+    mu_assert("Game should be won by white", b.winner == WHITE);
+
     return 0;
 }
 
 static char* all_tests() {
+    mu_run_test(test_genmove_surjectivity_simple);
+    mu_run_test(test_genmove_pv_first);
     mu_run_test(test_abn_white_win);
     mu_run_test(test_abn_black_win);
     mu_run_test(test_abn_white_win2);
     mu_run_test(test_search_white_win);
-/*
-    mu_run_test(test_search_fastest_white_win);
-*/
+    /*
+        mu_run_test(test_search_fastest_white_win);
+     */
     mu_run_test(test_search_white_win3);
     mu_run_test(test_search_black_win);
     mu_run_test(test_beginning_trap_white);
     mu_run_test(test_beginning_trap_black);
     mu_run_test(test_search_defer_defeat);
-    mu_run_test(test_fast_black_win);
+    /*
+        mu_run_test(test_fast_black_win);
+     */
+    mu_run_test(test_white_difficult_win);
+
     return 0;
 }
 

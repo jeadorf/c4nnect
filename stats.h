@@ -57,4 +57,6 @@ typedef struct SearchRecord SearchRecord;
 
 void searchrecord_init(SearchRecord *rec);
 
+void stats_print(Board *b, SearchRecord * rec);
+
 #endif	/* _STATS_H */

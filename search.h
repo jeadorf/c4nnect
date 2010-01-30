@@ -12,6 +12,9 @@ int8_t searchm(Board *b);
  * board while searching are reverted before returning. */
 void search(Board *b, SearchRecord *rec);
 
+/*! Orders moves. Moves that look promising come first. */
+void generate_moves(SearchRecord *rec, int depth, int8_t *moves);
+
 void alphabeta_negamax(Board *b,
         float alpha, float beta,
         int8_t depth, int8_t max_depth, bool ttcuts_enabled,

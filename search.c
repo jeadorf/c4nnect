@@ -16,11 +16,32 @@ void stats_print(Board *b, SearchRecord *rec);
 
 extern TTEntry ttable[];
 
+// Simple move ordering, start with checking the moves in the center and
+// then circle to the outer columns
+void generate_moves(SearchRecord *rec, int depth, int8_t *moves) {
+    for (int8_t i = 0, col; i < NUM_COLS; i++) {
+        col = (NUM_COLS / 2) + (i % 2 == 0 ? 1 : -1) * (i + 1) / 2;
+        moves[i] = col;
+    }
+
+    if (depth < rec->pv.length) {
+        int8_t tmp = moves[0];
+        moves[0] = rec->pv.moves[depth];
+        // TODO: merge loops
+        for (int8_t i = 1; i < NUM_COLS; i++) {
+            if (moves[i] == moves[0]) {
+                moves[i] = tmp;
+                break;
+            }
+        }
+    }
+}
+
 void alphabeta_negamax(
         Board *b,
         float alpha, float beta,
         int8_t depth, int8_t max_depth, bool ttcuts_enabled,
-        SearchRecord *rec) {
+        SearchRecord * rec) {
 #ifndef DISABLE_TTABLE
     uint32_t hash = b->code % TTABLE_SIZE;
     TTEntry *ttentry = &(ttable[hash]);
@@ -32,7 +53,7 @@ void alphabeta_negamax(
         rec->rating = (b->turn == WHITE ? 1 : -1) * eval(b);
         rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
         rec->eval_cnt++;
-        rec->pv.length = 0; // TODO: init to 0 by default
+        rec->pv.length = 0;
 #ifndef DISABLE_TTABLE
     } else if (ttcuts_enabled && ttentry->code == b->code && depth > 0) {
         // The transposition entry does not contain information about the move
@@ -41,7 +62,7 @@ void alphabeta_negamax(
         rec->rating = ttentry->rating;
         rec->winner_identified = true;
         rec->ttcut_cnt++;
-        rec->pv.length = 0; // TODO: init to 0 by default
+        rec->pv.length = 0;
 #endif
     } else {
 #ifndef DISABLE_TTABLE
@@ -53,15 +74,13 @@ void alphabeta_negamax(
         float bestval = alpha;
         int bestcol = -1;
         Variation pv = rec->pv;
-        // Simple move ordering, start with checking the moves in the center and
-        // then circle to the outer columns
-        // TODO: find better move ordering such that we can use negascout (PVS) here
-        // it's probably best to evaluate the column first where the opponent has
-        // put his piece - because it's likely to influence the game locally and
-        // threats are detected more easily. Secondly, we can use information from
-        // previous searches or even create a killer move table or some other
-        // history heuristic
-        for (int8_t i = 0, s = -1, col = NUM_COLS / 2; i < NUM_COLS; i++, s *= -1, col += s * i) {
+
+        // FIXME: There might be invalid boards that are not classified
+        //        correctly because of transposition tables!
+        int8_t moves[NUM_COLS];
+        generate_moves(rec, depth, moves);
+        for (int8_t i = 0; i < NUM_COLS; i++) {
+            int8_t col = moves[i];
             if (!board_column_full(b, col)) {
                 // Make move
                 board_put(b, col);
@@ -113,21 +132,16 @@ void alphabeta_negamax(
     if (depth > rec->reached_depth) {
         rec->reached_depth = depth;
     }
-
-#ifdef DDEBUG
-    board_printd(b, depth);
-    stats_print(b, rec);
-#endif
 }
 
-int8_t searchm(Board *b) {
+int8_t searchm(Board * b) {
     SearchRecord rec;
     searchrecord_init(&rec);
     search(b, &rec);
     return rec.move;
 }
 
-void search(Board *b, SearchRecord *rec) {
+void search(Board *b, SearchRecord * rec) {
     rec->cpu_time = clock();
 
     //  The maximum numbers of iterations (or plies) the search will do depends
@@ -140,7 +154,6 @@ void search(Board *b, SearchRecord *rec) {
     // The iterative approach implies that max_depth will never exceed reached_depth
     int8_t iterations = 11 + (b->move_cnt * b->move_cnt) * 1.25 / (NUM_COLS * NUM_ROWS);
     // Maximum iterations should not exceed number of free slots
-    // TODO: simplify max operation
     // TODO: remove magic number 42
     if (iterations > (42 - b->move_cnt)) {
         iterations = 43 - b->move_cnt;
@@ -148,7 +161,7 @@ void search(Board *b, SearchRecord *rec) {
     for (int8_t max_depth = 1; max_depth < iterations; max_depth++) {
         alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, rec);
         if (rec->winner_identified) {
-            // We might need to defer a defeat. 
+            // We might need to defer a defeat.
             if (rec->rating <= ALPHA_MIN) {
                 int8_t reached_depth = rec->reached_depth;
                 SearchRecord defrec;
@@ -166,6 +179,7 @@ void search(Board *b, SearchRecord *rec) {
                 rec->ttcut_cnt += defrec.ttcut_cnt;
                 rec->ttadd_cnt += defrec.ttadd_cnt;
                 rec->ttrcoll_cnt += defrec.ttrcoll_cnt;
+                rec->reached_depth = reached_depth;
             }
             break;
         }
@@ -176,51 +190,4 @@ void search(Board *b, SearchRecord *rec) {
     // transposition tables that are not cleared between subsequent searches.
     rec->cpu_time = clock() - rec->cpu_time;
     rec->ttcharge = ttable_charge();
-
-#ifdef DEBUG
-    stats_print(b, rec);
-#endif
 }
-
-#ifdef DEBUG
-
-void stats_print(Board *b, SearchRecord *rec) {
-    // Print statistics
-    board_print(b);
-    printf("%19s : %d\n", "Move", rec->move);
-    printf("%19s : ", "Principal variation");
-    for (int i = 0; i < rec->pv.length; i++) {
-        printf("%d ", rec->pv.moves[i]);
-    }
-    putchar('\n');
-    if (rec->rating >= BETA_MAX) {
-        printf("%19s : %s\n", "Rating", b->turn == WHITE ? "White will win" : "Black will win");
-    } else if (rec->rating <= ALPHA_MIN) {
-        printf("%19s : %s\n", "Rating", other(b->turn) == WHITE ? "White will win" : "Black will win");
-    } else {
-        printf("%19s : %.1f\n", "Rating", rec->rating);
-    }
-    printf("%19s : %d\n", "Winner identified", rec->winner_identified);
-    printf("%19s : %d\n", "Defeat deferred", rec->defeat_deferred);
-    printf("%19s : %d\n", "Maximum depth", rec->max_depth);
-    printf("%19s : %d\n", "Reached depth", rec->reached_depth);
-    printf("%19s : %ld\n", "Evaluations", rec->eval_cnt);
-    printf("%19s : %ld\n", "Positions", rec->visited_cnt);
-    // The average branching does not give a feedback on good move ordering
-    // since it is not weighted and the inner nodes near the leaves dominate
-    // this calculation
-    printf("%19s : %.2f\n", "Average branching", (rec->visited_cnt - 1.0) / (rec->visited_cnt - rec->eval_cnt));
-    printf("%19s : %ld\n", "Alpha-Beta cuts", rec->abcut_cnt);
-    printf("%19s : %ld\n", "TT cuts", rec->ttcut_cnt);
-    printf("%19s : %ld\n", "TT inserts", rec->ttadd_cnt);
-    printf("%19s : %.1f %%\n", "TT inserts / pos", (100.0 * rec->ttadd_cnt) / rec->visited_cnt);
-    printf("%19s : %ld\n", "TT read collisions", rec->ttrcoll_cnt);
-    printf("%19s : %.1f %%\n", "TT charge", rec->ttcharge * 100);
-    printf("%19s : %d\n", "TT entries", ttable_entry_cnt());
-    printf("%19s : %d\n", "TT size", TTABLE_SIZE);
-
-    printf("%19s : %d ms\n", "CPU time", (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)));
-    printf("%19s : 0x%.16lX\n", "Board", b->code);
-    putchar('\n');
-}
-#endif
