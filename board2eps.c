@@ -2,6 +2,8 @@
 #include "board.h"
 #include "util.h"
 
+#define EPS_BUFFER_SIZE 4096
+
  void fboard2eps(Board *b, char *filename) {
     FILE *eps_out = fopen(filename, "w");
     board2eps(b, eps_out);
@@ -9,17 +11,15 @@
 }
 
 void board2eps(Board *b, FILE *eps_out) {
-    // TODO: where to read template from?
-     // TODO: might be advisable to memory map the template file
     FILE *template_in = fopen("board.eps", "r");
     if (template_in == NULL) {
         handle_error("Cannot read PostScript board template file");
     }
 
-    // TODO: improve copy procedure
-    char c;
-    while ((c = getc(template_in)) != EOF) {
-        putc(c, eps_out);
+    int buf[EPS_BUFFER_SIZE];
+    size_t r;
+    while ((r = fread(buf, 1, EPS_BUFFER_SIZE, template_in)) > 0) {
+        fwrite(buf, 1, r, eps_out);
     }
     fclose(template_in);
     fputs("\n% board data\n", eps_out);

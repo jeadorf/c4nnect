@@ -7,7 +7,6 @@
 #include "stats.h"
 
 void searchrecord_init(SearchRecord *rec) {
-    rec->move = 0;
     rec->pv.length = 0;
     rec->rating = 0;
     rec->eval_cnt = 0UL;
@@ -27,17 +26,17 @@ void searchrecord_init(SearchRecord *rec) {
 void stats_print(Board *b, SearchRecord * rec) {
     // Print statistics
     board_print(b);
-    printf("%19s : %s\n", "Turn", b->turn == WHITE ? "White" : "Black");
-    printf("%19s : %d\n", "Move", rec->move);
+    printf("%19s : %s\n", "Turn", name(b->turn));
+    printf("%19s : %d\n", "Move", rec->pv.moves[0]);
     printf("%19s : ", "Principal variation");
     for (int i = 0; i < rec->pv.length; i++) {
         printf("%d ", rec->pv.moves[i]);
     }
     putchar('\n');
     if (rec->rating >= BETA_MAX) {
-        printf("%19s : %s\n", "Absolute rating", b->turn == WHITE ? "White will win" : "Black will win");
+        printf("%19s : %s will win\n", "Absolute rating", name(b->turn));
     } else if (rec->rating <= ALPHA_MIN) {
-        printf("%19s : %s\n", "Absolute rating", other(b->turn) == WHITE ? "White will win" : "Black will win");
+        printf("%19s : %s will win\n", "Absolute rating", name(other(b->turn)));
     } else {
         printf("%19s : %.1f\n", "Absolute rating", b->turn == WHITE ? rec->rating : -rec->rating);
     }

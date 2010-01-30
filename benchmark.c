@@ -26,7 +26,6 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     double visited_cnt = 0, eval_cnt = 0,
             abcut_cnt = 0, ttcut_cnt = 0, ttrcoll_cnt = 0, ttadd_cnt = 0,
             max_depth = 0, reached_depth = 0, cpu_time = 0, solved = 0;
-    // FIXME: %llX in Debug-32, %lX in Debug-64
     while (fscanf(positions_in, "%" PRIu64, &n) == 1) {
         Board b;
         board_decode(&b, n);
@@ -39,7 +38,7 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
                 "0x%-.16" PRIu64 " , %4d , %6.1f , %11" PRId64 " , "
                 "%11" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , %9.2f, "
                 "%10d , %13d , %7" PRId32 "\n",
-                n, rec.move, rec.rating, rec.visited_cnt, rec.eval_cnt,
+                n, rec.pv.moves[0], rec.rating, rec.visited_cnt, rec.eval_cnt,
                 rec.abcut_cnt, rec.ttcut_cnt, rec.ttadd_cnt, rec.ttrcoll_cnt, rec.ttcharge,
                 rec.max_depth, rec.reached_depth, (int) (rec.cpu_time / (CLOCKS_PER_SEC / 1000)));
 

@@ -16,12 +16,10 @@ struct Variation {
 typedef struct Variation Variation;
 
 struct SearchRecord {
-    /*! Recommended move. */
-    int8_t move;
-    /*! Rating of the move. */
-    float rating;
     /*! Principal variation. */
     Variation pv;
+    /*! Rating of the principal variation. */
+    float rating;
     /*! Number of evaluated positions during search. */
     int64_t eval_cnt;
     /*! Number of visited positions during search. This includes both leaves and

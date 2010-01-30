@@ -4,27 +4,31 @@
 #include "board.h"
 #include "util.h"
 
-/* Returns the number of pieces in the c-th column of a board with code n. You
+/*! Returns the number of pieces in the c-th column of a board with code n. You
  * MUST NOT call this macro with parameters that contain side-effects. */
 #define GET_TOP(n, c) (((n) >> (NUM_ROWS + (c) * 9)) & 0x7)
-/* Encodes the number of pieces in the c-th column of a board with code n. You
+/*! Encodes the number of pieces in the c-th column of a board with code n. You
  * MUST NOT call this macro with parameters that contain side-effects. */
 #define SET_TOP(n, c, t) (((n) & ~(((uint64_t) 0x7) << (NUM_ROWS + (c) * 9))) | (((uint64_t) (t) << (NUM_ROWS + (c) * 9))))
-/* Returns the bit at row r and column c of a board with code n. You
+/*! Returns the bit at row r and column c of a board with code n. You
  * MUST NOT call this macro with parameters that contain side-effects. */
 #define GET(n, r, c) ((n) >> ((c) * 9 + (r)) & 1)
-/* Sets or deletes a bit at row r and column c of a board with code n. You
+/*! Sets or deletes a bit at row r and column c of a board with code n. You
  * MUST NOT call this macro with parameters that contain side-effects. */
 #define SET(n, r, c, p) (((n) & ~(((uint64_t) 1) << ((c) * 9 + (r)))) | (((uint64_t) (p)) << ((c) * 9 + (r))))
-/* Get the player to move */
+/*! Get the player to move. */
 #define GET_TURN(n) ((n) >> 63)
-/* Set the player to move */
+/*! Set the player to move. */
 #define SET_TURN(n, p) ((n) ^ (((uint64_t) 1) << 63) | ((uint64_t) (p)) << 63)
-/* Set the opponent to be the player to move */
+/*! Set the opponent to be the player to move. */
 #define OTHER(n) ((n) ^ (((uint64_t) 1) << 63))
 
 inline Player other(Player p) {
     return p == WHITE ? BLACK : WHITE;
+}
+
+inline char* name(Player p) {
+    return p == WHITE ? "White" : "Black";
 }
 
 void board_init(Board *b) {

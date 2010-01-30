@@ -26,8 +26,6 @@ static char* test_collect_principal_variation() {
     // ply.
     alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, false, &rec);
     mu_assert("error, expected principal variation to be longer", rec.pv.length >= 2);
-    mu_assert("error, expected first move of principal variation and search record to match ",
-            rec.pv.moves[0] == rec.move);
     mu_assert("error, expected saving move", rec.pv.moves[0] == 3);
     mu_assert("error, expected saving move", rec.pv.moves[1] == 3);
     return 0;

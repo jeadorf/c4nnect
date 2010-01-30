@@ -17,8 +17,7 @@ extern void stats_print(Board *b, SearchRecord *rec);
 
 static bool check_game_end(Board *b) {
     if (b->winner != NOBODY) {
-        // TODO: Create array for looking up player names
-        printf("%s wins!\n", b->winner == WHITE ? "White" : "Black");
+        printf("%s wins!\n", name(b->winner));
         return true;
     } else if (board_full(b)) {
         printf("Game drawn!\n");
@@ -65,7 +64,7 @@ static void play_game() {
         stats_print(&b, &rec);
 #endif
 
-        board_put(&b, rec.move);
+        board_put(&b, rec.pv.moves[0]);
     }
 }
 

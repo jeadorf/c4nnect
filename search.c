@@ -113,7 +113,6 @@ void alphabeta_negamax(
 
         rec->pv = pv;
         rec->rating = bestval;
-        rec->move = bestcol;
         rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
 #ifndef DISABLE_TTABLE
         if (rec->winner_identified) {
@@ -139,7 +138,7 @@ int8_t searchm(Board * b) {
     SearchRecord rec;
     searchrecord_init(&rec);
     search(b, &rec);
-    return rec.move;
+    return rec.pv.moves[0];
 }
 
 void search(Board *b, SearchRecord * rec) {
@@ -176,7 +175,6 @@ void search(Board *b, SearchRecord * rec) {
                 // results
                 rec->defeat_deferred = true;
                 rec->pv = defrec.pv;
-                rec->move = defrec.move;
                 rec->visited_cnt += defrec.visited_cnt;
                 rec->eval_cnt += defrec.eval_cnt;
                 rec->abcut_cnt += defrec.abcut_cnt;
