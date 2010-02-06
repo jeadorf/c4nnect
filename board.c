@@ -31,46 +31,66 @@ inline char* name(Player p) {
     return p == WHITE ? "White" : "Black";
 }
 
+/* Bit masks for detection of winning moves */
+static uint64_t LEFT3[NUM_ROWS][NUM_COLS];
+static uint64_t LEFT2[NUM_ROWS][NUM_COLS];
+static uint64_t LEFT1[NUM_ROWS][NUM_COLS];
+static uint64_t LEFT0[NUM_ROWS][NUM_COLS];
+static uint64_t DOWN3[NUM_ROWS][NUM_COLS];
+
+uint64_t mask_left(int8_t row, int8_t col, int8_t s) {
+    if (col - s >= 0 && col - s < NUM_COLS - 3) {
+        uint64_t mask = 0UL;
+        mask = SET(mask, row, col - s, 1);
+        mask = SET(mask, row, col - s + 1, 1);
+        mask = SET(mask, row, col - s + 2, 1);
+        mask = SET(mask, row, col - s + 3, 1);
+        return mask;
+    } else {
+        return 1UL << 63;
+    }
+}
+
+uint64_t mask_down(int8_t row, int8_t col) {
+    if (row >= 3) {
+        uint64_t mask = 0UL;
+        mask = SET(mask, row - 3, col, 1);
+        mask = SET(mask, row - 2, col, 1);
+        mask = SET(mask, row - 1, col, 1);
+        mask = SET(mask, row, col, 1);
+        return mask;
+    } else {
+        return 1UL << 63;
+    }
+}
+
+static void generate_masks() {
+    for (int row = 0; row < NUM_ROWS; row++) {
+        for (int col = 0; col < NUM_COLS; col++) {
+            LEFT3[row][col] = mask_left(row, col, 3);
+            LEFT2[row][col] = mask_left(row, col, 2);
+            LEFT1[row][col] = mask_left(row, col, 1);
+            LEFT0[row][col] = mask_left(row, col, 0);
+            DOWN3[row][col] = mask_down(row, col);
+        }
+    }
+}
+
 void board_init(Board *b) {
     memset(b, 0, sizeof (Board));
     b->winner = NOBODY;
+    generate_masks();
 }
 
 static bool board_move_wins_col(Board *b, Player p, int8_t row, int8_t col) {
-    if (row >= 3) {
-        // TODO: Read bitmask with one operation
-        return GET(b->pos[p], row, col)
-                && GET(b->pos[p], row - 1, col)
-                && GET(b->pos[p], row - 2, col)
-                && GET(b->pos[p], row - 3, col);
-
-    } else {
-        return false;
-    }
+    return (b->pos[p] & DOWN3[row][col]) == DOWN3[row][col];
 }
 
-static bool board_move_wins_row(Board *b, Player p, int8_t row, int8_t col) {
-    register int8_t count = 0;
-    // Walk to the left maximum three steps and as long as the pieces match
-    // the player, increment the line counter.
-    register int8_t currentcol = col;
-    while (currentcol >= 0
-            && currentcol >= col - 3
-            && p == board_get(b, row, currentcol)) {
-        count++;
-        currentcol--;
-    }
-    // Walk to the right maximum three steps and as long as the pieces match
-    // the player, increment the line counter. We do not start with the piece
-    // at (row, col) here such that it is not counted twice.
-    currentcol = col + 1;
-    while (currentcol < NUM_COLS
-            && currentcol <= col + 3
-            && p == board_get(b, row, currentcol)) {
-        count++;
-        currentcol++;
-    }
-    return count >= 4;
+bool board_move_wins_row(Board *b, Player p, int8_t row, int8_t col) {
+    return ((b->pos[p] & LEFT3[row][col]) == LEFT3[row][col]) ||
+           ((b->pos[p] & LEFT2[row][col]) == LEFT2[row][col]) ||
+           ((b->pos[p] & LEFT1[row][col]) == LEFT1[row][col]) ||
+           ((b->pos[p] & LEFT0[row][col]) == LEFT0[row][col]);
 }
 
 static bool board_move_wins_diagup(Board *b, Player p, int8_t row, int8_t col) {
@@ -242,12 +262,12 @@ void board_decode(Board *b, uint64_t n) {
     b->turn = GET_TURN(n);
 }
 
-void board_print(Board *b) {
+void board_print(Board * b) {
     board_printd(b, 0);
 }
 
 void board_printd(Board *b, int8_t depth) {
-    int32_t r, c; //
+    int32_t r, c;
     for (r = NUM_ROWS - 1; r >= -2; r--) {
         for (c = 0; c < depth * 4; c++) {
             putchar(' ');

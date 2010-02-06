@@ -289,6 +289,30 @@ static char* test_white_difficult_win() {
     return 0;
 }
 
+static char* test_time_consuming_position() {
+    printf("test_time_consuming_position\n");
+    Board b;
+    // For some reason, this position requires a lot of search time (at least if
+    // the transposition tables are empty. All other position seem to be solved
+    // within at most a second, some deviate to up to 4 seconds (very rare) but
+    // this position needs more than a minute! This is a position where the
+    // search reaches a depth of 20 plies, which explains a lot. Eventually,
+    // white should find a winning strategy. And probably, it is the defeat
+    // deferral making things even worse with transposition tables being disabled
+    // TODO: an idea - limit search depth of defeat deferral
+    // TODO: decrease search depth or impose time limit
+    parser_read(&b,
+            "- - - - - - - "
+            "w - - - - - - "
+            "w - - - b - - "
+            "b - - - w w - "
+            "w w w b b w - "
+            "b b w b b b w ");
+    mu_assert("Should be black's turn", b.turn == BLACK);
+    searchm(&b);
+    return 0;
+}
+
 static char* all_tests() {
     mu_run_test(test_genmove_surjectivity_simple);
     mu_run_test(test_genmove_pv_first);
@@ -308,6 +332,7 @@ static char* all_tests() {
         mu_run_test(test_fast_black_win);
      */
     mu_run_test(test_white_difficult_win);
+    mu_run_test(test_time_consuming_position);
 
     return 0;
 }

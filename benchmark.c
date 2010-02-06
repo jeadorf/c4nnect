@@ -26,17 +26,17 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     double visited_cnt = 0, eval_cnt = 0,
             abcut_cnt = 0, ttcut_cnt = 0, ttrcoll_cnt = 0, ttadd_cnt = 0,
             max_depth = 0, reached_depth = 0, cpu_time = 0, solved = 0;
-    while (fscanf(positions_in, "%" PRIu64, &n) == 1) {
+    while (fscanf(positions_in, "%lX", &n) == 1) {
         Board b;
-        board_decode(&b, n);
-        
+        board_decode(&b, n); // FIXME: probably something to do with PRId32 etc
+        board_print(&b);
         SearchRecord rec;
         searchrecord_init(&rec);
         search(&b, &rec);
 
         fprintf(stats_out,
-                "0x%-.16" PRIu64 " , %4d , %6.1f , %11" PRId64 " , "
-                "%11" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , %9.2f, "
+                "0x%-.16lX , %4d , %6.1f , %11ld , "
+                "%11ld , %10ld , %10ld , %10ld , %10ld , %9.2f, "
                 "%10d , %13d , %7" PRId32 "\n",
                 n, rec.pv.moves[0], rec.rating, rec.visited_cnt, rec.eval_cnt,
                 rec.abcut_cnt, rec.ttcut_cnt, rec.ttadd_cnt, rec.ttrcoll_cnt, rec.ttcharge,
@@ -62,8 +62,8 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
             "abcut_cnt", "ttcut_cnt","ttadd_cnt", "ttrcoll_cnt", "final ttcharge",
             "max_depth", "reached_depth", "cpu_time");
     if (cnt > 0) {
-        fprintf(summary_out, "%6.3f%% , %11" PRId64 " , %11" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , %10" PRId64 " , "
-                "%15.2f ,  %10.2f , %13.2f , %7" PRId64 "\n",
+        fprintf(summary_out, "%6.3f%% , %11ld , %11ld , %10ld , %10ld , %10ld , %10ld , "
+                "%15.2f ,  %10.2f , %13.2f , %7ld\n",
                 (solved / cnt),
                 (int64_t) (visited_cnt / cnt),
                 (int64_t) (eval_cnt / cnt),
@@ -94,7 +94,7 @@ void benchmark_sample(FILE *boards_out) {
             board_init(&b);
             putchar('.');
             for (int i = 0; i < npieces; i++) {
-                int8_t col = rand() % 6;
+                int8_t col = rand() % NUM_COLS;
                 while (board_column_full(&b, col)) {
                     col += 3;
                     col %= NUM_COLS;
@@ -107,9 +107,8 @@ void benchmark_sample(FILE *boards_out) {
             }
         } while (failed);
 
-        fprintf(boards_out, "0x%.16" PRIu64 "\n", b.code);
+        fprintf(boards_out, "0x%.16lX\n", b.code);
         fflush(boards_out);
-        printf("\n0x%.16" PRIu64 "\n", b.code);
         board_print(&b);
 
         remaining_samples--;

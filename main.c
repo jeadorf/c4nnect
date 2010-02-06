@@ -30,7 +30,7 @@ static bool check_game_end(Board *b) {
 static void play_game() {
     Board b;
     board_init(&b);
-
+    
     // TODO: make this safe -- un/signedness
     // TODO: fail if game is over and attempted to move nevertheless
     char c;
