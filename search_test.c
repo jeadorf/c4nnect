@@ -332,7 +332,9 @@ static char* all_tests() {
         mu_run_test(test_fast_black_win);
      */
     mu_run_test(test_white_difficult_win);
+/*
     mu_run_test(test_time_consuming_position);
+*/
 
     return 0;
 }

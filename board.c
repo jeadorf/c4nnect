@@ -32,19 +32,10 @@ inline char* name(Player p) {
 }
 
 /* Bit masks for detection of winning moves */
-static uint64_t LEFT3[NUM_ROWS][NUM_COLS];
-static uint64_t LEFT2[NUM_ROWS][NUM_COLS];
-static uint64_t LEFT1[NUM_ROWS][NUM_COLS];
-static uint64_t LEFT0[NUM_ROWS][NUM_COLS];
-static uint64_t DOWN3[NUM_ROWS][NUM_COLS];
-static uint64_t DIAGA3[NUM_ROWS][NUM_COLS];
-static uint64_t DIAGA2[NUM_ROWS][NUM_COLS];
-static uint64_t DIAGA1[NUM_ROWS][NUM_COLS];
-static uint64_t DIAGA0[NUM_ROWS][NUM_COLS];
-static uint64_t DIAGD3[NUM_ROWS][NUM_COLS];
-static uint64_t DIAGD2[NUM_ROWS][NUM_COLS];
-static uint64_t DIAGD1[NUM_ROWS][NUM_COLS];
-static uint64_t DIAGD0[NUM_ROWS][NUM_COLS];
+static uint64_t DOWN[NUM_ROWS][NUM_COLS];
+static uint64_t LEFT[4][NUM_ROWS][NUM_COLS];
+static uint64_t DIAGA[4][NUM_ROWS][NUM_COLS];
+static uint64_t DIAGD[4][NUM_ROWS][NUM_COLS];
 
 static uint64_t mask_left(int8_t row, int8_t col, int8_t s) {
     if (col - s >= 0 && col - s < NUM_COLS - 3) {
@@ -103,19 +94,12 @@ static uint64_t mask_diagd(int8_t row, int8_t col, int8_t s) {
 static void generate_masks() {
     for (int row = 0; row < NUM_ROWS; row++) {
         for (int col = 0; col < NUM_COLS; col++) {
-            LEFT3[row][col] = mask_left(row, col, 3);
-            LEFT2[row][col] = mask_left(row, col, 2);
-            LEFT1[row][col] = mask_left(row, col, 1);
-            LEFT0[row][col] = mask_left(row, col, 0);
-            DOWN3[row][col] = mask_down(row, col);
-            DIAGA3[row][col] = mask_diaga(row, col, 3);
-            DIAGA2[row][col] = mask_diaga(row, col, 2);
-            DIAGA1[row][col] = mask_diaga(row, col, 1);
-            DIAGA0[row][col] = mask_diaga(row, col, 0);
-            DIAGD3[row][col] = mask_diagd(row, col, 3);
-            DIAGD2[row][col] = mask_diagd(row, col, 2);
-            DIAGD1[row][col] = mask_diagd(row, col, 1);
-            DIAGD0[row][col] = mask_diagd(row, col, 0);
+            for (int s = 0; s <= 3; s++) {
+                LEFT[s][row][col] = mask_left(row, col, s);
+                DIAGA[s][row][col] = mask_diaga(row, col, s);
+                DIAGD[s][row][col] = mask_diagd(row, col, s);
+            }
+            DOWN[row][col] = mask_down(row, col);
         }
     }
 }
@@ -127,34 +111,33 @@ void board_init(Board *b) {
 }
 
 static bool board_move_wins_col(Board *b, Player p, int8_t row, int8_t col) {
-    return (b->pos[p] & DOWN3[row][col]) == DOWN3[row][col];
+    return (b->pos[p] & DOWN[row][col]) == DOWN[row][col];
 }
 
 bool board_move_wins_row(Board *b, Player p, int8_t row, int8_t col) {
-    return ((b->pos[p] & LEFT3[row][col]) == LEFT3[row][col]) ||
-           ((b->pos[p] & LEFT2[row][col]) == LEFT2[row][col]) ||
-           ((b->pos[p] & LEFT1[row][col]) == LEFT1[row][col]) ||
-           ((b->pos[p] & LEFT0[row][col]) == LEFT0[row][col]);
+    return ((b->pos[p] & LEFT[3][row][col]) == LEFT[3][row][col]) ||
+            ((b->pos[p] & LEFT[2][row][col]) == LEFT[2][row][col]) ||
+            ((b->pos[p] & LEFT[1][row][col]) == LEFT[1][row][col]) ||
+            ((b->pos[p] & LEFT[0][row][col]) == LEFT[0][row][col]);
 }
 
 static bool board_move_wins_diagup(Board *b, Player p, int8_t row, int8_t col) {
-    return ((b->pos[p] & DIAGA3[row][col]) == DIAGA3[row][col]) ||
-           ((b->pos[p] & DIAGA2[row][col]) == DIAGA2[row][col]) ||
-           ((b->pos[p] & DIAGA1[row][col]) == DIAGA1[row][col]) ||
-           ((b->pos[p] & DIAGA0[row][col]) == DIAGA0[row][col]);
+    return ((b->pos[p] & DIAGA[3][row][col]) == DIAGA[3][row][col]) ||
+            ((b->pos[p] & DIAGA[2][row][col]) == DIAGA[2][row][col]) ||
+            ((b->pos[p] & DIAGA[1][row][col]) == DIAGA[1][row][col]) ||
+            ((b->pos[p] & DIAGA[0][row][col]) == DIAGA[0][row][col]);
 }
 
 static bool board_move_wins_diagdown(Board *b, Player p, int8_t row, int8_t col) {
-    return ((b->pos[p] & DIAGD3[row][col]) == DIAGD3[row][col]) ||
-           ((b->pos[p] & DIAGD2[row][col]) == DIAGD2[row][col]) ||
-           ((b->pos[p] & DIAGD1[row][col]) == DIAGD1[row][col]) ||
-           ((b->pos[p] & DIAGD0[row][col]) == DIAGD0[row][col]);
+    return ((b->pos[p] & DIAGD[3][row][col]) == DIAGD[3][row][col]) ||
+            ((b->pos[p] & DIAGD[2][row][col]) == DIAGD[2][row][col]) ||
+            ((b->pos[p] & DIAGD[1][row][col]) == DIAGD[1][row][col]) ||
+            ((b->pos[p] & DIAGD[0][row][col]) == DIAGD[0][row][col]);
 }
 
 // Check for win situation. The new piece must have been involved in a
 // win line. Thus, we just need to check rows, columns and diagonals
 // starting from the new piece.
-
 static bool board_move_wins(Board *b, Player p, int8_t row, int8_t col) {
     return board_move_wins_row(b, p, row, col)
             || board_move_wins_col(b, p, row, col)
