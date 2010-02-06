@@ -37,8 +37,16 @@ static uint64_t LEFT2[NUM_ROWS][NUM_COLS];
 static uint64_t LEFT1[NUM_ROWS][NUM_COLS];
 static uint64_t LEFT0[NUM_ROWS][NUM_COLS];
 static uint64_t DOWN3[NUM_ROWS][NUM_COLS];
+static uint64_t DIAGA3[NUM_ROWS][NUM_COLS];
+static uint64_t DIAGA2[NUM_ROWS][NUM_COLS];
+static uint64_t DIAGA1[NUM_ROWS][NUM_COLS];
+static uint64_t DIAGA0[NUM_ROWS][NUM_COLS];
+static uint64_t DIAGD3[NUM_ROWS][NUM_COLS];
+static uint64_t DIAGD2[NUM_ROWS][NUM_COLS];
+static uint64_t DIAGD1[NUM_ROWS][NUM_COLS];
+static uint64_t DIAGD0[NUM_ROWS][NUM_COLS];
 
-uint64_t mask_left(int8_t row, int8_t col, int8_t s) {
+static uint64_t mask_left(int8_t row, int8_t col, int8_t s) {
     if (col - s >= 0 && col - s < NUM_COLS - 3) {
         uint64_t mask = 0UL;
         mask = SET(mask, row, col - s, 1);
@@ -51,7 +59,7 @@ uint64_t mask_left(int8_t row, int8_t col, int8_t s) {
     }
 }
 
-uint64_t mask_down(int8_t row, int8_t col) {
+static uint64_t mask_down(int8_t row, int8_t col) {
     if (row >= 3) {
         uint64_t mask = 0UL;
         mask = SET(mask, row - 3, col, 1);
@@ -64,6 +72,34 @@ uint64_t mask_down(int8_t row, int8_t col) {
     }
 }
 
+static uint64_t mask_diaga(int8_t row, int8_t col, int8_t s) {
+    if (row - s >= 0 && row - s + 3 < NUM_ROWS && col - s >= 0 && row - s + 3 < NUM_COLS) {
+        uint64_t mask = 0UL;
+        mask = SET(mask, row - s, col - s, 1);
+        mask = SET(mask, row - s + 1, col - s + 1, 1);
+        mask = SET(mask, row - s + 2, col - s + 2, 1);
+        mask = SET(mask, row - s + 3, col - s + 3, 1);
+        return mask;
+    } else {
+        // TODO: remove magic number
+        return 1UL << 63;
+    }
+}
+
+static uint64_t mask_diagd(int8_t row, int8_t col, int8_t s) {
+    if (row + s - 3 >= 0 && row + s < NUM_ROWS && col - s >= 0 && row - s + 3 < NUM_COLS) {
+        uint64_t mask = 0UL;
+        mask = SET(mask, row + s, col - s, 1);
+        mask = SET(mask, row + s - 1, col - s + 1, 1);
+        mask = SET(mask, row + s - 2, col - s + 2, 1);
+        mask = SET(mask, row + s - 3, col - s + 3, 1);
+        return mask;
+    } else {
+        // TODO: remove magic number
+        return 1UL << 63;
+    }
+}
+
 static void generate_masks() {
     for (int row = 0; row < NUM_ROWS; row++) {
         for (int col = 0; col < NUM_COLS; col++) {
@@ -72,6 +108,14 @@ static void generate_masks() {
             LEFT1[row][col] = mask_left(row, col, 1);
             LEFT0[row][col] = mask_left(row, col, 0);
             DOWN3[row][col] = mask_down(row, col);
+            DIAGA3[row][col] = mask_diaga(row, col, 3);
+            DIAGA2[row][col] = mask_diaga(row, col, 2);
+            DIAGA1[row][col] = mask_diaga(row, col, 1);
+            DIAGA0[row][col] = mask_diaga(row, col, 0);
+            DIAGD3[row][col] = mask_diagd(row, col, 3);
+            DIAGD2[row][col] = mask_diagd(row, col, 2);
+            DIAGD1[row][col] = mask_diagd(row, col, 1);
+            DIAGD0[row][col] = mask_diagd(row, col, 0);
         }
     }
 }
@@ -94,65 +138,17 @@ bool board_move_wins_row(Board *b, Player p, int8_t row, int8_t col) {
 }
 
 static bool board_move_wins_diagup(Board *b, Player p, int8_t row, int8_t col) {
-    register int8_t count = 0;
-    // Walk left down for maximum three steps and as long as the pieces match the
-    // player increment the line counter.
-    register int8_t currentrow = row;
-    register int8_t currentcol = col;
-    while (currentcol >= 0
-            && currentcol >= col - 3
-            && currentrow >= 0
-            && currentrow >= row - 3
-            && p == board_get(b, currentrow, currentcol)) {
-        count++;
-        currentcol--;
-        currentrow--;
-    }
-    // Now walk right up for maximum three steps, doing the same again just
-    // that we do not start at (row, col).
-    currentrow = row + 1;
-    currentcol = col + 1;
-    while (currentcol < NUM_COLS
-            && currentcol <= col + 3
-            && currentrow < NUM_ROWS
-            && currentrow <= row + 3
-            && p == board_get(b, currentrow, currentcol)) {
-        count++;
-        currentcol++;
-        currentrow++;
-    }
-    return count >= 4;
+    return ((b->pos[p] & DIAGA3[row][col]) == DIAGA3[row][col]) ||
+           ((b->pos[p] & DIAGA2[row][col]) == DIAGA2[row][col]) ||
+           ((b->pos[p] & DIAGA1[row][col]) == DIAGA1[row][col]) ||
+           ((b->pos[p] & DIAGA0[row][col]) == DIAGA0[row][col]);
 }
 
 static bool board_move_wins_diagdown(Board *b, Player p, int8_t row, int8_t col) {
-    register int8_t count = 0;
-    // Walk left up for maximum three steps and as long as the pieces match the
-    // player increment the line counter.
-    register int8_t currentrow = row;
-    register int8_t currentcol = col;
-    while (currentcol >= 0
-            && currentcol >= col - 3
-            && currentrow < NUM_ROWS
-            && currentrow <= row + 3
-            && p == board_get(b, currentrow, currentcol)) {
-        count++;
-        currentcol--;
-        currentrow++;
-    }
-    // Now walk right down for maximum three steps, doing the same again just
-    // that we do not start at (row, col).
-    currentrow = row - 1;
-    currentcol = col + 1;
-    while (currentcol < NUM_COLS
-            && currentcol <= col + 3
-            && currentrow >= 0
-            && currentrow + 3 >= row
-            && p == board_get(b, currentrow, currentcol)) {
-        count++;
-        currentcol++;
-        currentrow--;
-    }
-    return count >= 4;
+    return ((b->pos[p] & DIAGD3[row][col]) == DIAGD3[row][col]) ||
+           ((b->pos[p] & DIAGD2[row][col]) == DIAGD2[row][col]) ||
+           ((b->pos[p] & DIAGD1[row][col]) == DIAGD1[row][col]) ||
+           ((b->pos[p] & DIAGD0[row][col]) == DIAGD0[row][col]);
 }
 
 // Check for win situation. The new piece must have been involved in a
