@@ -37,57 +37,31 @@ static uint64_t LEFT[4][NUM_ROWS][NUM_COLS];
 static uint64_t DIAGA[4][NUM_ROWS][NUM_COLS];
 static uint64_t DIAGD[4][NUM_ROWS][NUM_COLS];
 
-static uint64_t mask_left(int8_t row, int8_t col, int8_t s) {
-    if (col - s >= 0 && col - s < NUM_COLS - 3) {
-        uint64_t mask = 0UL;
-        mask = SET(mask, row, col - s, 1);
-        mask = SET(mask, row, col - s + 1, 1);
-        mask = SET(mask, row, col - s + 2, 1);
-        mask = SET(mask, row, col - s + 3, 1);
-        return mask;
-    } else {
-        return 1UL << 63;
-    }
-}
+#define NONE_MASK (1UL << 63)
 
-static uint64_t mask_down(int8_t row, int8_t col) {
-    if (row >= 3) {
-        uint64_t mask = 0UL;
-        mask = SET(mask, row - 3, col, 1);
-        mask = SET(mask, row - 2, col, 1);
-        mask = SET(mask, row - 1, col, 1);
-        mask = SET(mask, row, col, 1);
-        return mask;
-    } else {
-        return 1UL << 63;
-    }
-}
+static uint64_t line_mask(int8_t row, int8_t col, int8_t dr, int8_t dc, int8_t s) {
+    // These are the coordinates of the end of the lines. (dr, dc) defines the
+    // direction and s defines the offset.
+    int8_t sr = row + s * dr;
+    int8_t sc = col + s * dc;
+    int8_t er = sr - 3 * dr;
+    int8_t ec = sc - 3 * dc;
 
-static uint64_t mask_diaga(int8_t row, int8_t col, int8_t s) {
-    if (row - s >= 0 && row - s + 3 < NUM_ROWS && col - s >= 0 && row - s + 3 < NUM_COLS) {
+    // The coordinates must be within the bounds. If not, a mask that will never
+    // trigger a win is returned.
+    if (sr >= 0 && sr < NUM_ROWS
+            && er >= 0 && er < NUM_ROWS
+            && sc >= 0 && sc < NUM_COLS
+            && ec >= 0 && ec < NUM_COLS) {
         uint64_t mask = 0UL;
-        mask = SET(mask, row - s, col - s, 1);
-        mask = SET(mask, row - s + 1, col - s + 1, 1);
-        mask = SET(mask, row - s + 2, col - s + 2, 1);
-        mask = SET(mask, row - s + 3, col - s + 3, 1);
+        // Start at (sr, sc) and go tp (er, ec).
+        mask = SET(mask, sr, sc, 1);
+        mask = SET(mask, sr - dr, sc - dc, 1);
+        mask = SET(mask, er + dr, ec + dc, 1);
+        mask = SET(mask, er, ec, 1);
         return mask;
     } else {
-        // TODO: remove magic number
-        return 1UL << 63;
-    }
-}
-
-static uint64_t mask_diagd(int8_t row, int8_t col, int8_t s) {
-    if (row + s - 3 >= 0 && row + s < NUM_ROWS && col - s >= 0 && row - s + 3 < NUM_COLS) {
-        uint64_t mask = 0UL;
-        mask = SET(mask, row + s, col - s, 1);
-        mask = SET(mask, row + s - 1, col - s + 1, 1);
-        mask = SET(mask, row + s - 2, col - s + 2, 1);
-        mask = SET(mask, row + s - 3, col - s + 3, 1);
-        return mask;
-    } else {
-        // TODO: remove magic number
-        return 1UL << 63;
+        return NONE_MASK;
     }
 }
 
@@ -95,11 +69,11 @@ static void generate_masks() {
     for (int row = 0; row < NUM_ROWS; row++) {
         for (int col = 0; col < NUM_COLS; col++) {
             for (int s = 0; s <= 3; s++) {
-                LEFT[s][row][col] = mask_left(row, col, s);
-                DIAGA[s][row][col] = mask_diaga(row, col, s);
-                DIAGD[s][row][col] = mask_diagd(row, col, s);
+                LEFT[s][row][col] = line_mask(row, col, 0, 1, s);
+                DIAGA[s][row][col] = line_mask(row, col, 1, 1, s);
+                DIAGD[s][row][col] = line_mask(row, col, -1, 1, s);
             }
-            DOWN[row][col] = mask_down(row, col);
+            DOWN[row][col] = line_mask(row, col, -1, 0, 3);
         }
     }
 }
@@ -138,6 +112,7 @@ static bool board_move_wins_diagdown(Board *b, Player p, int8_t row, int8_t col)
 // Check for win situation. The new piece must have been involved in a
 // win line. Thus, we just need to check rows, columns and diagonals
 // starting from the new piece.
+
 static bool board_move_wins(Board *b, Player p, int8_t row, int8_t col) {
     return board_move_wins_row(b, p, row, col)
             || board_move_wins_col(b, p, row, col)
