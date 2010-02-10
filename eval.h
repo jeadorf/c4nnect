@@ -12,5 +12,8 @@
  */
 float eval(Board *b);
 
+/**! Checks for threats. Returned value is an estimation. */
+float eval_odd_even(Board *b);
+
 #endif	/* _EVAL_H */
 

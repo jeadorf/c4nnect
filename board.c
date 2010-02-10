@@ -88,7 +88,7 @@ static bool board_move_wins_col(Board *b, Player p, int8_t row, int8_t col) {
     return (b->pos[p] & DOWN[row][col]) == DOWN[row][col];
 }
 
-bool board_move_wins_row(Board *b, Player p, int8_t row, int8_t col) {
+static bool board_move_wins_row(Board *b, Player p, int8_t row, int8_t col) {
     return ((b->pos[p] & LEFT[3][row][col]) == LEFT[3][row][col]) ||
             ((b->pos[p] & LEFT[2][row][col]) == LEFT[2][row][col]) ||
             ((b->pos[p] & LEFT[1][row][col]) == LEFT[1][row][col]) ||
@@ -112,12 +112,20 @@ static bool board_move_wins_diagdown(Board *b, Player p, int8_t row, int8_t col)
 // Check for win situation. The new piece must have been involved in a
 // win line. Thus, we just need to check rows, columns and diagonals
 // starting from the new piece.
-
 static bool board_move_wins(Board *b, Player p, int8_t row, int8_t col) {
     return board_move_wins_row(b, p, row, col)
             || board_move_wins_col(b, p, row, col)
             || board_move_wins_diagup(b, p, row, col)
             || board_move_wins_diagdown(b, p, row, col);
+}
+
+bool board_is_threat(Board *b, Player p, int8_t row, int8_t col) {
+    uint64_t oldpos = b->pos[p];
+    b->pos[p] = SET(b->pos[p], row, col, 1);
+    bool res = board_move_wins(b, p, row, col);
+    // Restore old position
+    b->pos[p] = oldpos;
+    return res;
 }
 
 inline void board_put(Board *b, int8_t col) {

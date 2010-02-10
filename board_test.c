@@ -288,6 +288,27 @@ static char* test_board_compare() {
     return 0;
 }
 
+static char* test_board_is_threat() {
+    printf("test_board_is_threat\n");
+    Board b;
+    parser_read(&b,
+            "- - - - - - -"
+            "- - - - - - -"
+            "- b - - - - -"
+            "w w - - - - -"
+            "w w - - - - -"
+            "w b b - b - -");
+    fboard2eps(&b, "build/test_board_is_threat.eps");
+    Board b2;
+    memcpy(&b2, &b, sizeof(Board));
+    mu_assert("error, should be a white threat", board_is_threat(&b, WHITE, 3, 0));
+    mu_assert("error, should be a white threat, not a black one", !board_is_threat(&b, BLACK, 3, 0));
+    mu_assert("error, should be a black threat", board_is_threat(&b, BLACK, 0, 3));
+    mu_assert("error, should be a black threat, not a white one", !board_is_threat(&b, WHITE, 0, 3));
+    mu_assert("error, test should not alter board", 0 == memcmp(&b, &b2, sizeof(Board)));
+    return 0;
+}
+
 static char* test_board_decode_empty() {
     printf("test_board_decode_empty\n");
     Board b1;
@@ -354,6 +375,7 @@ static char* all_tests() {
     mu_run_test(test_board_move_wins_diagup2);
     mu_run_test(test_board_move_wins_diagdown);
     mu_run_test(test_board_move_wins_diagdown2);
+    mu_run_test(test_board_is_threat);
     mu_run_test(test_board_compare);
     mu_run_test(test_board_decode_empty);
     mu_run_test(test_board_decode);

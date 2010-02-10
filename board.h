@@ -121,6 +121,9 @@ Player board_get(Board *b, int8_t row, int8_t col);
  * #NOBODY is returned. */
 Player board_get_top(Board *b, int8_t col);
 
+/*! Checks whether a piece at the specified location would complete a line. */
+bool board_is_threat(Board *b, Player p, int8_t row, int8_t col);
+
 /*! Detects whether the specified column is full. */
 bool board_column_full(Board *b, int8_t col);
 

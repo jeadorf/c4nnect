@@ -33,7 +33,7 @@ static void play_game() {
     
     // TODO: make this safe -- un/signedness
     // TODO: fail if game is over and attempted to move nevertheless
-    char c;
+    char c = ' ';
     while (true) {
         board_print(&b);
         if (check_game_end(&b)) {

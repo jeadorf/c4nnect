@@ -1,6 +1,3 @@
-// fmemopen seems to be a function that is some GNU extension to the C library
-#define _GNU_SOURCE
-
 #include <ctype.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -10,13 +7,6 @@
 #include "util.h"
 
 void parser_read(Board *b, char *data) {
-    FILE *stream;
-    stream = fmemopen(data, strlen(data), "r");
-    parser_fread(b, stream);
-    fclose(stream);
-}
-
-void parser_fread(Board *b, FILE *stream) {
     Player pieces[NUM_ROWS][NUM_COLS];
     memset(pieces, 0, sizeof (pieces));
 
@@ -28,7 +18,8 @@ void parser_fread(Board *b, FILE *stream) {
     Player p = NOBODY;
     int d;
     do {
-        d = fgetc(stream);
+        d = *data;
+        data++;
         if (d == EOF) {
             handle_error("Reached end of file/buffer, board data was not complete.");
         } else if (isspace(d) || d == '\"') {

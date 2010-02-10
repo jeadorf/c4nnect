@@ -1,9 +1,6 @@
 #include <math.h>
+#include "board.h"
 #include "eval.h"
-
-// TODO: We need some sort of randomization but generating random numbers is a
-// really expensive operation that slows down the whole evaluation process.
-// float value = rand() % 3 - 1.5;
 
 float eval(Board *b) {
     if (b->winner == WHITE) {
@@ -13,4 +10,9 @@ float eval(Board *b) {
     } else {
         return 0;
     }
+}
+
+float eval_odd_even(Board *b) {
+    // TODO: implement
+    return 0;
 }
