@@ -158,7 +158,7 @@ void search(Board *b, SearchRecord * rec) {
     if (iterations > (42 - b->move_cnt)) {
         iterations = 43 - b->move_cnt;
     }
-    for (int8_t max_depth = 1; max_depth < iterations; max_depth++) {
+    for (int8_t max_depth = 1; max_depth <= iterations; max_depth++) {
         alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, rec);
         if (rec->winner_identified) {
             // Defer defeats that are unavoidable. The computer should at least not to
@@ -169,7 +169,7 @@ void search(Board *b, SearchRecord * rec) {
                 int8_t reached_depth = rec->reached_depth;
                 SearchRecord defrec;
                 searchrecord_init(&defrec);
-                alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0,  max_depth - 1, false, &defrec);
+                alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth - 1, false, &defrec);
                 // Merge search results. This is not a really satisfying solution
                 // but it saves some difficulties in handling two partial search
                 // results

@@ -31,8 +31,23 @@ static char* test_collect_principal_variation() {
     return 0;
 }
 
+static char* test_search_depth() {
+    printf("test_search_depth\n");
+    Board b;
+    board_init(&b);
+    fboard2eps(&b, "build/test_search_depth.eps");
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    // Must disable transposition tables here
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, false, &rec);
+    mu_assert("error, unexpected value for max_depth", rec.max_depth == 2);
+    mu_assert("error, unexpected value for reached_depth", rec.reached_depth == 2);
+    return 0;
+}
+
 static char* all_tests() {
     mu_run_test(test_collect_principal_variation);
+    mu_run_test(test_search_depth);
     return 0;
 }
 
