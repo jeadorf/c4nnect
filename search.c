@@ -64,7 +64,7 @@ void alphabeta_negamax(
 #endif
     } else {
 #ifndef DISABLE_TTABLE
-        if (ttentry->code != b->code && ttentry->code != 0) {
+        if (ttcuts_enabled && ttentry->code != b->code && ttentry->code != 0) {
             rec->ttrcoll_cnt++;
         }
 #endif
@@ -152,7 +152,7 @@ void search(Board *b, SearchRecord * rec) {
     // Thus, it does not hurt to increase the search depth at later times in the
     // game.
     // The iterative approach implies that max_depth will never exceed reached_depth
-    int8_t iterations = 11 + (b->move_cnt * b->move_cnt) * 1.35 / (NUM_COLS * NUM_ROWS);
+    int8_t iterations = 6 + (b->move_cnt * b->move_cnt) * 1.15 / (NUM_COLS * NUM_ROWS);
     // Maximum iterations should not exceed number of free slots
     // TODO: remove magic number 42
     if (iterations > (42 - b->move_cnt)) {
