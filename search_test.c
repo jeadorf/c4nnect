@@ -267,7 +267,6 @@ static char* test_search_defer_defeat() {
 static char* test_white_difficult_win() {
     printf("test_white_difficult_win\n");
     Board b;
-    // TODO: Needs proof that this is a win for white when black is to move
     parser_read(&b,
             "- - - b b - - "
             "- - w w b w - "
@@ -320,9 +319,9 @@ static char* all_tests() {
     mu_run_test(test_abn_black_win);
     mu_run_test(test_abn_white_win2);
     mu_run_test(test_search_white_win);
-    /*
+/*
         mu_run_test(test_search_fastest_white_win);
-     */
+*/
     mu_run_test(test_search_white_win3);
     mu_run_test(test_search_black_win);
     mu_run_test(test_beginning_trap_white);

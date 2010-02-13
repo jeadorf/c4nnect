@@ -154,10 +154,9 @@ void search(Board *b, SearchRecord * rec) {
     // game.
     // The iterative approach implies that max_depth will never exceed reached_depth
     int8_t iterations = 11 + (b->move_cnt * b->move_cnt) * 1.65 / (NUM_COLS * NUM_ROWS);
-    // Maximum iterations should not exceed number of free slots
-    // TODO: remove magic number 42
-    if (iterations > (42 - b->move_cnt)) {
-        iterations = 43 - b->move_cnt;
+    // Maximum iterations should not exceed number of free slots (consistency)
+    if (iterations > (NUM_ROWS * NUM_COLS) - b->move_cnt) {
+        iterations = (NUM_ROWS * NUM_COLS) - b->move_cnt;
     }
     for (int8_t max_depth = 1; max_depth <= iterations; max_depth++) {
         alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, false, rec);
