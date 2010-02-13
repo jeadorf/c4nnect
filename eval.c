@@ -18,13 +18,16 @@ static int count_threats(Board *b) {
     return threats;
 }
 
-float eval(Board *b) {
+float eval(Board *b, bool defer_defeat) {
     if (b->winner == WHITE) {
-        return BETA_MAX;
+        // When doing a normal search, win positions all have the same value.
+        // When we are trying to defer a defeat win positions that are very
+        // close are more valuable. This makes the AI avoid to lose very early.
+        return BETA_MAX + (defer_defeat ? 42 - b->move_cnt : 0);
     } else if (b->winner == BLACK) {
-        return ALPHA_MIN;
+        return ALPHA_MIN - (defer_defeat ? 42 - b->move_cnt : 0);
     } else {
-        return count_threats(b);
+        return 0;
     }
 }
 

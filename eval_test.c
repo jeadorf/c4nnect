@@ -20,8 +20,8 @@ static char* test_eval_white_win() {
             "- - b - b - -"
             "- w w w w b -");
     fboard2eps(&b, "build/test_eval_white_win.eps");
-    mu_assert("error, evaluation value should be positive", eval(&b) >= 0);
-    mu_assert("error, evaluation value should be big", eval(&b) >= BETA_MAX);
+    mu_assert("error, evaluation value should be positive", eval(&b, false) >= 0);
+    mu_assert("error, evaluation value should be big", eval(&b, false) >= BETA_MAX);
     return 0;
 }
 
@@ -36,9 +36,9 @@ static char* test_eval_black_win() {
             "- - w w w - -"
             "- w b b b b -");
     fboard2eps(&b, "build/test_eval_black_win.eps");
-    mu_assert("error, evaluation value should be negative", eval(&b) < 0);
+    mu_assert("error, evaluation value should be negative", eval(&b, false) < 0);
     mu_assert("error, evaluation value should be negative "
-              "with big absolute value", eval(&b) <= ALPHA_MIN);
+              "with big absolute value", eval(&b, false) <= ALPHA_MIN);
     return 0;
 }
 

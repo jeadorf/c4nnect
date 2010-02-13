@@ -38,7 +38,8 @@ void generate_moves(SearchRecord *rec, int depth, int8_t *moves) {
 void alphabeta_negamax(
         Board *b,
         float alpha, float beta,
-        int8_t depth, int8_t max_depth, bool ttcuts_enabled,
+        int8_t depth, int8_t max_depth,
+        bool ttcuts_enabled, bool defer_defeat,
         SearchRecord * rec) {
 #ifndef DISABLE_TTABLE
     uint32_t hash = b->code % TTABLE_SIZE;
@@ -48,7 +49,7 @@ void alphabeta_negamax(
     if (b->winner != NOBODY
             || board_full(b)
             || depth == max_depth) {
-        rec->rating = (b->turn == WHITE ? 1 : -1) * eval(b);
+        rec->rating = (b->turn == WHITE ? 1 : -1) * eval(b, defer_defeat);
         rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
         rec->eval_cnt++;
         rec->pv.length = 0;
@@ -84,7 +85,8 @@ void alphabeta_negamax(
                 board_put(b, col);
 
                 // Search subposition
-                alphabeta_negamax(b, -beta, -bestval, depth + 1, max_depth, ttcuts_enabled, rec);
+                alphabeta_negamax(b, -beta, -bestval, depth + 1, max_depth,
+                        ttcuts_enabled, defer_defeat, rec);
                 rec->rating *= -1;
 
                 // Undo move
@@ -143,7 +145,6 @@ int8_t searchm(Board * b) {
 
 void search(Board *b, SearchRecord * rec) {
     rec->cpu_time = clock();
-
     // The maximum numbers of iterations (or plies) the search will do depends
     // on the current stage of the game.
     // If the game is at its very beginning, there is no use in doing a lot of
@@ -152,24 +153,28 @@ void search(Board *b, SearchRecord * rec) {
     // Thus, it does not hurt to increase the search depth at later times in the
     // game.
     // The iterative approach implies that max_depth will never exceed reached_depth
-    int8_t iterations = 6 + (b->move_cnt * b->move_cnt) * 1.15 / (NUM_COLS * NUM_ROWS);
+    int8_t iterations = 11 + (b->move_cnt * b->move_cnt) * 1.65 / (NUM_COLS * NUM_ROWS);
     // Maximum iterations should not exceed number of free slots
     // TODO: remove magic number 42
     if (iterations > (42 - b->move_cnt)) {
         iterations = 43 - b->move_cnt;
     }
     for (int8_t max_depth = 1; max_depth <= iterations; max_depth++) {
-        alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, rec);
+        alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, false, rec);
         if (rec->winner_identified) {
             // Defer defeats that are unavoidable. The computer should at least not to
             // lose in the next move even if the computer sees that he will lose against
             // the perfect-playing opponent. Deferring defeats does only work without
             // transposition tables that are not cleared between subsequent searches.
+            // Even more, it is not sufficient to re-search with a level less deep.
+            // Transposition tables are making trouble here too, we cannot be sure
+            // that the re-search will not report a defeat again!
             if (rec->rating <= ALPHA_MIN) {
                 int8_t reached_depth = rec->reached_depth;
                 SearchRecord defrec;
                 searchrecord_init(&defrec);
-                alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth - 1, false, &defrec);
+                alphabeta_negamax(b, ALPHA_MIN_DEFEAT, BETA_MAX_DEFEAT,
+                        0, max_depth - 1, false, true, &defrec);
                 // Merge search results. This is not a really satisfying solution
                 // but it saves some difficulties in handling two partial search
                 // results
