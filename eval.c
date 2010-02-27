@@ -2,6 +2,10 @@
 #include "board.h"
 #include "eval.h"
 
+/* Defines the ply since when the evaluation function will rate a position just
+ * on the criteria win, loss, and ongoing. */
+#define FAST_EVAL_THRESHOLD 14
+
 static int count_threats(Board *b) {
     int8_t threats = 0;
     for (int8_t col = 0; col < NUM_COLS; col++) {
@@ -26,6 +30,8 @@ float eval(Board *b, bool defer_defeat) {
         return BETA_MAX + (defer_defeat ? 42 - b->move_cnt : 0);
     } else if (b->winner == BLACK) {
         return ALPHA_MIN - (defer_defeat ? 42 - b->move_cnt : 0);
+    } else if (b->move_cnt <= FAST_EVAL_THRESHOLD) {
+        return count_threats(b);
     } else {
         return 0;
     }

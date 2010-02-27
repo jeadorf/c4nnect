@@ -82,6 +82,7 @@ void alphabeta_negamax(
             int8_t col = moves[i];
             if (!board_column_full(b, col)) {
                 // Make move
+                // TODO: check whether undo mechanism does any good
                 board_put(b, col);
 
                 // Search subposition
@@ -144,22 +145,20 @@ int8_t searchm(Board * b) {
 }
 
 void search(Board *b, SearchRecord * rec) {
-    rec->cpu_time = clock();
-    // The maximum numbers of iterations (or plies) the search will do depends
-    // on the current stage of the game.
-    // If the game is at its very beginning, there is no use in doing a lot of
-    // research if no forced variation can be found. In later stages, the number
-    // of possible moves decreases with the board getting fuller and fuller.
-    // Thus, it does not hurt to increase the search depth at later times in the
-    // game.
-    // The iterative approach implies that max_depth will never exceed reached_depth
-    int8_t iterations = 11 + (b->move_cnt * b->move_cnt) * 1.65 / (NUM_COLS * NUM_ROWS);
-    // Maximum iterations should not exceed number of free slots (consistency)
-    if (iterations > (NUM_ROWS * NUM_COLS) - b->move_cnt) {
-        iterations = (NUM_ROWS * NUM_COLS) - b->move_cnt;
-    }
-    for (int8_t max_depth = 1; max_depth <= iterations; max_depth++) {
+    clock_t start_time = clock();
+    rec->cpu_time = start_time;
+    // The iterative approach implies that max_depth will never exceed
+    // reached_depth.
+    float time[43] = {0}; // nodes = interval count + 1
+    int8_t max_depth = 0;
+    float time_est = 0;
+    do {
+        #if DEBUG
+        printf("estimated time %dms", (int) time_est);
+        #endif
+        max_depth++;
         alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, false, rec);
+        time[max_depth] = (clock() - start_time) / (CLOCKS_PER_SEC / 1000);
         if (rec->winner_identified) {
             // Defer defeats that are unavoidable. The computer should at least not to
             // lose in the next move even if the computer sees that he will lose against
@@ -189,7 +188,20 @@ void search(Board *b, SearchRecord * rec) {
             }
             break;
         }
-    }
+
+        // Estimate the accumulated search time after the next iteration. This
+        // extrapolation uses ansatz b*a^t defined by t=0, t=1 and evaluated
+        // at t=2.
+        if (time[max_depth - 1] > 10 || time[max_depth] > 10) {
+            time_est = time[max_depth] * time[max_depth] / time[max_depth - 1];
+        } else {
+            time_est = 0;
+        }
+        #if DEBUG
+        printf(", actual time: %dms\n", (int) time[max_depth]);
+        #endif
+    } while (time_est < 1000 && max_depth < 42 - b->move_cnt);
+
     rec->cpu_time = clock() - rec->cpu_time;
     rec->ttcharge = ttable_charge();
 }
