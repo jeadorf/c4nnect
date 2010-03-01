@@ -299,7 +299,6 @@ static char* test_time_consuming_position() {
     // white should find a winning strategy. And probably, it is the defeat
     // deferral making things even worse with transposition tables being disabled
     // TODO: an idea - limit search depth of defeat deferral
-    // TODO: decrease search depth or impose time limit
     parser_read(&b,
             "- - - - - - - "
             "w - - - - - - "
@@ -331,9 +330,7 @@ static char* all_tests() {
         mu_run_test(test_fast_black_win);
      */
     mu_run_test(test_white_difficult_win);
-/*
     mu_run_test(test_time_consuming_position);
-*/
 
     return 0;
 }

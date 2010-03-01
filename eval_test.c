@@ -121,8 +121,8 @@ static char* test_odd_even_draw() {
     searchrecord_init(&rec);
     search(&b, &rec);
     mu_assert("error, expected white to move (tester's note)", b.turn == WHITE);
-    mu_assert("error, expected game to be drawn", rec.rating == 0); // TODO: comparison with zero
-    mu_assert("error, this position should be classified as drawn", eval_odd_even(&b) == 0); // TODO: comparison with zero
+    mu_assert("error, expected game to be drawn", rec.rating == 0);
+    mu_assert("error, this position should be classified as drawn", eval_odd_even(&b) == 0);
     return 0;
 }
 

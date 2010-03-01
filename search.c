@@ -16,8 +16,8 @@ void stats_print(Board *b, SearchRecord *rec);
 
 extern TTEntry ttable[];
 
-// Simple move ordering, start with checking the moves in the center and
-// then circle to the outer columns
+// Simple move ordering, first walk along the principal variation then start
+// with checking the moves in the center and then circle to the outer columns
 
 void generate_moves(SearchRecord *rec, int depth, int8_t *moves) {
     int8_t i = 0, k = 0, col = 0;
@@ -75,7 +75,7 @@ void alphabeta_negamax(
         Variation pv = rec->pv;
 
         // FIXME: There might be invalid boards that are not classified
-        //        correctly because of transposition tables!
+        //        correctly because of transposition tables!??
         int8_t moves[NUM_COLS];
         generate_moves(rec, depth, moves);
         for (int8_t i = 0; i < NUM_COLS; i++) {
@@ -153,12 +153,15 @@ void search(Board *b, SearchRecord * rec) {
     int8_t max_depth = 0;
     float time_est = 0;
     do {
-        #if DEBUG
+#if DEBUG
         printf("estimated time %dms", (int) time_est);
-        #endif
+#endif
         max_depth++;
         alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, false, rec);
         time[max_depth] = (clock() - start_time) / (CLOCKS_PER_SEC / 1000);
+#if DEBUG
+        printf(", actual time: %dms\n", (int) time[max_depth]);
+#endif
         if (rec->winner_identified) {
             // Defer defeats that are unavoidable. The computer should at least not to
             // lose in the next move even if the computer sees that he will lose against
@@ -190,16 +193,13 @@ void search(Board *b, SearchRecord * rec) {
         }
 
         // Estimate the accumulated search time after the next iteration. This
-        // extrapolation uses ansatz b*a^t defined by t=0, t=1 and evaluated
-        // at t=2.
+        // extrapolation uses simple exponential regression b*a^t defined by
+        // t=0, t=1 and evaluated at t=2.
         if (time[max_depth - 1] > 10 || time[max_depth] > 10) {
             time_est = time[max_depth] * time[max_depth] / time[max_depth - 1];
         } else {
             time_est = 0;
         }
-        #if DEBUG
-        printf(", actual time: %dms\n", (int) time[max_depth]);
-        #endif
     } while (time_est < 1000 && max_depth < 42 - b->move_cnt);
 
     rec->cpu_time = clock() - rec->cpu_time;
