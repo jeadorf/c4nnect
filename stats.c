@@ -29,8 +29,12 @@ void stats_print(Board *b, SearchRecord * rec) {
     printf("%19s : %s\n", "Turn", name(b->turn));
     printf("%19s : %d\n", "Move", rec->pv.moves[0]);
     printf("%19s : ", "Principal variation");
-    for (int i = 0; i < rec->pv.length; i++) {
-        printf("%d ", rec->pv.moves[i]);
+    if (rec->defeat_deferred) {
+        printf("defeat deferred");
+    } else {
+        for (int i = 0; i < rec->pv.length; i++) {
+            printf("%d ", rec->pv.moves[i]);
+        }
     }
     putchar('\n');
     if (rec->rating >= BETA_MAX) {
@@ -59,8 +63,7 @@ void stats_print(Board *b, SearchRecord * rec) {
     printf("%19s : %.1f %%\n", "TT charge", rec->ttcharge * 100);
     printf("%19s : %d\n", "TT entries", ttable_entry_cnt());
     printf("%19s : %d\n", "TT size", TTABLE_SIZE);
-
     printf("%19s : %d ms\n", "CPU time", (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)));
-    printf("%19s : 0x%.16" PRIu64 "\n", "Board", b->code);
+    printf("%19s : 0x%.16lX\n", "Board", b->code);
     putchar('\n');
 }

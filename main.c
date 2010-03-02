@@ -73,6 +73,9 @@ static void play_game() {
             }
         }
     }
+
+    printf("Final position\n");
+    board_print(&b);
 }
 
 int main(int argc, char** argv) {

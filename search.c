@@ -49,6 +49,9 @@ void alphabeta_negamax(
     if (b->winner != NOBODY
             || board_full(b)
             || depth == max_depth) {
+        if (depth == 0) {
+            handle_error("cannot search for a move in a finished game!");
+        }
         rec->rating = (b->turn == WHITE ? 1 : -1) * eval(b, defer_defeat);
         rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
         rec->eval_cnt++;
@@ -93,6 +96,7 @@ void alphabeta_negamax(
                 // Undo move
                 board_undo(b, col);
 
+                // TODO: check comparison with zero
                 if (rec->rating > bestval || bestcol == -1) {
                     // Found a move that is either better than all other moves
                     bestval = rec->rating;

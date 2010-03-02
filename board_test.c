@@ -300,12 +300,12 @@ static char* test_board_is_threat() {
             "w b b - b - -");
     fboard2eps(&b, "build/test_board_is_threat.eps");
     Board b2;
-    memcpy(&b2, &b, sizeof(Board));
+    memcpy(&b2, &b, sizeof (Board));
     mu_assert("error, should be a white threat", board_is_threat(&b, WHITE, 3, 0));
     mu_assert("error, should be a white threat, not a black one", !board_is_threat(&b, BLACK, 3, 0));
     mu_assert("error, should be a black threat", board_is_threat(&b, BLACK, 0, 3));
     mu_assert("error, should be a black threat, not a white one", !board_is_threat(&b, WHITE, 0, 3));
-    mu_assert("error, test should not alter board", 0 == memcmp(&b, &b2, sizeof(Board)));
+    mu_assert("error, test should not alter board", 0 == memcmp(&b, &b2, sizeof (Board)));
     return 0;
 }
 
@@ -336,6 +336,23 @@ static char* test_board_decode() {
     fboard2eps(&b2, "build/test_board_decode-2.eps");
     mu_assert("error, expected codes to match", b1.code == b2.code);
     mu_assert("error, expected boards to match", 0 == memcmp(&b1, &b2, sizeof (Board)));
+    return 0;
+}
+
+static char* test_board_code() {
+    printf("test_board_code\n");
+    Board b;
+    board_init(&b);
+    parser_read(&b,
+            "- - - - - - - "
+            "- - - - - - - "
+            "- - - - - - - "
+            "- - - - - - - "
+            "- - - w - - - "
+            "- - - w - - b ");
+    char s[16];
+    sprintf(s, "%lX", b.code);
+    mu_assert("expected code to be of length 16", strlen(s) == 16);
     return 0;
 }
 
@@ -380,6 +397,7 @@ static char* all_tests() {
     mu_run_test(test_board_decode_empty);
     mu_run_test(test_board_decode);
     mu_run_test(test_board_encode_incremental);
+    mu_run_test(test_board_code);
     return 0;
 }
 

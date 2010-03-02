@@ -24,7 +24,8 @@ static char* test_collect_principal_variation() {
     // Must disable transposition tables here, since they might lead to the
     // case that the principal variation is not computed for more than one
     // ply.
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, false, false, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 3, false, false, &rec);
+    stats_print(&b, &rec);
     mu_assert("error, expected principal variation to be longer", rec.pv.length >= 2);
     mu_assert("error, expected saving move", rec.pv.moves[0] == 3);
     mu_assert("error, expected saving move", rec.pv.moves[1] == 3);

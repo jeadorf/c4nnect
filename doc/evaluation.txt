@@ -185,6 +185,7 @@ aufgibt #
     => REGEL u( (2*m-1,s1,W), (2*n,s2,W) ) = 1    mit s1 != s2
 
 // TODO: Mengenschreibweise u
+// TODO: Auf Drohungen auf dem gleichen Feld eingehen
 
 Aus 2.5, 2.6 können wir schließen, dass in einer einfarbigen Drohungsmenge,
 eine einzige gerade (Weiß) bzw. ungerade (Schwarz) Drohung zum Sieg reicht.
