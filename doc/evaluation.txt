@@ -26,12 +26,12 @@ Zur Notation:
 Eine Beispielstellung:
 
               s
-        6 X X - X X - X
         5 X X - X X - X
-        4 X X b X X - X r
-        3 X X - X X X X
+        4 X X - X X - X
+        3 X X b X X - X r
         2 X X - X X X X
-        1 X X X X X X X
+        1 X X - X X X X
+        0 X X X X X X X
         # A B C D E F G
 
 In Stellung 1.1 können wir die folgenden Beobachtungen festhalten:
@@ -54,40 +54,41 @@ entsprechend u < 0 gut für Schwarz.
 (III) Die Drohungen seien als 3-tupel (r=Zeile, s=Spalte, p=Farbe) notiert.
 Einer Spielstellung wird demnach eine Menge D von Drohungen zugeordnet.  Ein
 Spielfeld wird mit [r=Zeile,s=Spalte] notiert. Zeilen werden beginnend mit 
-der 1 gezählt.
+der 0 gezählt.
 
 (IV) Das Spielfeld hat 7x6 Felder und hat insbesondere damit eine gerade Anzahl
 an Feldern.
 
 (V) Es werden nur Stellungen betrachtet, in denen sich das Spiel nicht im
 nächsten Halbzug entscheidet. Das heißt insbesondere, dass für jede Drohung (r,
-s, p) gilt: r > 1 und [r-1,s] unbesetzt.
+s, p) gilt: r > 0 und [r-1,s] unbesetzt.
 
 (VI) Eine Drohung (r, s, p) heißt genau dann gerade, falls r gerade.
 
+(VII) m,n > 0
 
 Hergeleitete Regeln
 --------------------
 
 ---- Einzelne Drohungen ---- 
 
-(1.1) LEMMA: Ist nur eine einzige gerade Drohung (r, s, B) im Spiel, so gewinnt
+(1.1) LEMMA: Ist nur eine einzige ungerade Drohung (r, s, B) im Spiel, so gewinnt
 Schwarz. BEWEIS: Beide Spieler werden versuchen, das Feld [r-1,s], welches nach
 Voraussetzung (V) existiert, auf keinen Fall selbst zu besetzen. Folglich
 bemühen sie sich, erst alle anderen Spalten zu füllen.  Genau nach dem
-Zeitpunkt, in dem das Feld [r-1,s] besetzt wurde, sind noch 6-r+1 Felder frei
+Zeitpunkt, in dem das Feld [r-1,s] besetzt wurde, sind noch 6-r Felder frei
 (Achtung: Zaunpfahlproblem), eine ungerade Zahl, was bedeutet das Schwarz
 zieht, [r,s] besetzt, und gewinnt #
 
-    => REGEL u( (2*m, s, B) ) = -1
+    => REGEL u( (2*m-1, s, B) ) = -1
 
-(1.2) LEMMA: Ist nur eine einzige ungerade Drohung (r, s, W) im Spiel, so
+(1.2) LEMMA: Ist nur eine einzige gerade Drohung (r, s, W) im Spiel, so
 gewinnt Weiß. BEWEIS: Da beide Spieler versuchen werden, das Feld [r-1,s] nicht
 selbst zu besetzen, füllen sie erst alle anderen Spalten. Nachdem [r-1,s]
-besetzt wurde, sind noch 6-r+1 Felder frei, eine gerade Zahl, sodass Weiß am
+besetzt wurde, sind noch 6-r Felder frei, eine gerade Zahl, sodass Weiß am
 Zug ist und gewinnt #
 
-    => REGEL u( (2*m-1, s, W) ) = 1
+    => REGEL u( (2*m, s, W) ) = 1
 
 Es ist nun einsichtig, dass im Fall einer Einzeldrohung (|D| = 1) allein die
 Zeile der des bedrohten Feldes über das Spiel entscheidet. Welcher Spieler
@@ -98,15 +99,18 @@ Idee des Rückwärtszählens.  Man zählte die Felder überhalb der einzigen
 Drohung, um eine Aussage über den Spieler zu machen, der das bedrohte Feld
 besetzt.
 
-(1.3) LEMMA: Ist nur eine einzige ungerade Drohung (r, s, B) im Spiel, so endet
-das Spiel unentschieden. BEWEIS: mittels Lemma 1.1
+(1.3) LEMMA: Ist nur eine einzige gerade Drohung (r, s, B) im Spiel, so endet
+das Spiel unentschieden. BEWEIS: Wurde [r-1, s] besetzt, so ist die Zahl der
+verbleibenden 6-r Felder gerade. Weiß ist am Zug und macht die einzige Drohung
+zunichte.
 
-    => REGEL u( (2*m-1, s, B) ) = 0
+    => REGEL u( (2*m, s, B) ) = 0
 
-(1.4) LEMMA: Ist nur eine einzige gerade Drohung (r, s, W) im Spiel, so endet
-das Spiel unentschieden. BEWEIS: mittels Lemma 1.1
+(1.4) LEMMA: Ist nur eine einzige ungerade Drohung (r, s, W) im Spiel, so endet
+das Spiel unentschieden. BEWEIS: analog zu 1.3, nur dass hier 6-r ungerade ist
+und Schwarz das Feld [r,s] besetzen kann.
 
-    => REGEL u( (2*m, s, W) ) = 0
+    => REGEL u( (2*m-1, s, W) ) = 0
 
 Somit haben wir nun alle möglichen Fälle |D| = 1 abgehandelt. Für |D| = 0 ist
 das Spiel unentschieden. Auch hier nochmal der Hinweis auf die Voraussetzung I.
@@ -119,69 +123,71 @@ Dazu untersuchen wir zuerst diejenigen Stellungen, die zwei Drohungen der
 gleichen Farbe in der gleichen Spalte besitzen.
 
 (2.1) LEMMA: Besitzt eine Stellung genau zwei Drohungen d1=(r1,s,B) und
-d2=(r2,s,B) mit r1 < r2, und ist mindestens eine der Drohungen gerade, so
+d2=(r2,s,B) mit r1 < r2, und ist mindestens eine der Drohungen ungerade, so
 gewinnt Schwarz. BEWEIS: Damit die Drohung d2 überhaupt relevant wird, muss die
 Drohung d1 erst einmal entschieden werden. Nach Lemma 1.1 gewinnt Schwarz,
-falls r1 gerade. Ist r1 ungerade, so entscheidet sich nach Kriterium 1.1 das
-Spiel im Kampf um das Schlüsselfeld [r2-1,s] ebenso für Schwarz #
+falls r1 ungerade. Ist r1 gerade, dann ist r2 ungerade, und nach Kriterium 1.1 
+gewinnt Schwarz auf [r2,s] #
 
-    => REGEL u( (2*m,s,B), (2*n,s,B) ) = -1
-    => REGEL u( (2*m,s,B), (2*n-1,s,B) ) = -1
+    => REGEL u( (2*m-1,s,B), (2*n-1,s,B) ) = -1
     => REGEL u( (2*m-1,s,B), (2*n,s,B) ) = -1
+    => REGEL u( (2*m,s,B), (2*n-1,s,B) ) = -1
 
 TODO: Begriffsbildung Schlüsselfeld
 TODO: Begriffsbildung entschieden
 
 (2.2) LEMMA: Besitzt eine Stellung genau zwei Drohungen d1=(r1,s,W) und
-d2(r2,s,W) mit r1 < r2, und ist mindestens eine der beiden Drohungen ungerade,
+d2(r2,s,W) mit r1 < r2, und ist mindestens eine der beiden Drohungen gerade,
 so gewinnt Weiß das Spiel. BEWEIS: Die Drohung d1 entscheidet sich auf jeden
-Fall zuerst. Ist sie ungerade, so ist nach 1.2 das Spiel für Weiß gewonnen.
+Fall zuerst. Ist sie gerade, so ist nach 1.2 das Spiel für Weiß gewonnen.
 Wenn nicht, so ergibt sich mit der zweiten Drohung d2 eine weitere Chance, über
 deren Ertrag wiederum Lemma 1.2 Auskunft gibt #
 
-    => REGEL u( (2*m-1,s,W), (2*n-1,s,W) ) = 1
-    => REGEL u( (2*m-1,s,W), (2*n,s,W) ) = 1
+    => REGEL u( (2*m,s,W), (2*n,s,W) ) = 1
     => REGEL u( (2*m,s,W), (2*n-1,s,W) ) = 1
+    => REGEL u( (2*m-1,s,W), (2*n,s,W) ) = 1
 
-Analog zu 1.3 und 1.4 sind zwei ungerade Drohungen in derselben Spalte für
-Schwarz nutzlos und zwei gerade Drohungen in derselben Spalte für Weiß nutzlos.
+Analog zu 1.3 und 1.4 sind zwei gerade Drohungen in derselben Spalte für
+Schwarz nutzlos und zwei ungerade Drohungen in derselben Spalte für Weiß nutzlos.
 
-    => REGEL u( (2*m-1,s,B), (2*n-1,s,B) ) = 0
-    => REGEL u( (2*m,s,W), (2*n,s,W) ) = 0
+    => REGEL u( (2*m,s,B), (2*n,s,B) ) = 0
+    => REGEL u( (2*m-1,s,W), (2*n-1,s,W) ) = 0
 
 Betrachten wir nun Stellungen mit zwei Drohungen der gleichen Farbe in
 verschiedenen Spalten.
 
-(2.3) LEMMA: Besitzt eine Stellung genau zwei gerade Drohungen (r1,s1,B) und
+(2.3) LEMMA: Besitzt eine Stellung genau zwei ungerade Drohungen (r1,s1,B) und
 (r2,s2,B) in verschiedenen Spalten, d.h. s1 != s2, so gewinnt Schwarz. BEWEIS:
 Folgt aus Lemma 1.1. Schwarz gewinnt auch nur mit einer Drohung, die
-andere kann ihm keinen Schaden zufügen.#
+andere kann ihm keinen Schaden zufügen #
 
-    => REGEL u( (2*m,s1,B), (2*n,s2,B) ) = -1    mit s1 != s2
+    => REGEL u( (2*m-1,s1,B), (2*n-1,s2,B) ) = -1    mit s1 != s2
 
-(2.4) LEMMA: Besitzt eine Stellung genau zwei ungerade Drohungen (r1,s1,W) und
+(2.4) LEMMA: Besitzt eine Stellung genau zwei gerade Drohungen (r1,s1,W) und
 (r2,s2,W) in verschiedenen Spalten, d.h. s1 != s2, so gewinnt Weiß. BEWEIS:
 Analog zu 2.3 #
 
-    => REGEL u( (2*m-1,s1,W), (2*n-1,s2,W) ) = 1    mit s1 != s2
+    => REGEL u( (2*m,s1,W), (2*n,s2,W) ) = 1    mit s1 != s2
 
-(2.5) LEMMA: Besitzt eine Stellung genau eine gerade Drohung (r1,s1,B) und eine
-ungerade Drohung (r2,s2,B) in verschiedenen Spalten, so gewinnt Schwarz.
-BEWEIS: Folgt aus Lemma 1.1. Schwarz gewinnt allein mit der geraden Drohung.
+(2.5) LEMMA: Besitzt eine Stellung genau eine ungerade Drohung (r1,s1,B) und eine
+gerade Drohung (r2,s2,B) in verschiedenen Spalten, so gewinnt Schwarz.
+BEWEIS: Folgt aus Lemma 1.1. Schwarz gewinnt allein mit der ungeraden Drohung.
 
-    => REGEL u( (2*m,s1,B), (2*n-1,s2,B) ) = -1   mit s1 != s2
     => REGEL u( (2*m-1,s1,B), (2*n,s2,B) ) = -1   mit s1 != s2
+    => REGEL u( (2*m,s1,B), (2*n-1,s2,B) ) = -1   mit s1 != s2
 
-(2.6) LEMMA: Besitzt eine Stellung eine gerade Drohung (r1,s1,W) und eine
-ungerade Drohung (r2,s2,W) in verschiedenen Spalten, so gewinnt Schwarz.
-BEWEIS: Folgt aus Lemma 1.1. Schwarz gewinnt, auch wenn er die ungerade Drohung
+(2.6) LEMMA: Besitzt eine Stellung genau eine gerade Drohung (r1,s1,W) und eine
+ungerade Drohung (r2,s2,W) in verschiedenen Spalten, so gewinnt Weiß.
+BEWEIS: Folgt aus Lemma 1.1. Weiß gewinnt, auch wenn er die ungerade Drohung
 aufgibt #
 
     => REGEL u( (2*m,s1,W), (2*n-1,s2,W) ) = 1    mit s1 != s2
     => REGEL u( (2*m-1,s1,W), (2*n,s2,W) ) = 1    mit s1 != s2
 
+// TODO: Mengenschreibweise u
+
 Aus 2.5, 2.6 können wir schließen, dass in einer einfarbigen Drohungsmenge,
-eine einzige gerade (Schwarz) bzw. ungerade (Weiß) Drohung zum Sieg reicht.
+eine einzige gerade (Weiß) bzw. ungerade (Schwarz) Drohung zum Sieg reicht.
 Nun müssen wir noch untersuchen, ob diese Existenz auch notwendig ist.
 
 TODO: Zusammenführung Regeln für s1=s2 und s1!=s2, wo möglich, oder Übersicht
@@ -189,147 +195,148 @@ TODO: Zusammenführung Regeln für s1=s2 und s1!=s2, wo möglich, oder Übersich
 IDEE: In Latex könnte man Subskripte oder Superskripte oder Unterstreichungen
 und Überstriche verwenden um gerade und ungerade Zahlen zu kennzeichnen.
 
-(2.7) LEMMA: Besitzt eine Stellung genau zwei ungerade Drohungen (r1,s1,B),
+(2.7) LEMMA: Besitzt eine Stellung genau zwei gerade Drohungen (r1,s1,B),
 (r2,s2,B) in verschiedenen Spalten, d.h. s1 != s2, so gewinnt Schwarz. BEWEIS:
 
               s1    s2
-        6 X X - X X - X 
-        5 X X b X X - X r1
-        4 X X - X X - X
-        3 X X - X X b X r2
-        2 X X - X X - X
-        1 X X X X X - X
+        5 X X - X X - X 
+        4 X X b X X - X r1
+        3 X X - X X - X
+        2 X X - X X b X r2
+        1 X X - X X - X
+        0 X X X X X - X
         # A B C D E F G
 
 Wir sehen auch hier die Bedeutung der Schlüsselfelder [r1-1,s1] und [r2-1,s2].
 Besetzt Weiß eines dieser Felder, so gewinnt zwingendermaßen Schwarz. Besetzt
 Schwarz eines dieser Felder, so macht Weiß eine der Drohungen zunichte und mit
 1.3 ist das Spiel unentschieden. Also teilen sich beide Spieler die Felder bis
-direkt unter die Schlüsselfelder auf. Es bleibt die gerade Zahl von 6-(r1-1)+1
-+ 6-(r2-1)+1 = 16-r1-r2 freien Feldern übrig. Weiß ist am Zug, und muss eines
+direkt unter die Schlüsselfelder auf. Es bleibt die gerade Zahl von 6-(r1-1)
++ 6-(r2-1) = 14-r1-r2 freien Feldern übrig. Weiß ist am Zug, und muss eines
 der Schlüsselfelder besetzen, worauf Schwarz gewinnt #
 
-    => REGEL u( (2*m-1,s1,B), (2*n-1,s2,B) ) = -1   mit s1 != s2
+    => REGEL u( (2*m,s1,B), (2*n,s2,B) ) = -1   mit s1 != s2
 
 Interessant. Hier sehen wir einen Unterschied zum Fall, dass mit |D|=2 und zwei
 schwarzen Drohungen in der gleichen Spalte liegen. Doch hier gewinnt Schwarz!
-
+Der Grund liegt darin, dass bei 
 TODO: Schlüsselfelder sind im Schach positiv, hier haben sie eine negative
 Konnotation erhalten. Ist das ein Problem?
 
-(2.8) LEMMA: Besitzt eine Stellung genau zwei gerade Drohungen (r1,s1,W),
+(2.8) LEMMA: Besitzt eine Stellung genau zwei ungerade Drohungen (r1,s1,W),
 (r2,s2,W), so ist das Spiel unentschieden. BEWEIS:
 
               s1    s2
-        6 X X - X X w X r2
-        5 X X - X X - X 
-        4 X X w X X - X r1
-        3 X X - X X - X
+        5 X X - X X w X r2
+        4 X X - X X - X 
+        3 X X w X X - X r1
         2 X X - X X - X
-        1 X X X X X X X
+        1 X X - X X - X
+        0 X X X X X X X
         # A B C D E F G
 
-Wir zeigen, dass Schwarz eine der beiden geraden Drohungen zunichte machen
+Wir zeigen, dass Schwarz eine der beiden ungeraden Drohungen zunichte machen
 kann. Dann folgt das Unentschieden direkt mit Lemma 1.4. Weiß muss um jeden
 Preis verhindern, eine seiner Drohungen zu verlieren, und so vermeiden, eines
 der Schlüsselfelder [r1-1,s1] bzw. [r2-1,s2] zu besetzen. Schwarz natürlich
 ebenso, da er sonst sofort verliert. Also teilen sich die Spieler zuerst die
 freien Felder bis direkt unterhalb der Schlüsselfelder auf. Es bleibt die
-gerade Zahl von 6-(r1-1)+1 + 6-(r2-1)+1 = 16-r1-r2 freien Feldern übrig.
+gerade Zahl von 6-(r1-1) + 6-(r2-1) = 14-r1-r2 freien Feldern übrig.
 Also ist Weiß am Zug, und muss eines der Schlüsselfelder besetzen, worauf
 Schwarz eine der Drohungen vernichtet #
 
-    => REGEL u( (2*m,s1,W), (2*n,s2,W) ) = 0
+    => REGEL u( (2*m-1,s1,W), (2*n-1,s2,W) ) = 0
 
 Interessant. Diese Regel bricht eine gewisse Symmetrie. Denn anders als
-in 2.7 für Schwarz gezeigt, helfen Weiß zwei schlechte, gerade Drohungen
+in 2.7 für Schwarz gezeigt, helfen Weiß zwei schlechte, ungerade Drohungen
 überhaupt nicht weiter!
 
 Mit 2.1 bis 2.8 sind nun alle Regeln für zwei einfarbige Drohungen hergeleitet.
 Betrachten wir nun zwei verschiedenfarbige Drohungen in der gleichen Spalte.
 
+// TODO: Neubenennung der Regeln
 // TODO: In der gleichen Spalte - zu erwähnen?
 // TODO: Ab und zu werden Drohungen bezeichnet, aber die Bezeichnung nicht verwendet
 
-(2.9) LEMMA: Besitzt eine Stellung genau eine ungerade Drohung (r1,s,W) und eine
-gerade Drohung (r2,s,B), so gewinnt der Besitzer der Drohung mit der
+(2.9) LEMMA: Besitzt eine Stellung genau eine gerade Drohung (r1,s,W) und eine
+ungerade Drohung (r2,s,B), so gewinnt der Besitzer der Drohung mit der
 niedrigeren Drohung.  BEWEIS: Die Drohung in der niedrigeren Zeile entscheidet
-sich zuerst. Falls r1 < r2, so gewinnt Weiß nach 1.2 mit seiner ungeraden
-Drohung. Falls r2 > r1, so gewinnt Schwarz nach 1.1 mit seiner geraden Drohung #
+sich zuerst. Falls r1 < r2, so gewinnt Weiß nach 1.2 mit seiner geraden
+Drohung. Falls r2 > r1, so gewinnt Schwarz nach 1.1 mit seiner ungeraden Drohung #
 
-    => Regel u( (2*m-1, s, W), (2*n, s, B) ) = 1      falls 2*m-1 < 2*n
-    => Regel u( (2*m-1, s, W), (2*n, s, B) ) = -1     falls 2*m-1 > 2*n 
+    => Regel u( (2*m, s, W), (2*n-1, s, B) ) = 1      falls 2*m-1 < 2*n
+    => Regel u( (2*m, s, W), (2*n-1, s, B) ) = -1     falls 2*m-1 > 2*n 
 
-(2.10) LEMMA: Besitzt eine Stellung genau eine gerade Drohung (r1,s,W) und eine
-ungerade Drohung (r2,s,B), so endet das Spiel unentschieden. BEWEIS: Die
+(2.10) LEMMA: Besitzt eine Stellung genau eine ungerade Drohung (r1,s,W) und eine
+gerade Drohung (r2,s,B), so endet das Spiel unentschieden. BEWEIS: Die
 niedrigere Drohung wird zuerst entschieden, führt aber bei korrektem Spiel nach
 1.3 bzw. 1.4 zu einer unentschiedenen Stellung, in der nur noch eine Drohung
 übrigbleibt, welche wiederum nach 1.4 bzw. 1.3 keinen Sieger hervorbringt #
 
-    => REGEL u( (2*m, s, W), (2*n-1,s, B) ) = 0
+    => REGEL u( (2*m-1, s, W), (2*n,s, B) ) = 0
 
-(2.11) LEMMA: Besitzt eine Stellung genau zwei gerade Drohungen (r1,s,W), (r2,s,B),
+(2.11) LEMMA: Besitzt eine Stellung genau zwei ungerade Drohungen (r1,s,W), (r2,s,B),
 so gewinnt Schwarz. BEWEIS: Angenommen, r2 < r1. Dann gewinnt Schwarz nach Regel 1.1.
 Angenommen, r1 < r2. Schwarz kann die weiße Drohung nach 1.3 parieren und es bleibt
 die schwarze ungerade Drohung übrig, welche Schwarz den Sieg garantiert #
 
-    => REGEL u( (2*m, s, W), (2*n, s, B) ) = -1
+    => REGEL u( (2*m-1, s, W), (2*n-1, s, B) ) = -1
 
 IDEE: Vielleicht sollten wir bei Gelegenheit das Konzept der "Unabhängigkeit"
 von Drohungen einführen. Zwei Drohungen könnte man unabhängig nennen, wenn man
 sie einzeln untersuchen kann. Vielleicht aber auch nicht.
 
-(2.12) LEMMA: Besitzt eine Stellung genau zwei ungerade Drohungen (r1,s,W), (r2,s,B),
+(2.12) LEMMA: Besitzt eine Stellung genau zwei gerade Drohungen (r1,s,W), (r2,s,B),
 so gewinnt Weiß. BEWEIS: Analog zu 2.11 #
 
-    => REGEL u( (2*m-1, s, W), (2*n-1, s, W) ) = 1
+    => REGEL u( (2*m, s, W), (2*n, s, W) ) = 1
 
 Kommen wir nun zu den Stellungen mit zwei ungleichfarbigen Drohungen in verschiedenen
 Spalten.
 
-(2.13) LEMMA: Besitzt eine Stellung genau eine gerade Drohung (r1, s1, W) und
-eine ungerade Drohung (r2, s2, B) in verschiedenen Spalten, d.h. s1!=s2, so
+(2.13) LEMMA: Besitzt eine Stellung genau eine ungerade Drohung (r1, s1, W) und
+eine gerade Drohung (r2, s2, B) in verschiedenen Spalten, d.h. s1!=s2, so
 endet das Spiel unentschieden. 
 
               s1    s2
-        6 - X - X X - X
-        5 - X - X X b X r2 
-        4 X X w X X - X r1
-        3 X X - X X - X
+        5 - X - X X - X
+        4 - X - X X b X r2 
+        3 X X w X X - X r1
         2 X X - X X - X
-        1 X X X X X X X
+        1 X X - X X - X
+        0 X X X X X X X
         # A B C D E F G
 
 BEWEIS: Mit Fallunterscheidung. Wir betrachten den Zeitpunkt, zu dem einer der Spieler
 das erste Mal eines der Felder [r1-1,s1] oder [r2-1,s1] besetzt. Dazu unterscheiden
 wir zwischen den freiwilligen Zügen in den Fällen 1,2 und der Zugzwangposition im Fall 3.
 (1) Weiß belegt [r1-1,s1]. Dann antwortet Schwarz mit [r1,s1] und vernichtet die
-weiße Drohung. Es bleibt die ungerade Drohung von Schwarz übrig, und nach 1.3
+weiße Drohung. Es bleibt die gerade Drohung von Schwarz übrig, und nach 1.3
 endet das Spiel unentschieden.
 (2) Schwarz belegt [r2-1,s2]. Analog zum Fall 1 endet das Spiel unentschieden.
 (3) Falls Schwarz und Weiß die Besetzung der Schlüsselfelder vermeiden, so
 füllen sie die freien Felder bis direkt unter den Schlüsselfeldern [r1-1,s1] und
-[r2-1,s2] auf. Es verbleiben die gerade Zahl von 6-(r1-1)+1 + 6-(r2-1)+1 = 16-r1-r2 Feldern,
+[r2-1,s2] auf. Es verbleiben die gerade Zahl von 6-(r1-1) + 6-(r2-1) = 14-r1-r2 Feldern,
 also ist Weiß am Zug, und besetzt das Schlüsselfeld [r1-1,s1], da [r2-1,s2] verliert,
 und es gibt ein Unentschieden nach 1.3 #
 
-    => REGEL u( (2*m, s1, W), (2*n-1, s2, B) ) = 0      mit s1 != s2
+    => REGEL u( (2*m-1, s1, W), (2*n, s2, B) ) = 0      mit s1 != s2
 
 Hier ergibt sich kein Unterschied zu 2.10.
 
 TODO: Präzisere Formulierung der Fallunterscheidung s.o.
 
-(2.14) LEMMA: Besitzt eine Stellung genau eine ungerade Drohung (r1, s1, W) und
-eine gerade Drohung (r2, s2, B) in verschiedenen Spalten, d.h. s1!=s2, so gewinnt
+(2.14) LEMMA: Besitzt eine Stellung genau eine gerade Drohung (r1, s1, W) und
+eine ungerade Drohung (r2, s2, B) in verschiedenen Spalten, d.h. s1!=s2, so gewinnt
 Weiß.
 
               s1    s2
-        6 - X - X X - X
-        5 - X w X X - X r1 
-        4 X X - X X b X r2
-        3 X X - X X - X
+        5 - X - X X - X
+        4 - X w X X - X r1 
+        3 X X - X X b X r2
         2 X X - X X - X
-        1 X X X X X X X
+        1 X X - X X - X
+        0 X X X X X X X
         # A B C D E F G
 
 BEWEIS: Wir untersuchen die Schlüsselfelder. 
@@ -342,10 +349,10 @@ Aus (a),(b) folgt, dass beide Spieler verlieren, sobald sie eines der Schlüssel
 besetzen. Wir untersuchen deshalb nur noch die Zugzwangposition, in der einer der
 Spieler gezwungen ist, eines der Schlüsselfelder zu besetzen. In der Zugzwangposition
 sind alle Felder bis direkt unter die Schlüsselfelder besetzt. Es verbleiben die
-ungerade Zahl von 6-(r1-1)+1 + 6-(r2-1)+1 = 16-r1-r2 freien Feldern, also ist Schwarz
+ungerade Zahl von 6-(r1-1) + 6-(r2-1) = 14-r1-r2 freien Feldern, also ist Schwarz
 am Zug und verliert durch Zugzwang #
 
-    => REGEL u( (2*m-1, s1, W), (2*n, s2, B) ) = 1      mit s1 != s2
+    => REGEL u( (2*m, s1, W), (2*n-1, s2, B) ) = 1      mit s1 != s2
 
 Interessant, auch hier ist das Spiel asymmetrisch. Beide Drohungen sind gute
 Drohungen.  Trotzdem gewinnt Weiß, indem er einfach nur durch das Auffüllen
@@ -357,7 +364,7 @@ TODO: die Position, in der alle Felder bis auf die bedrohten Felder und die
 Schlüsselfelder darunter belegt sind, benötigt eine eigene Bezeichnung.
 Vorschlag: Schlüsselposition oder Schlüsselstellung
 
-(2.15) LEMMA: Besitzt eine Stellung genau zwei gerade Drohungen (r1,s1,W),
+(2.15) LEMMA: Besitzt eine Stellung genau zwei ungerade Drohungen (r1,s1,W),
 (r2,s2,B) in verschiedenen Spalten, d.h. s1!=s2, so gewinnt Schwarz. BEWEIS:
 Wir bezeichnen die Strategie eines Spielers, die Schlüsselfelder direkt
 unterhalb aller bedrohter Felder bis zum letzten Moment zu vermeiden als
@@ -365,7 +372,7 @@ Strategie. Folgt ein Spieler einer anderen Strategie, so besetzt er freiwillig
 eines der Schlüsselfelder. Fallunterscheidung:
 (1) Weiß und Schwarz verfolgen die Zugzwangstrategie: In der Position, in der
 alle Felder bis auf die bedrohten Felder und die Felder direkt darunter belegt
-sind, verbleiben noch die gerade Zahl an 6-(r1-1)+1 + 6-(r2-1)+1 = 16-r1-r2
+sind, verbleiben noch die gerade Zahl an 6-(r1-1) + 6-(r2-1) = 14-r1-r2
 Feldern. Also ist Weiß am Zug, besetzt [r1-1,s1]. Schwarz antwortet mit [r1,s1]
 und gewinnt nach 1.1 mit seiner verbleibenden geraden Drohung.
 (2) Weiß besetzt eines der Schlüsselfelder freiwillig. Nach einem weißen Zug
@@ -373,14 +380,14 @@ auf [r2-1,s2] gewinnt Schwarz sofort und nach [r1-1,s1] gewinnt Schwarz mit
 seiner verbleibenden geraden Drohung nach 1.1. 
 Mit (1), (2) folgt, dass Schwarz mit der Zugzwangstrategie einen Sieg erzwingt #
 
-    => REGEL u( (2*m, s1, W), (2*n, s2, W) ) = -1
+    => REGEL u( (2*m-1, s1, W), (2*n-1, s2, B) ) = -1
 
 Bei diesem Beweis kommt ein deutlicher neuer Aspekt ins Spiel: die Wahl der
 Strategien. Um eine Stellung als Gewinnstellung zu klassifizieren, genügt es,
 eine Strategie für einen der Spieler anzugeben. Dies vereinfacht
 Fallunterscheidungen etwas.
 
-(2.16) LEMMA: Besitzt eine Stellung genau zwei ungerade Drohungen (r1,s1,W),
+(2.16) LEMMA: Besitzt eine Stellung genau zwei gerade Drohungen (r1,s1,W),
 (r2,s2,B) in verschiedenen Spalten, d.h. s1!=s2, so endet das Spiel
 unentschieden. BEWEIS: Angenommen, Schwarz besetzt als erster Spieler
 freiwillig das Schlüsselfeld [r2-1,s2] (das andere verliert sofort). Nach
@@ -388,14 +395,14 @@ Vernichtung der schwarzen Drohung, gewinnt dann Weiß nach 1.2. Folglich bleibt
 Schwarz nur die Zugzwangstrategie zur Vermeidung einer sicheren Niederlage.
 Nun unterscheiden wir zwischen den Strategien für Weiß:
 (1) Weiß verfolgt ebenfalls eine Zugzwangstrategie. In der Schlüsselposition
-(siehe 2.15/1) verbleiben eine gerade Zahl von 6-(r1-1)+1 + 6-(r2-1)+1 =
-16-r1-r2  Feldern, also ist Weiß am Zug, muss seine Drohung aufgeben und mit
-Lemma 1.3 endet das Spiel unentschieden.
+(siehe 2.15/1) verbleiben eine gerade Zahl von 6-(r1-1) + 6-(r2-1) = 14-r1-r2
+Feldern, also ist Weiß am Zug, muss seine Drohung aufgeben und mit Lemma 1.3
+endet das Spiel unentschieden.
 (2) Weiß besetzt freiwillig das Schlüsselfeld [r1-1,s1] (das andere verliert
 sofort).  So endet das Spiel nach der Vernichtung der weißen Drohung ebenfalls
 mit Lemma 1.3 unentschieden #
 
-    => REGEL u( (2*m-1, s1, W), (2*n-1, s2, W) ) = 0
+    => REGEL u( (2*m, s1, W), (2*n, s2, B) ) = 0
 
 Mit 2.1 bis 2.16 können wir alle Stellungen, die Voraussetzung I erfüllen und
 höchstens zwei Drohungen enthalten korrekt auf Gewinn/Niederlage oder
@@ -407,9 +414,10 @@ zurückführt. Die Fallunterscheidung bei n Drohungen erfolgt, indem man
 (1) die Zugzwangstrategie beider Spieler untersucht. In einer Schlüsselposition
 muss eine Drohung entweder wahrgemacht oder vernichtet werden. So wird das
 Problem auf n-1 Drohungen zurückgeführt.
-(2) die Zugzwangstrategie eines Spielers untersucht. Dann verbleibt die Untersuchung
-der freiwilligen Besetzung von Schlüsselfeldern durch den jeweils gegnerischen
-Spieler. Auch in diesem Fall wird das Problem auf n-1 Drohungen zurückgeführt.
+(2) die Zugzwangstrategie eines Spielers untersucht. Dann verbleibt die
+Untersuchung der freiwilligen Besetzung von Schlüsselfeldern durch den jeweils
+gegnerischen Spieler. Auch in diesem Fall wird das Problem auf n-1 Drohungen
+zurückgeführt.
 Außer (1),(2) müssen keine weiteren Fälle untersucht werden. Denn das Besetzen
 eines Schlüsselfelds führt im anschließenden Halbzug immer entweder zu einer
 Niederlage eines Spielers oder zu einer Reduktion der Zahl der Drohungen.
