@@ -138,9 +138,6 @@ void alphabeta_negamax(
     }
 }
 
-// TODO: use principle variation from last search! Might check whether we
-//      are still in this variation!
-
 int8_t searchm(Board * b) {
     SearchRecord rec;
     searchrecord_init(&rec);

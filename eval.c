@@ -82,7 +82,7 @@ float eval_odd_even(Board *b) {
     
     // Apply rules
     bool white_even = (white_threat.row % 2 == 0);
-    bool black_odd = (white_threat.row % 2 == 1);
+    bool black_odd = (black_threat.row % 2 == 1);
     // rule 1.2
     if (white_threat.owner == NOBODY && white_even) {
         return 1;
