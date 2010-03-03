@@ -4,7 +4,7 @@
 
 /* Defines the ply since when the evaluation function will rate a position just
  * on the criteria win, loss, and ongoing. */
-#define FAST_EVAL_THRESHOLD 10
+#define FAST_EVAL_THRESHOLD 20
 
 static int count_threats(Board *b) {
     int8_t threats = 0;

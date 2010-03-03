@@ -21,6 +21,7 @@ void searchrecord_init(SearchRecord *rec) {
     rec->winner_identified = false;
     rec->defeat_deferred = false;
     rec->cpu_time = 0UL;
+    rec->on_time = true;
 }
 
 void stats_print(Board *b, SearchRecord * rec) {
@@ -64,6 +65,7 @@ void stats_print(Board *b, SearchRecord * rec) {
     printf("%19s : %d\n", "TT entries", ttable_entry_cnt());
     printf("%19s : %d\n", "TT size", TTABLE_SIZE);
     printf("%19s : %d ms\n", "CPU time", (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)));
+    printf("%19s : %3s\n", "Returned on time", rec->on_time ? "yes" : "no");
     printf("%19s : 0x%.16lX\n", "Board", b->code);
     putchar('\n');
 }

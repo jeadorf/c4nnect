@@ -80,17 +80,11 @@ static void play_game() {
 
 int main(int argc, char** argv) {
 #ifdef BENCHMARK
-    FILE *boards_out = fopen("boards", "w");
-    benchmark_sample(boards_out);
-    fclose(boards_out);
-
-    FILE *boards_in = fopen("boards", "r");
-    FILE *eval_out = fopen("eval.csv", "w");
-    FILE *summ_out = fopen("summ.csv", "w");
-    benchmark_run(boards_in, eval_out, summ_out);
-    fclose(boards_in);
-    fclose(eval_out);
-    fclose(summ_out);
+    FILE *boards = tmpfile();
+    benchmark_sampleq(boards);
+    rewind(boards);
+    benchmark_run(boards, stdout, stdout);
+    fclose(boards);
 #endif
 
 #ifdef DEBUG

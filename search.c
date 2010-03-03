@@ -201,8 +201,9 @@ void search(Board *b, SearchRecord * rec) {
         } else {
             time_est = 0;
         }
-    } while (time_est < 1000 && max_depth < 42 - b->move_cnt);
+    } while (time_est < TIME_LIMIT_PER_PLY && max_depth < 42 - b->move_cnt);
 
     rec->cpu_time = clock() - rec->cpu_time;
+    rec->on_time = (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)) < TIME_LIMIT_PER_PLY;
     rec->ttcharge = ttable_charge();
 }

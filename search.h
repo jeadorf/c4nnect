@@ -6,6 +6,9 @@
 #include "stats.h"
 #include <stdint.h>
 
+/*! Defines the number of milliseconds within the engine is expected to move. */
+#define TIME_LIMIT_PER_PLY 1000
+
 int8_t searchm(Board *b);
 
 /*! Returns a move (i.e. a column) selected by the KI engine. Any changes to the

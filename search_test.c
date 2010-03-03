@@ -311,6 +311,44 @@ static char* test_time_consuming_position() {
     return 0;
 }
 
+static char* test_time_consuming_position2() {
+    printf("test_time_consuming_position2\n");
+    Board b;
+    // This position repeatedly shows a very huge gap between two steps of the iterative
+    // search, giving the following trace, something that cannot be guessed by
+    // the time estimator.
+    //
+    // estimated time 0ms, actual time: 0ms
+    // estimated time 0ms, actual time: 0ms
+    // estimated time 0ms, actual time: 0ms
+    // estimated time 0ms, actual time: 0ms
+    // estimated time 0ms, actual time: 10ms
+    // estimated time 0ms, actual time: 10ms
+    // estimated time 0ms, actual time: 10ms
+    // estimated time 0ms, actual time: 20ms
+    // estimated time 40ms, actual time: 30ms
+    // estimated time 45ms, actual time: 30ms
+    // estimated time 30ms, actual time: 40ms
+    // estimated time 53ms, actual time: 60ms
+    // estimated time 90ms, actual time: 80ms
+    // estimated time 106ms, actual time: 140ms
+    // estimated time 245ms, actual time: 200ms
+    // estimated time 285ms, actual time: 123420ms
+    parser_read(&b,
+            "- - - - - - - "
+            "- - - - - - - "
+            "- - - - - - - "
+            "- - - - - - w "
+            "- - w - b w w "
+            "b - w b b b w ");
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    search(&b, &rec);
+    // check whether this problem might be caused by defeat deferral re-search
+    mu_assert("might be defeat deferral causing the time consumption", rec.defeat_deferred == false);
+    return 0;
+}
+
 static char* all_tests() {
     mu_run_test(test_genmove_surjectivity_simple);
     mu_run_test(test_genmove_pv_first);
@@ -318,9 +356,9 @@ static char* all_tests() {
     mu_run_test(test_abn_black_win);
     mu_run_test(test_abn_white_win2);
     mu_run_test(test_search_white_win);
-/*
-        mu_run_test(test_search_fastest_white_win);
-*/
+    /*
+            mu_run_test(test_search_fastest_white_win);
+     */
     mu_run_test(test_search_white_win3);
     mu_run_test(test_search_black_win);
     mu_run_test(test_beginning_trap_white);
@@ -331,6 +369,7 @@ static char* all_tests() {
      */
     mu_run_test(test_white_difficult_win);
     mu_run_test(test_time_consuming_position);
+    mu_run_test(test_time_consuming_position2);
 
     return 0;
 }

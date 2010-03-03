@@ -268,5 +268,4 @@ void board_printd(Board *b, int8_t depth) {
         }
         putchar('\n');
     }
-    putchar('\n');
 }

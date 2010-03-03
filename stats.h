@@ -49,6 +49,9 @@ struct SearchRecord {
     bool defeat_deferred;
     /*! Used processor time. */
     clock_t cpu_time; // TODO: naming clock vs. milliseconds
+    /*! Whether the search stayed within the expected time frame set by
+     * TIME_LIMIT_PER_PLY */
+    bool on_time;
 };
 
 typedef struct SearchRecord SearchRecord;
