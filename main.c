@@ -81,7 +81,7 @@ static void play_game() {
 int main(int argc, char** argv) {
 #ifdef BENCHMARK
     FILE *boards = tmpfile();
-    benchmark_sampleq(boards);
+    benchmark_sample(boards);
     rewind(boards);
     benchmark_run(boards, stdout, stdout);
     fclose(boards);

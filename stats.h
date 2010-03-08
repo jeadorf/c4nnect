@@ -48,7 +48,7 @@ struct SearchRecord {
      * selected a variation that delays the defeat as long as possible. */
     bool defeat_deferred;
     /*! Used processor time. */
-    clock_t cpu_time; // TODO: naming clock vs. milliseconds
+    clock_t cpu_time;
     /*! Whether the search stayed within the expected time frame set by
      * TIME_LIMIT_PER_PLY */
     bool on_time;
