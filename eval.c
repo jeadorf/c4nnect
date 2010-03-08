@@ -31,7 +31,7 @@ float eval(Board *b, bool defer_defeat) {
     } else if (b->winner == BLACK) {
         return ALPHA_MIN - (defer_defeat ? 42 - b->move_cnt : 0);
     } else if (b->move_cnt <= FAST_EVAL_THRESHOLD) {
-        return eval_odd_even(b);
+        return b->ibef_rating;
     } else {
         return 0;
     }

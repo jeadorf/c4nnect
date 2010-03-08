@@ -90,6 +90,11 @@ struct Board {
     /*! Winner of this game. If the game is still ongoing the winner is set to
      * NOBODY. */
     Player winner;
+    /*! IBEF rating (Intuitive Board Evaluation Function) from "Synthesizing
+     * Board Evaluation Functions for Connect4 using Machine Learning Techniques"
+     * (Martin Stenmark). Fast, simple but quite stupid evaluation based on
+     * weighting squares. */
+    int ibef_rating;
 };
 
 typedef struct Board Board;

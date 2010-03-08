@@ -31,6 +31,16 @@ inline char* name(Player p) {
     return p == WHITE ? "White" : "Black";
 }
 
+/*! IBEF square rating, see Board.ibef_rating */
+int ibef_rating[NUM_ROWS][NUM_COLS] ={
+    { 3, 4, 5, 7, 5, 4, 3},
+    { 4, 6, 8, 10, 8, 6, 4},
+    {5, 8, 11, 13, 11, 8, 5},
+    {5, 8, 11, 13, 11, 8, 5},
+    { 4, 6, 8, 10, 8, 6, 4},
+    { 3, 4, 5, 7, 5, 4, 3}
+};
+
 /* Bit masks for detection of winning moves */
 static uint64_t DOWN[NUM_ROWS][NUM_COLS];
 static uint64_t LEFT[4][NUM_ROWS][NUM_COLS];
@@ -112,6 +122,7 @@ static bool board_move_wins_diagdown(Board *b, Player p, int8_t row, int8_t col)
 // Check for win situation. The new piece must have been involved in a
 // win line. Thus, we just need to check rows, columns and diagonals
 // starting from the new piece.
+
 static bool board_move_wins(Board *b, Player p, int8_t row, int8_t col) {
     return board_move_wins_row(b, p, row, col)
             || board_move_wins_col(b, p, row, col)
@@ -157,14 +168,22 @@ void board_put_forced(Board *b, Player p, int8_t col) {
     if (board_move_wins(b, p, row, col)) {
         b->winner = p;
     }
+
+    b->ibef_rating += (p == WHITE ? 1 : -1) * ibef_rating[row][col];
+    
     b->move_cnt++;
 }
 
 void board_undo(Board *b, int8_t col) {
     int8_t row = b->tops[col] - 1;
-    Player p = board_get(b, row, col);
+    Player p = other(b->turn);
+#ifdef DEBUG
+    if (board_get(b, row, col) != p) {
+        handle_error("Requested undo operation for a piece of the wrong color");
+    }
+#endif
     b->winner = NOBODY;
-    b->turn = other(b->turn);
+    b->turn = p;
 
     // Kill bit at row
     b->pos[p] = SET(b->pos[p], row, col, 0);
@@ -176,6 +195,8 @@ void board_undo(Board *b, int8_t col) {
     b->code = SET_TOP(b->code, col, row);
     b->code = SET(b->code, row, col, 0);
     b->code = OTHER(b->code);
+
+    b->ibef_rating -= (p == WHITE ? 1 : -1) * ibef_rating[row][col];
 
     b->move_cnt--;
 }
