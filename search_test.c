@@ -349,6 +349,16 @@ static char* test_time_consuming_position2() {
     return 0;
 }
 
+static char* test_time_consuming_position3() {
+    printf("test_time_consuming_position3\n");
+    Board b;
+    board_decode(&b, 0x434830A41D150102);
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    search(&b, &rec);
+    mu_assert("search took much too much time", (rec.cpu_time / (CLOCKS_PER_SEC / 1000)) < 10 * TIME_LIMIT_PER_PLY);
+}
+
 static char* all_tests() {
     mu_run_test(test_genmove_surjectivity_simple);
     mu_run_test(test_genmove_pv_first);
@@ -356,20 +366,21 @@ static char* all_tests() {
     mu_run_test(test_abn_black_win);
     mu_run_test(test_abn_white_win2);
     mu_run_test(test_search_white_win);
-    /*
-            mu_run_test(test_search_fastest_white_win);
-     */
+/*
+    mu_run_test(test_search_fastest_white_win);
+*/
     mu_run_test(test_search_white_win3);
     mu_run_test(test_search_black_win);
     mu_run_test(test_beginning_trap_white);
     mu_run_test(test_beginning_trap_black);
     mu_run_test(test_search_defer_defeat);
-    /*
-        mu_run_test(test_fast_black_win);
-     */
+/*
+    mu_run_test(test_fast_black_win);
+*/
     mu_run_test(test_white_difficult_win);
     mu_run_test(test_time_consuming_position);
     mu_run_test(test_time_consuming_position2);
+    mu_run_test(test_time_consuming_position3);
 
     return 0;
 }

@@ -154,23 +154,15 @@ void search(Board *b, SearchRecord * rec) {
     int8_t max_depth = 0;
     float time_est = 0;
     do {
-#if DEBUG
-        printf("estimated time %dms", (int) time_est);
-#endif
         max_depth++;
         alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, false, rec);
-        time[max_depth] = (clock() - start_time) / (CLOCKS_PER_SEC / 1000);
-#if DEBUG
-        printf(", actual time: %dms\n", (int) time[max_depth]);
-#endif
+
         if (rec->winner_identified) {
             // Defer defeats that are unavoidable. The computer should at least not to
             // lose in the next move even if the computer sees that he will lose against
             // the perfect-playing opponent. Deferring defeats does only work without
-            // transposition tables that are not cleared between subsequent searches.
-            // Even more, it is not sufficient to re-search with a level less deep.
-            // Transposition tables are making trouble here too, we cannot be sure
-            // that the re-search will not report a defeat again!
+            // transposition tables for they are not cleared between subsequent
+            // searches.
             if (rec->rating <= ALPHA_MIN) {
                 int8_t reached_depth = rec->reached_depth;
                 SearchRecord defrec;
@@ -193,17 +185,25 @@ void search(Board *b, SearchRecord * rec) {
             break;
         }
 
+#if DEBUG
+        printf("estimated time %dms", (int) time_est);
+#endif
+        time[max_depth] = (clock() - start_time) / (CLOCKS_PER_SEC / 1000);
+#if DEBUG
+        printf(", actual time: %dms\n", (int) time[max_depth]);
+#endif
+
         // Estimate the accumulated search time after the next iteration. This
         // extrapolation uses simple exponential regression b*a^t defined by
         // t=0, t=1 and evaluated at t=2.
-        if (time[max_depth - 1] > 10 || time[max_depth] > 10) {
+        if (time[max_depth - 1] > 0 && time[max_depth] > 0) {
             time_est = time[max_depth] * time[max_depth] / time[max_depth - 1];
         } else {
             time_est = 0;
         }
-    } while (time_est < TIME_LIMIT_PER_PLY && max_depth < 42 - b->move_cnt);
+    } while (time_est < TIME_LIMIT_PER_PLY && time[max_depth] < TIME_LIMIT_PER_PLY && max_depth < 42 - b->move_cnt);
 
     rec->cpu_time = clock() - rec->cpu_time;
-    rec->on_time = (int) (rec->cpu_time / (CLOCKS_PER_SEC / 1000)) < TIME_LIMIT_PER_PLY;
+    rec->on_time = (rec->cpu_time / (CLOCKS_PER_SEC / 1000)) < TIME_LIMIT_PER_PLY;
     rec->ttcharge = ttable_charge();
 }

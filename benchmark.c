@@ -12,7 +12,6 @@
 #include "ttable.h"
 
 void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
-    sleep(3);
     if (stats_out != NULL) {
         fprintf(stats_out,
                 "%-18s , %8s, %4s , %8s , %11s , %11s , "
@@ -66,10 +65,10 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     if (summary_out != NULL) {
         fprintf(summary_out, "%7s , %8s , %11s , %11s , "
                 "%10s , %10s , %10s , %10s , %15s , "
-                "%10s , %13s , %7s , %7s , %9s , %9s\n",
+                "%10s , %13s , %7s , %7s\n",
                 "solved", "move_cnt", "visited_cnt", "eval_cnt",
                 "abcut_cnt", "ttcut_cnt", "ttadd_cnt", "ttrcoll_cnt", "final ttcharge",
-                "max_depth", "reached_depth", "cpu_time", "on_time", "on_time_s", "on_time_us");
+                "max_depth", "reached_depth", "cpu_time", "on_time");
         if (cnt > 0) {
             double dcnt = (double) cnt;
             fprintf(summary_out, "%6.3f%% , %8d , %11ld , %11ld , %10ld , %10ld , %10ld , %10ld , "
