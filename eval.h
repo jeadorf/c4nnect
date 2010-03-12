@@ -20,5 +20,7 @@ float eval(Board *b, bool defer_defeat);
 /**! Checks for threats. Returned value is an estimation. */
 float eval_odd_even(Board *b);
 
+bool winner_identified(float rating);
+
 #endif	/* _EVAL_H */
 

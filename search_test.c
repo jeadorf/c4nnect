@@ -27,10 +27,10 @@ static char* test_genmove_surjectivity_simple() {
     printf("test_genmove_surjectivity_simple\n");
     Board b;
     board_init(&b);
-    SearchRecord rec;
-    searchrecord_init(&rec);
+    Variation var;
+    variation_init(&var);
     int8_t moves[NUM_COLS];
-    generate_moves(&rec, 0, moves);
+    generate_moves(&var, 0, moves);
     assert_surjectivity(moves);
     return 0;
 }
@@ -39,15 +39,15 @@ static char* test_genmove_pv_first() {
     printf("test_genmove_pv_first\n");
     Board b;
     board_init(&b);
-    SearchRecord rec;
-    searchrecord_init(&rec);
-    rec.pv.length = 1;
+    Variation var;
+    variation_init(&var);
+    var.length = 1;
     for (int8_t col = 0; col < NUM_COLS; col++) {
-        rec.pv.moves[0] = col;
+        var.moves[0] = col;
         int8_t moves[NUM_COLS];
-        generate_moves(&rec, 0, moves);
+        generate_moves(&var, 0, moves);
         assert_surjectivity(moves);
-        mu_assert("Expected move from principal variation to be first", moves[0] == rec.pv.moves[0]);
+        mu_assert("Expected move from principal variation to be first", moves[0] == var.moves[0]);
     }
     return 0;
 }
@@ -63,11 +63,13 @@ static char* test_abn_white_win() {
             "- b b - b - -"
             "- w w - w - -");
     fboard2eps(&b, "build/test_abn_white_win.eps");
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, true, false, &rec);
-    mu_assert("error, minimax value should be very big", rec.rating > 90);
-    mu_assert("error, should find winning move", rec.pv.moves[0] == 3);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, true, false, &var, &rec);
+    mu_assert("error, minimax value should be very big", var.rating > 90);
+    mu_assert("error, should find winning move", var.moves[0] == 3);
 
     return 0;
 }
@@ -83,11 +85,13 @@ static char* test_abn_white_win2() {
             "b - - w w - -"
             "b - b w w w b");
     fboard2eps(&b, "build/test_abn_white_win2.eps");
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, false, &rec);
-    mu_assert("error, should find winning move", rec.pv.moves[0] == 4);
-    mu_assert("error, minimax value should be very big", rec.rating > 90);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, false, &var, &rec);
+    mu_assert("error, should find winning move", var.moves[0] == 4);
+    mu_assert("error, minimax value should be very big", var.rating > 90);
 
     return 0;
 }
@@ -103,11 +107,13 @@ static char* test_abn_black_win() {
             "w w - - w - -"
             "w b b - b - -");
     fboard2eps(&b, "build/test_abn_black_win.eps");
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, false, &rec);
-    mu_assert("error, should find winning move", rec.pv.moves[0] == 3);
-    mu_assert("error, minimax value should be very big", rec.rating > 90);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, false, &var, &rec);
+    mu_assert("error, should find winning move", var.moves[0] == 3);
+    mu_assert("error, minimax value should be very big", var.rating > 90);
 
     return 0;
 }
@@ -275,11 +281,13 @@ static char* test_white_difficult_win() {
             "- - w w b b - "
             "- - b w w w b ");
     fboard2eps(&b, "build/test_white_difficult_win.eps");
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
     mu_assert("It should be black's turn", b.turn == BLACK);
-    search(&b, &rec);
-    mu_assert("Position should be classified as a white win", rec.rating <= ALPHA_MIN);
+    search(&b, &var, &rec);
+    mu_assert("Position should be classified as a white win", var.rating <= ALPHA_MIN);
     while (b.winner == NOBODY && !board_full(&b)) {
         board_put(&b, searchm(&b));
     }
@@ -341,9 +349,11 @@ static char* test_time_consuming_position2() {
             "- - - - - - w "
             "- - w - b w w "
             "b - w b b b w ");
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    search(&b, &rec);
+    search(&b, &var, &rec);
     // check whether this problem might be caused by defeat deferral re-search
     mu_assert("might be defeat deferral causing the time consumption", rec.defeat_deferred == false);
     return 0;
@@ -353,9 +363,11 @@ static char* test_time_consuming_position3() {
     printf("test_time_consuming_position3\n");
     Board b;
     board_decode(&b, 0x434830A41D150102);
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    search(&b, &rec);
+    search(&b, &var, &rec);
     mu_assert("search took much too much time", (rec.cpu_time / (CLOCKS_PER_SEC / 1000)) < 10 * TIME_LIMIT_PER_PLY);
 }
 
@@ -380,7 +392,9 @@ static char* all_tests() {
     mu_run_test(test_white_difficult_win);
     mu_run_test(test_time_consuming_position);
     mu_run_test(test_time_consuming_position2);
+/*
     mu_run_test(test_time_consuming_position3);
+*/
 
     return 0;
 }

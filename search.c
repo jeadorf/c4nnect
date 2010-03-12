@@ -11,7 +11,7 @@
 #include "ttable.h"
 
 #ifdef DEBUG
-void stats_print(Board *b, SearchRecord *rec);
+void stats_print(Board *b, Variation *var, SearchRecord *rec);
 #endif
 
 extern TTEntry ttable[];
@@ -19,10 +19,10 @@ extern TTEntry ttable[];
 // Simple move ordering, first walk along the principal variation then start
 // with checking the moves in the center and then circle to the outer columns
 
-void generate_moves(SearchRecord *rec, int depth, int8_t *moves) {
+void generate_moves(Variation *var, int depth, int8_t *moves) {
     int8_t i = 0, k = 0, col = 0;
-    if (depth < rec->pv.length) {
-        moves[0] = rec->pv.moves[depth];
+    if (depth < var->length) {
+        moves[0] = var->moves[depth];
         i++;
     }
     while (k < NUM_COLS) {
@@ -40,7 +40,7 @@ void alphabeta_negamax(
         float alpha, float beta,
         int8_t depth, int8_t max_depth,
         bool ttcuts_enabled, bool defer_defeat,
-        SearchRecord * rec) {
+        Variation *var, SearchRecord *rec) {
 #ifndef DISABLE_TTABLE
     uint32_t hash = b->code % TTABLE_SIZE;
     TTEntry *ttentry = &(ttable[hash]);
@@ -52,19 +52,17 @@ void alphabeta_negamax(
         if (depth == 0) {
             handle_error("cannot search for a move in a finished game!");
         }
-        rec->rating = (b->turn == WHITE ? 1 : -1) * eval(b, defer_defeat);
-        rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
+        var->rating = (b->turn == WHITE ? 1 : -1) * eval(b, defer_defeat);
+        var->length = 0;
         rec->eval_cnt++;
-        rec->pv.length = 0;
 #ifndef DISABLE_TTABLE
     } else if (ttcuts_enabled && ttentry->code == b->code && depth > 0) {
         // The transposition entry does not contain information about the move
         // that lead to the position, so we cannot check the transposition table
         // at the root of the search tree.
-        rec->rating = ttentry->rating;
-        rec->winner_identified = true;
+        var->rating = ttentry->rating;
+        var->length = 0;
         rec->ttcut_cnt++;
-        rec->pv.length = 0;
 #endif
     } else {
 #ifndef DISABLE_TTABLE
@@ -75,12 +73,12 @@ void alphabeta_negamax(
 
         float bestval = alpha;
         int bestcol = -1;
-        Variation pv = rec->pv;
+        Variation pv = *var;
 
         // FIXME: There might be invalid boards that are not classified
         //        correctly because of transposition tables!??
         int8_t moves[NUM_COLS];
-        generate_moves(rec, depth, moves);
+        generate_moves(var, depth, moves);
         for (int8_t i = 0; i < NUM_COLS; i++) {
             int8_t col = moves[i];
             if (!board_column_full(b, col)) {
@@ -90,22 +88,22 @@ void alphabeta_negamax(
 
                 // Search subposition
                 alphabeta_negamax(b, -beta, -bestval, depth + 1, max_depth,
-                        ttcuts_enabled, defer_defeat, rec);
-                rec->rating *= -1;
+                        ttcuts_enabled, defer_defeat, var, rec);
+                var->rating *= -1;
 
                 // Undo move
                 board_undo(b, col);
 
                 // TODO: check comparison with zero
-                if (rec->rating > bestval || bestcol == -1) {
+                if (var->rating > bestval || bestcol == -1) {
                     // Found a move that is either better than all other moves
-                    bestval = rec->rating;
+                    bestval = var->rating;
                     bestcol = col;
                     // Construct principal variation. Append the PV of the subtree
                     // to the PV that led to this node.
                     pv.moves[0] = col;
-                    memcpy(pv.moves + 1, rec->pv.moves, rec->pv.length * sizeof (col));
-                    pv.length = rec->pv.length + 1;
+                    memcpy(pv.moves + 1, var->moves, var->length * sizeof (col));
+                    pv.length = var->length + 1;
                 }
 
 #ifndef DISABLE_ABCUTS
@@ -118,13 +116,12 @@ void alphabeta_negamax(
             }
         }
 
-        rec->pv = pv;
-        rec->rating = bestval;
-        rec->winner_identified = (rec->rating <= ALPHA_MIN || rec->rating >= BETA_MAX);
+        *var = pv;
+        var->rating = bestval;
 #ifndef DISABLE_TTABLE
-        if (rec->winner_identified) {
+        if (winner_identified(var->rating)) {
             ttentry->code = b->code;
-            ttentry->rating = rec->rating;
+            ttentry->rating = var->rating;
             // TODO: this might count some of the entries twice?
             rec->ttadd_cnt++;
         }
@@ -139,13 +136,15 @@ void alphabeta_negamax(
 }
 
 int8_t searchm(Board * b) {
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    search(b, &rec);
-    return rec.pv.moves[0];
+    search(b, &var, &rec);
+    return var.moves[0];
 }
 
-void search(Board *b, SearchRecord * rec) {
+void search(Board *b, Variation *var, SearchRecord *rec) {
     clock_t start_time = clock();
     rec->cpu_time = start_time;
     // The iterative approach implies that max_depth will never exceed
@@ -155,25 +154,31 @@ void search(Board *b, SearchRecord * rec) {
     float time_est = 0;
     do {
         max_depth++;
-        alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, false, rec);
+        variation_init(var);
+        alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, false, var, rec);
 
-        if (rec->winner_identified) {
+        if (winner_identified(var->rating)) {
             // Defer defeats that are unavoidable. The computer should at least not to
             // lose in the next move even if the computer sees that he will lose against
             // the perfect-playing opponent. Deferring defeats does only work without
             // transposition tables for they are not cleared between subsequent
             // searches.
-            if (rec->rating <= ALPHA_MIN) {
+            if (var->rating <= ALPHA_MIN) {
                 int8_t reached_depth = rec->reached_depth;
+                Variation defvar;
+                variation_init(&defvar);
                 SearchRecord defrec;
                 searchrecord_init(&defrec);
                 alphabeta_negamax(b, ALPHA_MIN_DEFEAT, BETA_MAX_DEFEAT,
-                        0, max_depth - 1, false, true, &defrec);
+                        0, max_depth - 1, false, true, &defvar, &defrec);
                 // Merge search results. This is not a really satisfying solution
                 // but it saves some difficulties in handling two partial search
                 // results
+                *var = defvar;
+                var->rating = ALPHA_MIN;
+
+                // TODO: this looks like a workaround
                 rec->defeat_deferred = true;
-                rec->pv = defrec.pv;
                 rec->visited_cnt += defrec.visited_cnt;
                 rec->eval_cnt += defrec.eval_cnt;
                 rec->abcut_cnt += defrec.abcut_cnt;

@@ -6,6 +6,7 @@
 #include <inttypes.h>
 #include <unistd.h>
 #include "benchmark.h"
+#include "eval.h"
 #include "stats.h"
 #include "board.h"
 #include "search.h"
@@ -32,9 +33,11 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     while (fscanf(positions_in, "%lX", &n) == 1) {
         Board b;
         board_decode(&b, n); // FIXME: probably something to do with PRId32 etc
+        Variation var;
+        variation_init(&var);
         SearchRecord rec;
         searchrecord_init(&rec);
-        search(&b, &rec);
+        search(&b, &var, &rec);
 
         int cpu_time_ms = (int) (rec.cpu_time / (CLOCKS_PER_SEC / 1000));
         
@@ -43,7 +46,7 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
                     "0x%-.16lX , %8d, %4d , %8.1f , %11ld , "
                     "%11ld , %10ld , %10ld , %11ld , %9ld , %8.2f, "
                     "%10d , %13d , %7" PRId32 " , %7d\n",
-                    n, b.move_cnt, rec.pv.moves[0], rec.rating, rec.visited_cnt, rec.eval_cnt,
+                    n, b.move_cnt, var.moves[0], var.rating, rec.visited_cnt, rec.eval_cnt,
                     rec.abcut_cnt, rec.ttcut_cnt, rec.ttadd_cnt, rec.ttrcoll_cnt, rec.ttcharge,
                     rec.max_depth, rec.reached_depth, cpu_time_ms, rec.on_time ? 1 : 0);
         }
@@ -58,7 +61,7 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
         reached_depth += rec.reached_depth;
         cpu_time += rec.cpu_time;
         on_time_cnt += (rec.on_time ? 1 : 0);
-        solved += (rec.winner_identified ? 1 : 0);
+        solved += (winner_identified(var.rating) ? 1 : 0);
         cnt++;
     }
 

@@ -6,9 +6,12 @@
 #include "ttable.h"
 #include "stats.h"
 
+void variation_init(Variation *var) {
+    var->length = 0;
+    var->rating = 0;
+}
+
 void searchrecord_init(SearchRecord *rec) {
-    rec->pv.length = 0;
-    rec->rating = 0;
     rec->eval_cnt = 0UL;
     rec->visited_cnt = 0UL;
     rec->abcut_cnt = 0UL;
@@ -18,35 +21,34 @@ void searchrecord_init(SearchRecord *rec) {
     rec->ttcharge = 0UL;
     rec->max_depth = 0;
     rec->reached_depth = 0;
-    rec->winner_identified = false;
     rec->defeat_deferred = false;
     rec->cpu_time = 0UL;
     rec->on_time = true;
 }
 
-void stats_print(Board *b, SearchRecord * rec) {
+void stats_print(Board *b, Variation *var, SearchRecord * rec) {
     // Print statistics
     board_print(b);
     printf("%19s : %s\n", "Turn", name(b->turn));
-    printf("%19s : %d\n", "Move", rec->pv.moves[0]);
+    printf("%19s : %d\n", "Move", var->moves[0]);
     printf("%19s : ", "Principal variation");
     if (rec->defeat_deferred) {
         printf("defeat deferred");
     } else {
-        for (int i = 0; i < rec->pv.length; i++) {
-            printf("%d ", rec->pv.moves[i]);
+        for (int i = 0; i < var->length; i++) {
+            printf("%d ", var->moves[i]);
         }
     }
     putchar('\n');
-    if (rec->rating >= BETA_MAX) {
+    if (var->rating >= BETA_MAX) {
         printf("%19s : %s will win\n", "Absolute rating", name(b->turn));
-    } else if (rec->rating <= ALPHA_MIN) {
+    } else if (var->rating <= ALPHA_MIN) {
         printf("%19s : %s will win\n", "Absolute rating", name(other(b->turn)));
     } else {
-        printf("%19s : %.1f\n", "Absolute rating", b->turn == WHITE ? rec->rating : -rec->rating);
+        printf("%19s : %.1f\n", "Absolute rating", b->turn == WHITE ? var->rating : -var->rating);
     }
-    printf("%19s : %.1f\n", "Relative rating", rec->rating);
-    printf("%19s : %d\n", "Winner identified", rec->winner_identified);
+    printf("%19s : %.1f\n", "Relative rating", var->rating);
+    printf("%19s : %d\n", "Winner identified", winner_identified(var->rating));
     printf("%19s : %d\n", "Defeat deferred", rec->defeat_deferred);
     printf("%19s : %d\n", "Maximum depth", rec->max_depth);
     printf("%19s : %d\n", "Reached depth", rec->reached_depth);

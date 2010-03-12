@@ -49,15 +49,17 @@ static void play_game() {
     while (true) {
         if (b.turn == ai) {
             // put piece selected by the engine
+            Variation var;
+            variation_init(&var);
             SearchRecord rec;
             searchrecord_init(&rec);
-            search(&b, &rec);
+            search(&b, &var, &rec);
 
 #ifdef DEBUG
-            stats_print(&b, &rec);
+            stats_print(&b, &var, &rec);
 #endif
 
-            board_put(&b, rec.pv.moves[0]);
+            board_put(&b, var.moves[0]);
             if (check_game_end(&b)) {
                 break;
             }

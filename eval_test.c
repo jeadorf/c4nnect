@@ -54,11 +54,14 @@ static char* test_odd_even_white_win() {
             "w w b w w b w"
             "b w w w b b w");
     fboard2eps(&b, "build/test_odd_even_white_win.eps");
+    mu_assert("error, expected game to be ongoing", b.winner == NOBODY);
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    search(&b, &rec);
+    search(&b, &var, &rec);
     mu_assert("error, expected white to move (tester's note)", b.turn == WHITE);
-    mu_assert("error, expected white to win", rec.rating >= BETA_MAX);
+    mu_assert("error, expected white to win", var.rating >= BETA_MAX);
     mu_assert("error, this position should be classified as an advantage for white", eval_odd_even(&b) > 0);
     return 0;
 }
@@ -75,11 +78,14 @@ static char* test_odd_even_white_win2() {
             "w w b w w b w"
             "b w w w b b w");
     fboard2eps(&b, "build/test_odd_even_white_win2.eps");
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    search(&b, &rec);
+    search(&b, &var, &rec);
+    stats_print(&b, &var, &rec);
     mu_assert("error, expected black to move (tester's note)", b.turn == BLACK);
-    mu_assert("error, expected white to win", rec.rating <= ALPHA_MIN);
+    mu_assert("error, expected white to win", var.rating <= ALPHA_MIN);
     mu_assert("error, this position should be classified as an advantage for white", eval_odd_even(&b) > 0);
     return 0;
 }
@@ -97,11 +103,13 @@ static char* test_odd_even_white_win3() {
             "w - w b - b w"
             "b w b w - b w");
     fboard2eps(&b, "build/test_odd_even_white_win3.eps");
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    search(&b, &rec);
+    search(&b, &var, &rec);
     mu_assert("error, expected black to move (tester's note)", b.turn == BLACK);
-    mu_assert("error, expected white to win", rec.rating <= ALPHA_MIN);
+    mu_assert("error, expected white to win", var.rating <= ALPHA_MIN);
     mu_assert("error, this position should be classified as an advantage for white", eval_odd_even(&b) > 0);
     return 0;
 }
@@ -117,11 +125,13 @@ static char* test_odd_even_draw() {
             "b w b w w b w"
             "b w b w b w w");
     fboard2eps(&b, "build/test_odd_even_draw.eps");
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    search(&b, &rec);
+    search(&b, &var, &rec);
     mu_assert("error, expected white to move (tester's note)", b.turn == WHITE);
-    mu_assert("error, expected game to be drawn", fabs(rec.rating) < 1e-6);
+    mu_assert("error, expected game to be drawn", fabs(var.rating) < 1e-6);
     mu_assert("error, this position should be classified as drawn", eval_odd_even(&b) == 0);
     return 0;
 }
@@ -161,11 +171,13 @@ static char* test_odd_even_draw2() {
             "b w w b b w w"
             "b w w w b w b");
     fboard2eps(&b, "build/test_odd_even_draw2.eps");
+    Variation var;
+    variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    search(&b, &rec);
+    search(&b, &var, &rec);
     mu_assert("error, expected black to move (tester's note)", b.turn == BLACK);
-    mu_assert("error, expected draw", fabsf(rec.rating) <= 1e-6);
+    mu_assert("error, expected draw", fabsf(var.rating) <= 1e-6);
     mu_assert("error, this position should be classified as a draw", fabsf(eval_odd_even(&b)) < 1e-6);
     return 0;
 }

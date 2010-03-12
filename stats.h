@@ -6,20 +6,22 @@
 #include <stdint.h>
 #include "board.h"
 
+/*! The variation is the result of a search. When searching we are usually
+ * looking for the principal variation. */
 struct Variation {
     /* Sequence of moves */
     int8_t moves[NUM_ROWS * NUM_COLS];
     /* Number of plies */
     int8_t length;
+    /*! This value is guaranteed when following this variation */
+    float rating;
 };
 
 typedef struct Variation Variation;
 
+/*! Statistical record object that collects data about the search, mostly by
+ * accumulation. */
 struct SearchRecord {
-    /*! Principal variation. */
-    Variation pv;
-    /*! Rating of the principal variation. */
-    float rating;
     /*! Number of evaluated positions during search. */
     int64_t eval_cnt;
     /*! Number of visited positions during search. This includes both leaves and
@@ -41,9 +43,6 @@ struct SearchRecord {
     int64_t ttrcoll_cnt;
     /*! The percentage to which the transposition table is filled with positions. */
     float ttcharge;
-    /*! Denotes whether the search has lead to a winning strategy for one of
-     * the players. */
-    bool winner_identified;
     /*! Denotes whether the opponent has a winning strategy and the KI has
      * selected a variation that delays the defeat as long as possible. */
     bool defeat_deferred;
@@ -56,8 +55,10 @@ struct SearchRecord {
 
 typedef struct SearchRecord SearchRecord;
 
+void variation_init(Variation *rec);
+
 void searchrecord_init(SearchRecord *rec);
 
-void stats_print(Board *b, SearchRecord * rec);
+void stats_print(Board *b, Variation *var, SearchRecord * rec);
 
 #endif	/* _STATS_H */
