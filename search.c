@@ -164,27 +164,17 @@ void search(Board *b, Variation *var, SearchRecord *rec) {
             // transposition tables for they are not cleared between subsequent
             // searches.
             if (var->rating <= ALPHA_MIN) {
+                int8_t max_depth = rec->max_depth;
                 int8_t reached_depth = rec->reached_depth;
-                Variation defvar;
-                variation_init(&defvar);
-                SearchRecord defrec;
-                searchrecord_init(&defrec);
+                variation_init(var);
                 alphabeta_negamax(b, ALPHA_MIN_DEFEAT, BETA_MAX_DEFEAT,
-                        0, max_depth - 1, false, true, &defvar, &defrec);
+                        0, max_depth - 1, false, true, var, rec);
                 // Merge search results. This is not a really satisfying solution
                 // but it saves some difficulties in handling two partial search
                 // results
-                *var = defvar;
                 var->rating = ALPHA_MIN;
-
-                // TODO: this looks like a workaround
                 rec->defeat_deferred = true;
-                rec->visited_cnt += defrec.visited_cnt;
-                rec->eval_cnt += defrec.eval_cnt;
-                rec->abcut_cnt += defrec.abcut_cnt;
-                rec->ttcut_cnt += defrec.ttcut_cnt;
-                rec->ttadd_cnt += defrec.ttadd_cnt;
-                rec->ttrcoll_cnt += defrec.ttrcoll_cnt;
+                rec->max_depth = max_depth;
                 rec->reached_depth = reached_depth;
             }
             break;

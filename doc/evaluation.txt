@@ -403,3 +403,7 @@ bewertet werden- , oder eben nicht - dann ist die Heuristik exakt, und die
 Ergebnisse müssten mit der Alpha-Beta-Suche übereinstimmen, sofern kein Fehler
 im Regelwerk oder im Programm vorliegt.
 
+Das Problem an diesen Regeln ist, dass sie in der Eröffnung auch nicht
+wirklich weiterhelfen. Hier ist die Voraussetzung, dass keine weiteren
+Drohungen dazukommen einfach nicht gegeben.
+
