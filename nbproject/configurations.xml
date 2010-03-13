@@ -82,32 +82,6 @@
         </linkerTool>
       </compileType>
     </conf>
-    <conf name="Release" type="1">
-      <toolsSet>
-        <developmentServer>localhost</developmentServer>
-        <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
-      </toolsSet>
-      <compileType>
-        <cTool>
-          <developmentMode>5</developmentMode>
-          <architecture>1</architecture>
-          <commandlineTool>gcc</commandlineTool>
-          <commandLine>-std=c99 -Wextra</commandLine>
-          <warningLevel>3</warningLevel>
-        </cTool>
-        <ccTool>
-          <developmentMode>5</developmentMode>
-        </ccTool>
-        <fortranCompilerTool>
-          <developmentMode>5</developmentMode>
-        </fortranCompilerTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
-      </compileType>
-    </conf>
     <conf name="Debug-64" type="1">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
@@ -117,7 +91,7 @@
       <compileType>
         <cTool>
           <architecture>2</architecture>
-          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG</commandLine>
+          <commandLine>-std=c99 -Wall -Wno-unused -Wextra -pedantic-errors -DDEBUG</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
         <linkerTool>
@@ -135,7 +109,7 @@
       <compileType>
         <cTool>
           <architecture>2</architecture>
-          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_TTABLE</commandLine>
+          <commandLine>-std=c99 -Wall -Wno-unused -Wextra -pedantic-errors -DDEBUG -DDISABLE_TTABLE</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
         <linkerTool>
@@ -180,24 +154,6 @@
         </linkerTool>
       </compileType>
     </conf>
-    <conf name="Debug" type="1">
-      <toolsSet>
-        <developmentServer>localhost</developmentServer>
-        <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
-      </toolsSet>
-      <compileType>
-        <cTool>
-          <architecture>1</architecture>
-          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG</commandLine>
-          <warningLevel>3</warningLevel>
-        </cTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
-      </compileType>
-    </conf>
     <conf name="Benchmark-64" type="1">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
@@ -208,32 +164,6 @@
         <cTool>
           <developmentMode>5</developmentMode>
           <architecture>2</architecture>
-          <commandlineTool>gcc</commandlineTool>
-          <commandLine>-std=c99 -Wextra -DBENCHMARK</commandLine>
-          <warningLevel>3</warningLevel>
-        </cTool>
-        <ccTool>
-          <developmentMode>5</developmentMode>
-        </ccTool>
-        <fortranCompilerTool>
-          <developmentMode>5</developmentMode>
-        </fortranCompilerTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
-      </compileType>
-    </conf>
-    <conf name="Benchmark" type="1">
-      <toolsSet>
-        <developmentServer>localhost</developmentServer>
-        <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
-      </toolsSet>
-      <compileType>
-        <cTool>
-          <developmentMode>5</developmentMode>
-          <architecture>1</architecture>
           <commandlineTool>gcc</commandlineTool>
           <commandLine>-std=c99 -Wextra -DBENCHMARK</commandLine>
           <warningLevel>3</warningLevel>

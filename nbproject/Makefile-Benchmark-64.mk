@@ -48,7 +48,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/util.o
 
 # C Compiler Flags
-CFLAGS=-m64 -std=c99 -Wextra -DBENCHMARK
+CFLAGS=-m64 -std=c99 -Wall -Wno-unused-parameter -Wno-unused-variable -Wextra -DBENCHMARK
 
 # CC Compiler Flags
 CCFLAGS=

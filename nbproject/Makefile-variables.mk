@@ -14,14 +14,6 @@ CND_ARTIFACT_PATH_Release-64=dist/Release-64/GNU-Linux-x86/c4nnect
 CND_PACKAGE_DIR_Release-64=dist/Release-64/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Release-64=c4nnect.tar
 CND_PACKAGE_PATH_Release-64=dist/Release-64/GNU-Linux-x86/package/c4nnect.tar
-# Release configuration
-CND_PLATFORM_Release=GNU-Linux-x86
-CND_ARTIFACT_DIR_Release=dist/Release/GNU-Linux-x86
-CND_ARTIFACT_NAME_Release=c4nnect
-CND_ARTIFACT_PATH_Release=dist/Release/GNU-Linux-x86/c4nnect
-CND_PACKAGE_DIR_Release=dist/Release/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Release=c4nnect.tar
-CND_PACKAGE_PATH_Release=dist/Release/GNU-Linux-x86/package/c4nnect.tar
 # Debug-64 configuration
 CND_PLATFORM_Debug-64=GNU-Linux-x86
 CND_ARTIFACT_DIR_Debug-64=dist/Debug-64/GNU-Linux-x86
@@ -54,14 +46,6 @@ CND_ARTIFACT_PATH_Debug-64-AB-TT=dist/Debug-64-AB-TT/GNU-Linux-x86/c4nnect
 CND_PACKAGE_DIR_Debug-64-AB-TT=dist/Debug-64-AB-TT/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Debug-64-AB-TT=c4nnect.tar
 CND_PACKAGE_PATH_Debug-64-AB-TT=dist/Debug-64-AB-TT/GNU-Linux-x86/package/c4nnect.tar
-# Debug configuration
-CND_PLATFORM_Debug=GNU-Linux-x86
-CND_ARTIFACT_DIR_Debug=dist/Debug/GNU-Linux-x86
-CND_ARTIFACT_NAME_Debug=c4nnect
-CND_ARTIFACT_PATH_Debug=dist/Debug/GNU-Linux-x86/c4nnect
-CND_PACKAGE_DIR_Debug=dist/Debug/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Debug=c4nnect.tar
-CND_PACKAGE_PATH_Debug=dist/Debug/GNU-Linux-x86/package/c4nnect.tar
 # Benchmark-64 configuration
 CND_PLATFORM_Benchmark-64=GNU-Linux-x86
 CND_ARTIFACT_DIR_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86
@@ -70,11 +54,3 @@ CND_ARTIFACT_PATH_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86/c4nnect
 CND_PACKAGE_DIR_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Benchmark-64=c4nnect.tar
 CND_PACKAGE_PATH_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86/package/c4nnect.tar
-# Benchmark configuration
-CND_PLATFORM_Benchmark=GNU-Linux-x86
-CND_ARTIFACT_DIR_Benchmark=dist/Benchmark/GNU-Linux-x86
-CND_ARTIFACT_NAME_Benchmark=c4nnect
-CND_ARTIFACT_PATH_Benchmark=dist/Benchmark/GNU-Linux-x86/c4nnect
-CND_PACKAGE_DIR_Benchmark=dist/Benchmark/GNU-Linux-x86/package
-CND_PACKAGE_NAME_Benchmark=c4nnect.tar
-CND_PACKAGE_PATH_Benchmark=dist/Benchmark/GNU-Linux-x86/package/c4nnect.tar

@@ -138,7 +138,7 @@ static char* test_search_white_win() {
     return 0;
 }
 
-static char* test_search_fastest_white_win() {
+ __attribute__ ((unused)) static char* test_search_fastest_white_win() {
     printf("test_search_fastest_white_win\n");
     Board b;
     // Though not strictly necessary, the engine should find not only the move
@@ -232,7 +232,7 @@ static char* test_beginning_trap_black() {
     return 0;
 }
 
-static char* test_fast_black_win() {
+ __attribute__ ((unused)) static char* test_fast_black_win() {
     printf("test_fast_black_win\n");
     Board b;
     parser_read(&b,
@@ -314,6 +314,7 @@ static char* test_time_consuming_position() {
             "b - - - w w - "
             "w w w b b w - "
             "b b w b b b w ");
+    fboard2eps(&b, "build/test_time_consuming_position.eps");
     mu_assert("Should be black's turn", b.turn == BLACK);
     searchm(&b);
     return 0;
@@ -342,6 +343,8 @@ static char* test_time_consuming_position2() {
     // estimated time 106ms, actual time: 140ms
     // estimated time 245ms, actual time: 200ms
     // estimated time 285ms, actual time: 123420ms
+    // NOTE: this problem does no longer occur, leaving this test in order to
+    // detect possible regression.
     parser_read(&b,
             "- - - - - - - "
             "- - - - - - - "
@@ -349,6 +352,7 @@ static char* test_time_consuming_position2() {
             "- - - - - - w "
             "- - w - b w w "
             "b - w b b b w ");
+    fboard2eps(&b, "build/test_time_consuming_position2.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -362,13 +366,22 @@ static char* test_time_consuming_position2() {
 static char* test_time_consuming_position3() {
     printf("test_time_consuming_position3\n");
     Board b;
-    board_decode(&b, 0x434830A41D150102);
+    parser_read(&b,
+            "- - - - - - - "
+            "- - w - - - - "
+            "w - w - b - b "
+            "w - b - w - b "
+            "b w w b b - w "
+            "w w b b w b b ");
+    fboard2eps(&b, "build/test_time_consuming_position3.eps");
+    board_print(&b);
     Variation var;
     variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
     search(&b, &var, &rec);
     mu_assert("search took much too much time", (rec.cpu_time / (CLOCKS_PER_SEC / 1000)) < 10 * TIME_LIMIT_PER_PLY);
+    return 0;
 }
 
 static char* all_tests() {
@@ -378,23 +391,21 @@ static char* all_tests() {
     mu_run_test(test_abn_black_win);
     mu_run_test(test_abn_white_win2);
     mu_run_test(test_search_white_win);
-/*
-    mu_run_test(test_search_fastest_white_win);
-*/
+    /*
+        mu_run_test(test_search_fastest_white_win);
+     */
     mu_run_test(test_search_white_win3);
     mu_run_test(test_search_black_win);
     mu_run_test(test_beginning_trap_white);
     mu_run_test(test_beginning_trap_black);
     mu_run_test(test_search_defer_defeat);
-/*
-    mu_run_test(test_fast_black_win);
-*/
+    /*
+        mu_run_test(test_fast_black_win);
+     */
     mu_run_test(test_white_difficult_win);
     mu_run_test(test_time_consuming_position);
     mu_run_test(test_time_consuming_position2);
-/*
     mu_run_test(test_time_consuming_position3);
-*/
 
     return 0;
 }

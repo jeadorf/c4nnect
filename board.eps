@@ -5,6 +5,8 @@
 %%LanguageLevel: 2
 %%EndComments
 
+% see http://www.bitbucket.org/jeadorf/c4nnect
+
 100 490 translate
 50 50 scale
 0.05 setlinewidth
@@ -17,6 +19,7 @@
 /onecolor { 0.9 0.9 0.9 setrgbcolor } bind def
 /twocolor { 0 setgray } bind def
 /margincolor { 0 setgray } bind def
+/markercolor { 1 0.8 0.2 setrgbcolor } bind def
 
 % draw background
 0 0 moveto 7 0 rlineto 0 6 rlineto -7 0 rlineto closepath
@@ -45,15 +48,31 @@ grestore
   gsave
     exch translate
     0.5 0.5 translate
-    0 0 0.42 0 360 arc
+    0 0 0.38 0 360 arc
     gsave fill grestore
-    margincolor 
+    margincolor
+    0.02 setlinewidth
     stroke
-  grestore  
+  grestore
 } bind def
 
 /putwhite { onecolor put } bind def
 /putblack { twocolor put } bind def
+
+/putmark {
+  gsave
+    exch translate
+    0 0 moveto
+    1 0 lineto
+    1 1 lineto
+    0 1 lineto
+    closepath
+    markercolor
+    gsave fill grestore
+    margincolor 
+    stroke
+  grestore
+} bind def
 
 /tomove {
   gsave

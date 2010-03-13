@@ -10,7 +10,7 @@ bool winner_identified(float rating) {
     return (rating <= ALPHA_MIN || rating >= BETA_MAX);
 }
 
-static int count_threats(Board *b) {
+__attribute__ ((unused)) static int count_threats(Board *b) {
     int8_t threats = 0;
     for (int8_t col = 0; col < NUM_COLS; col++) {
         int8_t top = b->tops[col];

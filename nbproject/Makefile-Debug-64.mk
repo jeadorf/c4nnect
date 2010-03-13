@@ -48,7 +48,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/util.o
 
 # C Compiler Flags
-CFLAGS=-m64 -std=c99 -Wextra -pedantic-errors -DDEBUG
+CFLAGS=-m64 -std=c99 -Wall -Wno-unused -Wextra -pedantic-errors -DDEBUG
 
 # CC Compiler Flags
 CCFLAGS=
