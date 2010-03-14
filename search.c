@@ -192,7 +192,7 @@ void search(Board *b, Variation *var, SearchRecord *rec) {
             // and there is no need for defeat deferral.
             break;
         }
-    } while (max_depth < 42 - b->move_cnt); // TODO: check boundary
+    } while (max_depth < 42 - b->move_cnt);
 
     rec->cpu_time = clock() - rec->cpu_time;
     rec->on_time = clock_in_millis(rec->cpu_time) < TIME_LIMIT_PER_PLY;

@@ -286,13 +286,13 @@ static char* test_white_difficult_win() {
     variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    mu_assert("It should be black's turn", b.turn == BLACK);
+    mu_assert("error, should be black's turn", b.turn == BLACK);
     search(&b, &var, &rec);
-    mu_assert("Position should be classified as a white win", var.rating <= ALPHA_MIN);
+    mu_assert("error, position should be classified as a white win", var.rating <= ALPHA_MIN);
     while (b.winner == NOBODY && !board_full(&b)) {
         board_put(&b, searchm(&b));
     }
-    mu_assert("Game should be won by white", b.winner == WHITE);
+    mu_assert("error, game should be won by white", b.winner == WHITE);
 
     return 0;
 }
@@ -316,7 +316,7 @@ static char* test_time_consuming_position() {
             "w w w b b w - "
             "b b w b b b w ");
     fboard2eps(&b, "build/test_time_consuming_position.eps");
-    mu_assert("Should be black's turn", b.turn == BLACK);
+    mu_assert("error, should be black's turn", b.turn == BLACK);
     searchm(&b);
     return 0;
 }
@@ -360,7 +360,7 @@ static char* test_time_consuming_position2() {
     searchrecord_init(&rec);
     search(&b, &var, &rec);
     // check whether this problem might be caused by defeat deferral re-search
-    mu_assert("might be defeat deferral causing the time consumption", rec.defeat_deferred == false);
+    mu_assert("error, might be defeat deferral causing the time consumption", rec.defeat_deferred == false);
     return 0;
 }
 
@@ -375,13 +375,12 @@ static char* test_time_consuming_position3() {
             "b w w b b - w "
             "w w b b w b b ");
     fboard2eps(&b, "build/test_time_consuming_position3.eps");
-    board_print(&b);
     Variation var;
     variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
     search(&b, &var, &rec);
-    mu_assert("search took much too much time", (rec.cpu_time / (CLOCKS_PER_SEC / 1000)) < 10 * TIME_LIMIT_PER_PLY);
+    mu_assert("error, search took much too much time", (rec.cpu_time / (CLOCKS_PER_SEC / 1000)) < 10 * TIME_LIMIT_PER_PLY);
     return 0;
 }
 
@@ -396,7 +395,23 @@ static char* test_abort_on_timeout() {
     searchrecord_init(&rec);
     search(&b, &var, &rec);
     stats_print(&b, &var, &rec);
-    mu_assert("search exceeded time-limit", clock_in_millis(rec.cpu_time) < 1.2 * TIME_LIMIT_PER_PLY);
+    mu_assert("error, search exceeded time-limit", clock_in_millis(rec.cpu_time) < 1.2 * TIME_LIMIT_PER_PLY);
+    return 0;
+}
+
+static char* test_max_depth_boundary() {
+    printf("test_max_depth_boundary\n");
+    Board b;
+    board_decode(&b, 0xD3291AE83B11854E);
+    fboard2eps(&b, "build/test_abort_on_timeout.eps");
+    board_print(&b);
+    Variation var;
+    variation_init(&var);
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    search(&b, &var, &rec);
+    stats_print(&b, &var, &rec);
+    mu_assert("error, expected max_depth + b.move_cnt <= 42", rec.max_depth + b.move_cnt <= 42);
     return 0;
 }
 
@@ -423,6 +438,7 @@ static char* all_tests() {
     mu_run_test(test_time_consuming_position2);
     mu_run_test(test_time_consuming_position3);
     mu_run_test(test_abort_on_timeout);
+    mu_run_test(test_max_depth_boundary);
 
     return 0;
 }

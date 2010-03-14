@@ -132,6 +132,7 @@ static char* test_board_full() {
     fboard2eps(&b, "build/test_board_full-2.eps");
     mu_assert("error, board should be full", board_full(&b));
     mu_assert("error, game should be drawn", b.winner == NOBODY);
+    mu_assert("error, move_cnt should match number of pieces", b.move_cnt == NUM_ROWS * NUM_COLS);
     return 0;
 }
 
@@ -350,6 +351,7 @@ static char* test_board_code() {
             "- - - - - - - "
             "- - - w - - - "
             "- - - w - - b ");
+    fboard2eps(&b, "build/test_board_code.eps");
     char s[16];
     sprintf(s, "%lX", b.code);
     mu_assert("expected code to be of length 16", strlen(s) == 16);
@@ -376,6 +378,14 @@ static char* test_board_encode_incremental() {
     return 0;
 }
 
+static char* test_board_move_cnt() {
+    printf("test_board_move_cnt\n");
+    Board b;
+    board_init(&b);
+    mu_assert("move_cnt of empty board should be zero", b.move_cnt == 0);
+    return 0;
+}
+
 static char* all_tests() {
     mu_run_test(test_board_put);
     mu_run_test(test_board_undo);
@@ -398,6 +408,7 @@ static char* all_tests() {
     mu_run_test(test_board_decode);
     mu_run_test(test_board_encode_incremental);
     mu_run_test(test_board_code);
+    mu_run_test(test_board_move_cnt);
     return 0;
 }
 
