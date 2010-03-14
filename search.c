@@ -35,18 +35,21 @@ void generate_moves(Variation *var, int depth, int8_t *moves) {
     }
 }
 
-void alphabeta_negamax(
+// TODO: we should report draw games, too
+bool alphabeta_negamax(
         Board *b,
         float alpha, float beta,
         int8_t depth, int8_t max_depth,
-        bool ttcuts_enabled, bool defer_defeat,
+        bool abort_on_timeout, bool ttcuts_enabled, bool defer_defeat,
         Variation *var, SearchRecord *rec) {
 #ifndef DISABLE_TTABLE
     uint32_t hash = b->code % TTABLE_SIZE;
     TTEntry *ttentry = &(ttable[hash]);
 #endif
 
-    if (b->winner != NOBODY
+    if (abort_on_timeout && clock_in_millis(clock() - rec->cpu_time) > TIME_LIMIT_PER_PLY - TIME_LIMIT_SAFETY_MARGIN) {
+        return false;
+    } else if (b->winner != NOBODY
             || board_full(b)
             || depth == max_depth) {
         if (depth == 0) {
@@ -82,19 +85,21 @@ void alphabeta_negamax(
         for (int8_t i = 0; i < NUM_COLS; i++) {
             int8_t col = moves[i];
             if (!board_column_full(b, col)) {
-                // Make move
-                // TODO: check whether undo mechanism does any good
-                board_put(b, col);
 
                 // Search subposition
-                alphabeta_negamax(b, -beta, -bestval, depth + 1, max_depth,
-                        ttcuts_enabled, defer_defeat, var, rec);
-                var->rating *= -1;
-
-                // Undo move
+                // TODO: check whether undo mechanism does any good
+                board_put(b, col);
+                bool completed = alphabeta_negamax(b, -beta, -bestval, depth + 1, max_depth,
+                        abort_on_timeout, ttcuts_enabled, defer_defeat, var, rec);
                 board_undo(b, col);
 
-                // TODO: check comparison with zero
+                // Check on timeout, must happen after undo operation
+                if (!completed) {
+                    return false;
+                }
+
+                var->rating *= -1;
+
                 if (var->rating > bestval || bestcol == -1) {
                     // Found a move that is either better than all other moves
                     bestval = var->rating;
@@ -133,6 +138,8 @@ void alphabeta_negamax(
     if (depth > rec->reached_depth) {
         rec->reached_depth = depth;
     }
+
+    return true;
 }
 
 int8_t searchm(Board * b) {
@@ -147,58 +154,47 @@ int8_t searchm(Board * b) {
 void search(Board *b, Variation *var, SearchRecord *rec) {
     clock_t start_time = clock();
     rec->cpu_time = start_time;
-    // The iterative approach implies that max_depth will never exceed
-    // reached_depth.
-    float time[43] = {0}; // nodes = interval count + 1
+    // The iterative approach implies that reached_depth will always equal
+    // max_depth.
+    Variation tmp_var;
     int8_t max_depth = 0;
-    float time_est = 0;
     do {
         max_depth++;
-        variation_init(var);
-        alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, true, false, var, rec);
-
-        if (winner_identified(var->rating)) {
-            // Defer defeats that are unavoidable. The computer should at least not to
-            // lose in the next move even if the computer sees that he will lose against
-            // the perfect-playing opponent. Deferring defeats does only work without
-            // transposition tables for they are not cleared between subsequent
-            // searches.
-            if (var->rating <= ALPHA_MIN) {
-                int8_t max_depth = rec->max_depth;
-                int8_t reached_depth = rec->reached_depth;
-                variation_init(var);
-                alphabeta_negamax(b, ALPHA_MIN_DEFEAT, BETA_MAX_DEFEAT,
-                        0, max_depth - 1, false, true, var, rec);
-                // Merge search results. This is not a really satisfying solution
-                // but it saves some difficulties in handling two partial search
-                // results
-                var->rating = ALPHA_MIN;
-                rec->defeat_deferred = true;
-                rec->max_depth = max_depth;
-                rec->reached_depth = reached_depth;
+        variation_init(&tmp_var);
+        if (alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, max_depth > 1, true, false, &tmp_var, rec)) {
+            // TODO: define exactly what reached_depth should represent
+            *var = tmp_var;
+            if (winner_identified(var->rating)) {
+                // Defer defeats that are unavoidable. The computer should at least not to
+                // lose in the next move even if the computer sees that he will lose against
+                // the perfect-playing opponent. Deferring defeats does only work without
+                // transposition tables for they are not cleared between subsequent
+                // searches.
+                if (var->rating <= ALPHA_MIN) {
+                    int8_t max_depth = rec->max_depth;
+                    int8_t reached_depth = rec->reached_depth;
+                    variation_init(var);
+                    // TODO: improve max_depth setting when deferring defeat
+                    alphabeta_negamax(b, ALPHA_MIN_DEFEAT, BETA_MAX_DEFEAT,
+                            0, (max_depth - 1) / 2 + 3, false, false, true, var, rec);
+                    // Merge search results. This is not a really satisfying solution
+                    // but it saves some difficulties in handling two partial search
+                    // results
+                    var->rating = ALPHA_MIN;
+                    rec->defeat_deferred = true;
+                    rec->max_depth = max_depth;
+                    rec->reached_depth = reached_depth;
+                }
+                break;
             }
+        } else {
+            // Search aborted, stick to the last complete search result
+            // and there is no need for defeat deferral.
             break;
         }
-
-#if DEBUG
-        printf("estimated time %dms", (int) time_est);
-#endif
-        time[max_depth] = (clock() - start_time) / (CLOCKS_PER_SEC / 1000);
-#if DEBUG
-        printf(", actual time: %dms\n", (int) time[max_depth]);
-#endif
-
-        // Estimate the accumulated search time after the next iteration. This
-        // extrapolation uses simple exponential regression b*a^t defined by
-        // t=0, t=1 and evaluated at t=2.
-        if (time[max_depth - 1] > 0 && time[max_depth] > 0) {
-            time_est = time[max_depth] * time[max_depth] / time[max_depth - 1];
-        } else {
-            time_est = 0;
-        }
-    } while (time_est < TIME_LIMIT_PER_PLY && time[max_depth] < TIME_LIMIT_PER_PLY && max_depth < 42 - b->move_cnt);
+    } while (max_depth < 42 - b->move_cnt); // TODO: check boundary
 
     rec->cpu_time = clock() - rec->cpu_time;
-    rec->on_time = (rec->cpu_time / (CLOCKS_PER_SEC / 1000)) < TIME_LIMIT_PER_PLY;
+    rec->on_time = clock_in_millis(rec->cpu_time) < TIME_LIMIT_PER_PLY;
     rec->ttcharge = ttable_charge();
 }

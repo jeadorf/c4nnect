@@ -76,7 +76,7 @@ static void play_game() {
         }
     }
 
-    printf("Final position\n");
+    printf("\nFinal position\n");
     board_print(&b);
 }
 
@@ -103,7 +103,7 @@ int main(int argc, char** argv) {
 
     puts("Welcome to 'Connect Four'!");
     while (true) {
-        puts("A new game starts!\n");
+        puts("\nA new game starts!\n");
         play_game();
     }
 

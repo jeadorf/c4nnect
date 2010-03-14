@@ -1,5 +1,6 @@
 #include <math.h>
 #include <stdio.h>
+#include "util.h"
 #include <stdlib.h>
 #include "board.h"
 #include "eval.h"
@@ -67,7 +68,7 @@ static char* test_abn_white_win() {
     variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, true, false, &var, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, false, true, false, &var, &rec);
     mu_assert("error, minimax value should be very big", var.rating > 90);
     mu_assert("error, should find winning move", var.moves[0] == 3);
 
@@ -89,7 +90,7 @@ static char* test_abn_white_win2() {
     variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, false, &var, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, false, true, false, &var, &rec);
     mu_assert("error, should find winning move", var.moves[0] == 4);
     mu_assert("error, minimax value should be very big", var.rating > 90);
 
@@ -111,7 +112,7 @@ static char* test_abn_black_win() {
     variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, true, false, &var, &rec);
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, false, true, false, &var, &rec);
     mu_assert("error, should find winning move", var.moves[0] == 3);
     mu_assert("error, minimax value should be very big", var.rating > 90);
 
@@ -384,6 +385,21 @@ static char* test_time_consuming_position3() {
     return 0;
 }
 
+static char* test_abort_on_timeout() {
+    printf("test_abort_on_timeout\n");
+    Board b;
+    board_decode(&b, 0x31E18C560A098784);
+    fboard2eps(&b, "build/test_abort_on_timeout.eps");
+    Variation var;
+    variation_init(&var);
+    SearchRecord rec;
+    searchrecord_init(&rec);
+    search(&b, &var, &rec);
+    stats_print(&b, &var, &rec);
+    mu_assert("search exceeded time-limit", clock_in_millis(rec.cpu_time) < 1.2 * TIME_LIMIT_PER_PLY);
+    return 0;
+}
+
 static char* all_tests() {
     mu_run_test(test_genmove_surjectivity_simple);
     mu_run_test(test_genmove_pv_first);
@@ -406,6 +422,7 @@ static char* all_tests() {
     mu_run_test(test_time_consuming_position);
     mu_run_test(test_time_consuming_position2);
     mu_run_test(test_time_consuming_position3);
+    mu_run_test(test_abort_on_timeout);
 
     return 0;
 }
