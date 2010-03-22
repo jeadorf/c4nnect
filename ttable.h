@@ -19,4 +19,14 @@ float ttable_charge();
 /*! Counts the number of entries in the transposition table */
 int32_t ttable_entry_cnt();
 
+// TODO: improve serialization mechanism
+
+/*! Unmarshals a transposition table from a file. This function is most likely
+ * not portable. Changes to TTABLE_SIZE will cause malfunction. */
+void ttable_read(FILE *f);
+
+/*! Marshals a transposition table to a file. This function is most likely
+ * not portable. Changes to TTABLE_SIZE will cause malfunction. */
+void ttable_write(FILE *f);
+
 #endif	/* _TTABLE_H */

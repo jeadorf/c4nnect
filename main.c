@@ -1,6 +1,8 @@
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
 
 #include "benchmark.h"
 #include "board.h"
@@ -8,7 +10,8 @@
 #include "search.h"
 #include "stats.h"
 #include "parser.h"
-
+#include "eval.h"
+#include "ttable.h"
 #include "board_test.h"
 #include "eval_test.h"
 #include "parser_test.h"
@@ -28,8 +31,7 @@ static bool check_game_end(Board *b) {
 }
 
 static char read_column(Board *b) {
-    // TODO: make this safe -- un/signedness
-    char c = ' ';
+    int c = ' ';
     do {
         if (c != '\n') {
             printf("\n[0-6]> ");
@@ -43,6 +45,12 @@ static char read_column(Board *b) {
 static void play_game() {
     Board b;
     board_init(&b);
+
+    // Reload the transposition table with positions that occur in the opening
+    // TODO: check whether this is helpful or not
+    FILE *openingdb = fopen("ttable.ser", "r");
+    ttable_read(openingdb);
+    fclose(openingdb);
 
     Player ai = WHITE;
 

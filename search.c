@@ -16,6 +16,15 @@ void stats_print(Board *b, Variation *var, SearchRecord *rec);
 
 extern TTEntry ttable[];
 
+#define DEFAULT_MAX_DEPTH 10
+
+void searchcfg_init(SearchCfg *cfg) {
+    cfg->abort_on_timeout = false;
+    cfg->defer_defeat = false;
+    cfg->ttcuts_enabled = true;
+    cfg->max_depth = DEFAULT_MAX_DEPTH;
+}
+
 // Simple move ordering, first walk along the principal variation then start
 // with checking the moves in the center and then circle to the outer columns
 
@@ -37,29 +46,26 @@ void generate_moves(Variation *var, int depth, int8_t *moves) {
 
 // TODO: we should report draw games, too
 bool alphabeta_negamax(
-        Board *b,
-        float alpha, float beta,
-        int8_t depth, int8_t max_depth,
-        bool abort_on_timeout, bool ttcuts_enabled, bool defer_defeat,
-        Variation *var, SearchRecord *rec) {
+        Board *b, float alpha, float beta, int8_t depth,
+        SearchCfg *cfg, Variation *var, SearchRecord *rec) {
 #ifndef DISABLE_TTABLE
     uint32_t hash = b->code % TTABLE_SIZE;
     TTEntry *ttentry = &(ttable[hash]);
 #endif
 
-    if (abort_on_timeout && clock_in_millis(clock() - rec->cpu_time) > TIME_LIMIT_PER_PLY - TIME_LIMIT_SAFETY_MARGIN) {
+    if (cfg->abort_on_timeout && clock_in_millis(clock() - rec->cpu_time) > TIME_LIMIT_PER_PLY - TIME_LIMIT_SAFETY_MARGIN) {
         return false;
     } else if (b->winner != NOBODY
             || board_full(b)
-            || depth == max_depth) {
+            || depth == cfg->max_depth) {
         if (depth == 0) {
             handle_error("cannot search for a move in a finished game!");
         }
-        var->rating = (b->turn == WHITE ? 1 : -1) * eval(b, defer_defeat);
+        var->rating = (b->turn == WHITE ? 1 : -1) * eval(b, cfg->defer_defeat);
         var->length = 0;
         rec->eval_cnt++;
 #ifndef DISABLE_TTABLE
-    } else if (ttcuts_enabled && ttentry->code == b->code && depth > 0) {
+    } else if (cfg->ttcuts_enabled && ttentry->code == b->code && depth > 0) {
         // The transposition entry does not contain information about the move
         // that lead to the position, so we cannot check the transposition table
         // at the root of the search tree.
@@ -69,7 +75,7 @@ bool alphabeta_negamax(
 #endif
     } else {
 #ifndef DISABLE_TTABLE
-        if (ttcuts_enabled && ttentry->code != b->code && ttentry->code != 0) {
+        if (cfg->ttcuts_enabled && ttentry->code != b->code && ttentry->code != 0) {
             rec->ttrcoll_cnt++;
         }
 #endif
@@ -89,8 +95,7 @@ bool alphabeta_negamax(
                 // Search subposition
                 // TODO: check whether undo mechanism does any good
                 board_put(b, col);
-                bool completed = alphabeta_negamax(b, -beta, -bestval, depth + 1, max_depth,
-                        abort_on_timeout, ttcuts_enabled, defer_defeat, var, rec);
+                bool completed = alphabeta_negamax(b, -beta, -bestval, depth + 1, cfg, var, rec);
                 board_undo(b, col);
 
                 // Check on timeout, must happen after undo operation
@@ -134,7 +139,7 @@ bool alphabeta_negamax(
     }
 
     rec->visited_cnt++;
-    rec->max_depth = max_depth;
+    rec->max_depth = cfg->max_depth;
     if (depth > rec->reached_depth) {
         rec->reached_depth = depth;
     }
@@ -157,11 +162,14 @@ void search(Board *b, Variation *var, SearchRecord *rec) {
     // The iterative approach implies that reached_depth will always equal
     // max_depth.
     Variation tmp_var;
-    int8_t max_depth = 0;
+    SearchCfg cfg;
+    searchcfg_init(&cfg);
+    cfg.max_depth = 0;
     do {
-        max_depth++;
+        cfg.max_depth++;
+        cfg.abort_on_timeout = cfg.max_depth > 1;
         variation_init(&tmp_var);
-        if (alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, max_depth, max_depth > 1, true, false, &tmp_var, rec)) {
+        if (alphabeta_negamax(b, ALPHA_MIN, BETA_MAX, 0, &cfg, &tmp_var, rec)) {
             // TODO: define exactly what reached_depth should represent
             *var = tmp_var;
             if (winner_identified(var->rating)) {
@@ -175,8 +183,11 @@ void search(Board *b, Variation *var, SearchRecord *rec) {
                     int8_t reached_depth = rec->reached_depth;
                     variation_init(var);
                     // TODO: improve max_depth setting when deferring defeat
+                    cfg.ttcuts_enabled = false;
+                    cfg.defer_defeat = true;
+                    cfg.max_depth = (max_depth - 1) / 2 + 3;
                     alphabeta_negamax(b, ALPHA_MIN_DEFEAT, BETA_MAX_DEFEAT,
-                            0, (max_depth - 1) / 2 + 3, false, false, true, var, rec);
+                            0, &cfg, var, rec);
                     // Merge search results. This is not a really satisfying solution
                     // but it saves some difficulties in handling two partial search
                     // results
@@ -192,7 +203,7 @@ void search(Board *b, Variation *var, SearchRecord *rec) {
             // and there is no need for defeat deferral.
             break;
         }
-    } while (max_depth < 42 - b->move_cnt);
+    } while (cfg.max_depth < 42 - b->move_cnt);
 
     rec->cpu_time = clock() - rec->cpu_time;
     rec->on_time = clock_in_millis(rec->cpu_time) < TIME_LIMIT_PER_PLY;

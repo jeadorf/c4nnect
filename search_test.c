@@ -68,7 +68,10 @@ static char* test_abn_white_win() {
     variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 2, false, true, false, &var, &rec);
+    SearchCfg cfg;
+    searchcfg_init(&cfg);
+    cfg.max_depth = 2;
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, &cfg, &var, &rec);
     mu_assert("error, minimax value should be very big", var.rating > 90);
     mu_assert("error, should find winning move", var.moves[0] == 3);
 
@@ -90,7 +93,10 @@ static char* test_abn_white_win2() {
     variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, false, true, false, &var, &rec);
+    SearchCfg cfg;
+    searchcfg_init(&cfg);
+    cfg.max_depth = 1;
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, &cfg, &var, &rec);
     mu_assert("error, should find winning move", var.moves[0] == 4);
     mu_assert("error, minimax value should be very big", var.rating > 90);
 
@@ -112,7 +118,10 @@ static char* test_abn_black_win() {
     variation_init(&var);
     SearchRecord rec;
     searchrecord_init(&rec);
-    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, 1, false, true, false, &var, &rec);
+    SearchCfg cfg;
+    searchcfg_init(&cfg);
+    cfg.max_depth = 1;
+    alphabeta_negamax(&b, ALPHA_MIN, BETA_MAX, 0, &cfg, &var, &rec);
     mu_assert("error, should find winning move", var.moves[0] == 3);
     mu_assert("error, minimax value should be very big", var.rating > 90);
 

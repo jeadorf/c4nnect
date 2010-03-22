@@ -14,6 +14,24 @@
  * the time limit, thus preserving a little time for finishing. */
 #define TIME_LIMIT_SAFETY_MARGIN 30
 
+/*! Configures an alpha-beta search. A configuration is not modified by the
+ * alpha-beta search. */
+struct SearchCfg {
+    /*! The search horizon */
+    int8_t max_depth;
+    /*! Determines whether to use ttables for evaluating positions */
+    bool ttcuts_enabled;
+    /*! Whether to return shortly before exceeding the time limit*/
+    bool abort_on_timeout;
+    /*! Whether to look for a defeat-deferral move */
+    bool defer_defeat;
+};
+
+typedef struct SearchCfg SearchCfg;
+
+/*! Initializes a search configuration. */
+void searchcfg_init(SearchCfg *cfg);
+
 /*! Returns a move (i.e. a column) selected by the KI engine. Any changes to the
  * board while searching are reverted before returning. */
 int8_t searchm(Board *b);
@@ -27,8 +45,8 @@ void generate_moves(Variation *var, int depth, int8_t *moves);
 //       configuration data structure
 bool alphabeta_negamax(Board *b,
         float alpha, float beta,
-        int8_t depth, int8_t max_depth,
-        bool abort_on_timeout, bool ttcuts_enabled, bool defer_defeat,
+        int8_t depth,
+        SearchCfg *cfg,
         Variation *var,
         SearchRecord *rec);
 

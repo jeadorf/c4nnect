@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include "ttable.h"
 
 TTEntry ttable[TTABLE_SIZE];
@@ -14,4 +15,20 @@ int32_t ttable_entry_cnt() {
         }
     }
     return fill_cnt;
+}
+
+void ttable_write(FILE *f) {
+    int *d = (int*) ttable;
+    for (uint32_t i = 0; i < TTABLE_SIZE * sizeof(TTEntry) / sizeof(int); i++) {
+        putc(*d, f);
+        d++;
+    }
+}
+
+void ttable_read(FILE *f) {
+    int *d = (int*) ttable;
+    for (uint32_t i = 0; i < TTABLE_SIZE * sizeof(TTEntry) / sizeof(int); i++) {
+        *d = getc(f);
+        d++;
+    }
 }
