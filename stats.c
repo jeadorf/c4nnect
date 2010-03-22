@@ -5,6 +5,7 @@
 #include "eval.h"
 #include "ttable.h"
 #include "stats.h"
+#include "search.h"
 
 void variation_init(Variation *var) {
     var->length = 0;

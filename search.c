@@ -179,7 +179,7 @@ void search(Board *b, Variation *var, SearchRecord *rec) {
                 // transposition tables for they are not cleared between subsequent
                 // searches.
                 if (var->rating <= ALPHA_MIN) {
-                    int8_t max_depth = rec->max_depth;
+                    int8_t max_depth = cfg.max_depth;
                     int8_t reached_depth = rec->reached_depth;
                     variation_init(var);
                     // TODO: improve max_depth setting when deferring defeat

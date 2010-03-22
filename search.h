@@ -23,7 +23,11 @@ struct SearchCfg {
     bool ttcuts_enabled;
     /*! Whether to return shortly before exceeding the time limit*/
     bool abort_on_timeout;
-    /*! Whether to look for a defeat-deferral move */
+    /*! Whether to look for a defeat-deferral move. A defeat-deferral move is
+     * useful if we know that the opponent has a winning strategy. The KI should
+     * then select a variation that delays the defeat as long as possible. This
+     * is like trying to keep things complicated in chess if one is on the
+     * losing track. */
     bool defer_defeat;
 };
 
