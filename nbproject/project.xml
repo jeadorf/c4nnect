@@ -10,6 +10,33 @@
             <header-extensions>h</header-extensions>
             <sourceEncoding>UTF-8</sourceEncoding>
             <make-dep-projects/>
+            <sourceRootList/>
+            <confList>
+                <confElem>
+                    <name>Release-64</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Debug-64</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Debug-64-TT</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Debug-64-AB</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Debug-64-AB-TT</name>
+                    <type>1</type>
+                </confElem>
+                <confElem>
+                    <name>Benchmark-64</name>
+                    <type>1</type>
+                </confElem>
+            </confList>
         </data>
     </configuration>
 </project>

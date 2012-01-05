@@ -54,3 +54,14 @@ CND_ARTIFACT_PATH_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86/c4nnect
 CND_PACKAGE_DIR_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86/package
 CND_PACKAGE_NAME_Benchmark-64=c4nnect.tar
 CND_PACKAGE_PATH_Benchmark-64=dist/Benchmark-64/GNU-Linux-x86/package/c4nnect.tar
+#
+# include compiler specific variables
+#
+# dmake command
+ROOT:sh = test -f nbproject/private/Makefile-variables.mk || \
+	(mkdir -p nbproject/private && touch nbproject/private/Makefile-variables.mk)
+#
+# gmake command
+.PHONY: $(shell test -f nbproject/private/Makefile-variables.mk || (mkdir -p nbproject/private && touch nbproject/private/Makefile-variables.mk))
+#
+include nbproject/private/Makefile-variables.mk

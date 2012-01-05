@@ -49,10 +49,22 @@ static void play_game() {
 
     // Reload the transposition table with positions that occur in the opening
     // TODO: check whether this is helpful or not
-    if (access("ttable.ser", R_OK)) {
-        FILE *openingdb = fopen("ttable.ser", "r");
-        ttable_read(openingdb);
-        fclose(openingdb);
+    FILE *f = fopen("ttable.ser", "r");
+    if (f) {
+        ttable_read(f);
+        fclose(f);
+#ifdef DEBUG
+        printf("Read serialized ttable.");
+#endif
+    }
+    
+    FILE *f = fopen("connect-4.data", "r");
+    if (f) {
+        ttable_read_uciml(f);
+        fclose(f);
+#ifdef DEBUG
+        printf("Read UCI ML table.");
+#endif
     }
 
     Player ai = WHITE;

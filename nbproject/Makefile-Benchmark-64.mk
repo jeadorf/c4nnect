@@ -10,45 +10,50 @@
 # Environment
 MKDIR=mkdir
 CP=cp
+GREP=grep
+NM=nm
 CCADMIN=CCadmin
 RANLIB=ranlib
 CC=gcc
 CCC=g++
 CXX=g++
-FC=
+FC=gfortran
 AS=as
 
 # Macros
 CND_PLATFORM=GNU-Linux-x86
 CND_CONF=Benchmark-64
 CND_DISTDIR=dist
+CND_BUILDDIR=build
 
 # Include project Makefile
 include Makefile
 
 # Object Directory
-OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
+OBJECTDIR=${CND_BUILDDIR}/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/stats.o \
-	${OBJECTDIR}/board_test.o \
-	${OBJECTDIR}/board.o \
-	${OBJECTDIR}/search_test.o \
-	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/eval_test.o \
 	${OBJECTDIR}/benchmark.o \
-	${OBJECTDIR}/parser.o \
-	${OBJECTDIR}/ttable.o \
-	${OBJECTDIR}/search.o \
-	${OBJECTDIR}/parser_test.o \
-	${OBJECTDIR}/board2eps.o \
+	${OBJECTDIR}/search_test.o \
+	${OBJECTDIR}/board.o \
 	${OBJECTDIR}/stats_test.o \
+	${OBJECTDIR}/ttable.o \
+	${OBJECTDIR}/parser_test.o \
+	${OBJECTDIR}/board_test.o \
+	${OBJECTDIR}/util.o \
+	${OBJECTDIR}/board2eps.o \
+	${OBJECTDIR}/ttable_test.o \
+	${OBJECTDIR}/stats.o \
+	${OBJECTDIR}/eval_test.o \
 	${OBJECTDIR}/eval.o \
-	${OBJECTDIR}/util.o
+	${OBJECTDIR}/main.o \
+	${OBJECTDIR}/search.o \
+	${OBJECTDIR}/parser.o
+
 
 # C Compiler Flags
-CFLAGS=-m64 -std=c99 -Wall -Wno-unused-parameter -Wno-unused-variable -Wextra -DBENCHMARK
+CFLAGS=-m64 -std=c99 -Wextra -DBENCHMARK
 
 # CC Compiler Flags
 CCFLAGS=
@@ -65,94 +70,99 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	${MAKE}  -f nbproject/Makefile-Benchmark-64.mk dist/Benchmark-64/GNU-Linux-x86/c4nnect
+	"${MAKE}"  -f nbproject/Makefile-${CND_CONF}.mk ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/c4nnect
 
-dist/Benchmark-64/GNU-Linux-x86/c4nnect: ${OBJECTFILES}
-	${MKDIR} -p dist/Benchmark-64/GNU-Linux-x86
+${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/c4nnect: ${OBJECTFILES}
+	${MKDIR} -p ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}
 	${LINK.c} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/c4nnect ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
-${OBJECTDIR}/stats.o: nbproject/Makefile-${CND_CONF}.mk stats.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/stats.o stats.c
-
-${OBJECTDIR}/board_test.o: nbproject/Makefile-${CND_CONF}.mk board_test.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
-
-${OBJECTDIR}/board.o: nbproject/Makefile-${CND_CONF}.mk board.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
-
-${OBJECTDIR}/search_test.o: nbproject/Makefile-${CND_CONF}.mk search_test.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
-
-${OBJECTDIR}/main.o: nbproject/Makefile-${CND_CONF}.mk main.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
-
-${OBJECTDIR}/eval_test.o: nbproject/Makefile-${CND_CONF}.mk eval_test.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
-
-${OBJECTDIR}/benchmark.o: nbproject/Makefile-${CND_CONF}.mk benchmark.c 
+${OBJECTDIR}/benchmark.o: benchmark.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/benchmark.o benchmark.c
 
-${OBJECTDIR}/parser.o: nbproject/Makefile-${CND_CONF}.mk parser.c 
+${OBJECTDIR}/search_test.o: search_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser.o parser.c
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search_test.o search_test.c
 
-${OBJECTDIR}/ttable.o: nbproject/Makefile-${CND_CONF}.mk ttable.c 
+${OBJECTDIR}/board.o: board.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/ttable.o ttable.c
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board.o board.c
 
-${OBJECTDIR}/search.o: nbproject/Makefile-${CND_CONF}.mk search.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search.o search.c
-
-${OBJECTDIR}/parser_test.o: nbproject/Makefile-${CND_CONF}.mk parser_test.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser_test.o parser_test.c
-
-${OBJECTDIR}/board2eps.o: nbproject/Makefile-${CND_CONF}.mk board2eps.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board2eps.o board2eps.c
-
-${OBJECTDIR}/stats_test.o: nbproject/Makefile-${CND_CONF}.mk stats_test.c 
+${OBJECTDIR}/stats_test.o: stats_test.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/stats_test.o stats_test.c
 
-${OBJECTDIR}/eval.o: nbproject/Makefile-${CND_CONF}.mk eval.c 
+${OBJECTDIR}/ttable.o: ttable.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/ttable.o ttable.c
+
+${OBJECTDIR}/parser_test.o: parser_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser_test.o parser_test.c
+
+${OBJECTDIR}/board_test.o: board_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board_test.o board_test.c
+
+${OBJECTDIR}/util.o: util.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/util.o util.c
+
+${OBJECTDIR}/board2eps.o: board2eps.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board2eps.o board2eps.c
+
+${OBJECTDIR}/ttable_test.o: ttable_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/ttable_test.o ttable_test.c
+
+${OBJECTDIR}/stats.o: stats.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/stats.o stats.c
+
+${OBJECTDIR}/eval_test.o: eval_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
+
+${OBJECTDIR}/eval.o: eval.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval.o eval.c
 
-${OBJECTDIR}/util.o: nbproject/Makefile-${CND_CONF}.mk util.c 
+${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/util.o util.c
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.c
+
+${OBJECTDIR}/search.o: search.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/search.o search.c
+
+${OBJECTDIR}/parser.o: parser.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -O2 -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/parser.o parser.c
 
 # Subprojects
 .build-subprojects:
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
-	${RM} -r build/Benchmark-64
-	${RM} dist/Benchmark-64/GNU-Linux-x86/c4nnect
+	${RM} -r ${CND_BUILDDIR}/${CND_CONF}
+	${RM} ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/c4nnect
 
 # Subprojects
 .clean-subprojects:

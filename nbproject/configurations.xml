@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<configurationDescriptor version="62">
-  <logicalFolder name="root" displayName="root" projectFiles="true">
+<configurationDescriptor version="79">
+  <logicalFolder name="root" displayName="root" projectFiles="true" kind="ROOT">
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
@@ -40,6 +40,7 @@
       <itemPath>parser_test.h</itemPath>
       <itemPath>search_test.h</itemPath>
       <itemPath>stats_test.h</itemPath>
+      <itemPath>ttable_test.h</itemPath>
     </logicalFolder>
     <logicalFolder name="f2" displayName="Test Source Files" projectFiles="true">
       <itemPath>board_test.c</itemPath>
@@ -47,6 +48,7 @@
       <itemPath>parser_test.c</itemPath>
       <itemPath>search_test.c</itemPath>
       <itemPath>stats_test.c</itemPath>
+      <itemPath>ttable_test.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -58,9 +60,8 @@
   <confs>
     <conf name="Release-64" type="1">
       <toolsSet>
-        <developmentServer>localhost</developmentServer>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
       </toolsSet>
       <compileType>
         <cTool>
@@ -76,35 +77,25 @@
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
         </fortranCompilerTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
       </compileType>
     </conf>
     <conf name="Debug-64" type="1">
       <toolsSet>
-        <developmentServer>localhost</developmentServer>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
       </toolsSet>
       <compileType>
         <cTool>
           <architecture>2</architecture>
-          <commandLine>-std=c99 -Wall -Wno-unused -Wextra -pedantic-errors -DDEBUG</commandLine>
+          <commandLine>-std=gnu99 -Wall -Wno-unused -Wextra -pedantic-errors -DDEBUG</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
       </compileType>
     </conf>
     <conf name="Debug-64-TT" type="1">
       <toolsSet>
-        <developmentServer>localhost</developmentServer>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
       </toolsSet>
       <compileType>
         <cTool>
@@ -112,17 +103,12 @@
           <commandLine>-std=c99 -Wall -Wno-unused -Wextra -pedantic-errors -DDEBUG -DDISABLE_TTABLE</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
       </compileType>
     </conf>
     <conf name="Debug-64-AB" type="1">
       <toolsSet>
-        <developmentServer>localhost</developmentServer>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
       </toolsSet>
       <compileType>
         <cTool>
@@ -130,17 +116,12 @@
           <commandLine>-std=c99 -Wextra -pedantic-errors -DDISABLE_ABCUTS -DDEBUG</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
       </compileType>
     </conf>
     <conf name="Debug-64-AB-TT" type="1">
       <toolsSet>
-        <developmentServer>localhost</developmentServer>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
       </toolsSet>
       <compileType>
         <cTool>
@@ -148,17 +129,12 @@
           <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_ABCUTS -DDISABLE_TTABLE</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
       </compileType>
     </conf>
     <conf name="Benchmark-64" type="1">
       <toolsSet>
-        <developmentServer>localhost</developmentServer>
+        <remote-sources-mode>LOCAL_SOURCES</remote-sources-mode>
         <compilerSet>GNU|GNU</compilerSet>
-        <platform>2</platform>
       </toolsSet>
       <compileType>
         <cTool>
@@ -174,10 +150,6 @@
         <fortranCompilerTool>
           <developmentMode>5</developmentMode>
         </fortranCompilerTool>
-        <linkerTool>
-          <linkerLibItems>
-          </linkerLibItems>
-        </linkerTool>
       </compileType>
     </conf>
   </confs>

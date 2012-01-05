@@ -29,4 +29,8 @@ void ttable_read(FILE *f);
  * not portable. Changes to TTABLE_SIZE will cause malfunction. */
 void ttable_write(FILE *f);
 
+/*! Unmarshals a transposition table from a file formatted as in 
+ * http://archive.ics.uci.edu/ml/machine-learning-databases/connect-4/connect-4.names */
+void ttable_read_uciml(FILE *f);
+
 #endif	/* _TTABLE_H */
