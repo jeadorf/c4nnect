@@ -49,6 +49,7 @@ bool alphabeta_negamax(
         Board *b, float alpha, float beta, int8_t depth,
         SearchCfg *cfg, Variation *var, SearchRecord *rec) {
 #ifndef DISABLE_TTABLE
+    // TODO: Extract MACRO or method for computing the hash for a board
     uint32_t hash = b->code % TTABLE_SIZE;
     TTEntry *ttentry = &(ttable[hash]);
 #endif
