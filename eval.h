@@ -11,9 +11,10 @@
 #define ALPHA_MIN_DEFEAT (ALPHA_MIN - 42)
 #define BETA_MAX_DEFEAT (BETA_MAX + 42)
 
-/*! Evaluates the board position. A return value greater than zero denotes a
- * position with advantage for player WHITE, a negative value means that BLACK
- * has an advantage.
+/*! Evaluates the board position and returns the 'absolute rating' of this
+ * position. An absolute rating greater than zero denotes a position with
+ * advantage for player WHITE, a negative value means that BLACK has an
+ * advantage.
  * 
  * This function might either return an exact evaluation of the position; in
  * such a case either ALPHA_MIN or BETA_MAX is returned.  ALPHA_MIN signals
@@ -31,7 +32,8 @@ float eval_odd_even(Board *b);
 
 /** Determines whether the return value of function eval is a heuristic
  * estimate of the game value or a definite statement that one of the players
- * is guaranteed to win in case of correct gameplay. */
+ * is guaranteed to win in case of correct gameplay. It does not matter whether 
+ * the rating is absolute or relative. */
 bool winner_identified(float rating);
 
 #endif	/* _EVAL_H */

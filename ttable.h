@@ -5,8 +5,12 @@
 
 #define TTABLE_SIZE 104729
 
+/*! A slot in the transposition table. A slot is marked empty if and only if the 
+ * 64-bit unsigned integer that encodes the board position is zero. */
 struct TTEntry {
+    /*! Encoded board position. */
     uint64_t code;
+    /*! Relative rating with respect to the active player. */
     float rating;
 };
 

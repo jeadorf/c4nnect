@@ -9,11 +9,12 @@
 /*! The variation is the result of a search. When searching we are usually
  * looking for the principal variation. */
 struct Variation {
-    /* Sequence of moves */
+    /* Sequence of moves; upper bounded by the maximum number of plies. */
     int8_t moves[NUM_ROWS * NUM_COLS];
-    /* Number of plies */
+    /* Number of plies in this variation. */
     int8_t length;
-    /*! This value is guaranteed when following this variation */
+    /*! The relative rating for this sequence of moves with respect to the
+     * active player. */
     float rating;
 };
 
