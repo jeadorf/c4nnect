@@ -68,7 +68,7 @@
           <developmentMode>5</developmentMode>
           <architecture>2</architecture>
           <commandlineTool>gcc</commandlineTool>
-          <commandLine>-std=c99 -Wextra</commandLine>
+          <commandLine>-std=gnu99 -Wextra</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
         <ccTool>
@@ -100,7 +100,7 @@
       <compileType>
         <cTool>
           <architecture>2</architecture>
-          <commandLine>-std=c99 -Wall -Wno-unused -Wextra -pedantic-errors -DDEBUG -DDISABLE_TTABLE</commandLine>
+          <commandLine>-std=gnu99 -Wall -Wno-unused -Wextra -pedantic-errors -DDEBUG -DDISABLE_TTABLE</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
       </compileType>
@@ -113,7 +113,7 @@
       <compileType>
         <cTool>
           <architecture>2</architecture>
-          <commandLine>-std=c99 -Wextra -pedantic-errors -DDISABLE_ABCUTS -DDEBUG</commandLine>
+          <commandLine>-std=gnu99 -Wextra -pedantic-errors -DDISABLE_ABCUTS -DDEBUG</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
       </compileType>
@@ -126,7 +126,7 @@
       <compileType>
         <cTool>
           <architecture>2</architecture>
-          <commandLine>-std=c99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_ABCUTS -DDISABLE_TTABLE</commandLine>
+          <commandLine>-std=gnu99 -Wextra -pedantic-errors -DDEBUG -DDISABLE_ABCUTS -DDISABLE_TTABLE</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
       </compileType>
@@ -141,7 +141,7 @@
           <developmentMode>5</developmentMode>
           <architecture>2</architecture>
           <commandlineTool>gcc</commandlineTool>
-          <commandLine>-std=c99 -Wextra -DBENCHMARK</commandLine>
+          <commandLine>-std=gnu99 -Wextra -DBENCHMARK</commandLine>
           <warningLevel>3</warningLevel>
         </cTool>
         <ccTool>

@@ -53,7 +53,7 @@ OBJECTFILES= \
 
 
 # C Compiler Flags
-CFLAGS=-m64 -std=c99 -Wextra -DBENCHMARK
+CFLAGS=-m64 -std=gnu99 -Wextra -DBENCHMARK
 
 # CC Compiler Flags
 CCFLAGS=
