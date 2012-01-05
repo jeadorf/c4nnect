@@ -45,8 +45,6 @@ void search(Board *b, Variation *var, SearchRecord *rec);
 /*! Orders moves. Moves that look promising come first. */
 void generate_moves(Variation *var, int depth, int8_t *moves);
 
-// TODO: introduce either named parameter values for bool parameters or introduce
-//       configuration data structure
 bool alphabeta_negamax(Board *b,
         float alpha, float beta,
         int8_t depth,
@@ -55,4 +53,3 @@ bool alphabeta_negamax(Board *b,
         SearchRecord *rec);
 
 #endif	/* _SEARCH_H */
-
