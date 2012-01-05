@@ -1,6 +1,6 @@
 /*! Defines all procedures related to the search algorithm itself */
 #ifndef _SEARCH_H
-#define	_SEARCH_H
+#define _SEARCH_H
 
 #include "board.h"
 #include "stats.h"

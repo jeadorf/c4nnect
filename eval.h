@@ -1,8 +1,8 @@
 #ifndef _EVAL_H
-#define	_EVAL_H
+#define _EVAL_H
 
 #include "board.h"
-
+        
 /*! Define the bounds of the search window */
 #define ALPHA_MIN -10000
 #define BETA_MAX 10000

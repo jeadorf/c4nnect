@@ -58,7 +58,7 @@ static void play_game() {
 #endif
     }
     
-    FILE *f = fopen("connect-4.data", "r");
+    f = fopen("connect-4.data", "r");
     if (f) {
         ttable_read_uciml(f);
         fclose(f);

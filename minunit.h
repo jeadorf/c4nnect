@@ -4,7 +4,7 @@
  */
 
 #ifndef _MINUNIT_H
-#define	_MINUNIT_H
+#define _MINUNIT_H
 
 #define mu_assert(message, test) do { if (!(test)) { tests_failed++; return message; } } while (0)
 #define mu_run_test(test) do { char *message = test(); tests_run++; \

@@ -54,7 +54,7 @@ void ttable_read_uciml(FILE *f) {
                         break;
                 }
             }
-            float r;
+            float r = 0;
             switch (buf[84]) {
                 case 'w':
                     r = BETA_MAX;

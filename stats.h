@@ -1,5 +1,5 @@
 #ifndef _STATS_H
-#define	_STATS_H
+#define _STATS_H
 
 #include <time.h>
 #include <stdbool.h>

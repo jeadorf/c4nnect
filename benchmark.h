@@ -1,5 +1,5 @@
 #ifndef _BENCHMARK_H
-#define	_BENCHMARK_H
+#define _BENCHMARK_H
 
 #include <stdio.h>
 
