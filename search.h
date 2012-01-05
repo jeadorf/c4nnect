@@ -2,9 +2,9 @@
 #ifndef _SEARCH_H
 #define _SEARCH_H
 
+#include <stdint.h>
 #include "board.h"
 #include "stats.h"
-#include <stdint.h>
 
 /*! Defines the number of milliseconds within the engine is expected to move. */
 #define TIME_LIMIT_PER_PLY 1000
@@ -21,7 +21,7 @@ struct SearchCfg {
     int8_t max_depth;
     /*! Determines whether to use ttables for evaluating positions */
     bool ttcuts_enabled;
-    /*! Whether to return shortly before exceeding the time limit*/
+    /*! Whether to return shortly before exceeding the time limit */
     bool abort_on_timeout;
     /*! Whether to look for a defeat-deferral move. A defeat-deferral move is
      * useful if we know that the opponent has a winning strategy. The KI should

@@ -5,7 +5,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/* Players. Do not change the values of this enumeration. */
+/* Players. Do not change the values of these definitions; WHITE and BLACK are 
+ * used as single bits. */
 #define WHITE 0
 #define BLACK 1
 #define NOBODY 2
@@ -30,7 +31,7 @@ struct Board {
     /*! Positions separated by side. The positions of white (pos[WHITE]) and black
      * (pos[BLACK]) are stored in bitboards. The encoding used for the position
      * is similar to Board.code except that the number of pieces is not included
-     * and that both white and black pieces are represented by bit L in their
+     * and that both white and black pieces are represented by bit 1 in their
      * respective bitboards. See #GET and #SET for further details. */
     uint64_t pos[2];
     /*! Gödel number of the current board position.
