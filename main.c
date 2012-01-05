@@ -17,6 +17,7 @@
 #include "parser_test.h"
 #include "search_test.h"
 #include "stats_test.h"
+#include "ttable_test.h"
 
 static bool check_game_end(Board *b) {
     if (b->winner != NOBODY) {
@@ -48,9 +49,11 @@ static void play_game() {
 
     // Reload the transposition table with positions that occur in the opening
     // TODO: check whether this is helpful or not
-    FILE *openingdb = fopen("ttable.ser", "r");
-    ttable_read(openingdb);
-    fclose(openingdb);
+    if (access("ttable.ser", R_OK)) {
+        FILE *openingdb = fopen("ttable.ser", "r");
+        ttable_read(openingdb);
+        fclose(openingdb);
+    }
 
     Player ai = WHITE;
 
@@ -103,6 +106,7 @@ int main(int argc, char** argv) {
     parser_test();
     search_test();
     stats_test();
+    ttable_test();
     if (tests_failed > 0) {
         puts("TESTS FAILED!");
         return (EXIT_FAILURE);
