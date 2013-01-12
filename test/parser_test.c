@@ -15,7 +15,7 @@ static char* test_parse_empty() {
             "- - - - - - -"
             "- - - - - - -"
             "- - - - - - -");
-    fboard2eps(&b, "build/test_parse_empty.eps");
+    fboard2eps(&b, "test_parse_empty.eps");
     for (int8_t i = 0; i < NUM_COLS; i++) {
         mu_assert("error, column expected to be empty", board_get_top(&b, i) == NOBODY);
     }
@@ -33,7 +33,7 @@ static char* test_parse_one() {
             "- - - - - - -"
             "- - - - - - -"
             "- - - w - - -");
-    fboard2eps(&b, "build/test_parse_one.eps");
+    fboard2eps(&b, "test_parse_one.eps");
     for (int8_t i = 0; i < NUM_COLS; i++) {
         if (i != 3) {
             mu_assert("error, column expected to be empty", board_get_top(&b, i) == NOBODY);
@@ -54,7 +54,7 @@ static char* test_parse_quoted() {
             "\"- - - - - - -\""
             "\"- - - - - - -\""
             "\"w - - b - - -\"");
-    fboard2eps(&b, "build/test_parse_quoted.eps");
+    fboard2eps(&b, "test_parse_quoted.eps");
     for (int8_t i = 1; i < NUM_COLS; i++) {
         if (i != 3) {
             mu_assert("error, column expected to be empty", board_get_top(&b, i) == NOBODY);
@@ -76,7 +76,7 @@ static char* test_white_to_move() {
             "b - - - - - -"
             "w w - - w - -"
             "w b b - b - -");
-    fboard2eps(&b, "build/test_white_to_move.eps");
+    fboard2eps(&b, "test_white_to_move.eps");
     mu_assert("error, it should be white's turn", b.turn == WHITE);
     return 0;
 }
@@ -91,7 +91,7 @@ static char* test_black_to_move() {
             "- - - - - - -"
             "w w - - w - -"
             "w b b - b - -");
-    fboard2eps(&b, "build/test_black_to_move.eps");
+    fboard2eps(&b, "test_black_to_move.eps");
     mu_assert("error, it should be black's turn", b.turn == BLACK);
     return 0;
 }

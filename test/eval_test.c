@@ -19,7 +19,7 @@ static char* test_eval_white_win() {
             "- - - - - - -"
             "- - b - b - -"
             "- w w w w b -");
-    fboard2eps(&b, "build/test_eval_white_win.eps");
+    fboard2eps(&b, "test_eval_white_win.eps");
     mu_assert("error, evaluation value should be positive", eval(&b, false) >= 0);
     mu_assert("error, evaluation value should be big", eval(&b, false) >= BETA_MAX);
     return 0;
@@ -35,7 +35,7 @@ static char* test_eval_black_win() {
             "- - - - - - -"
             "w - b b b b -"
             "w - w w b w -");
-    fboard2eps(&b, "build/test_eval_black_win.eps");
+    fboard2eps(&b, "test_eval_black_win.eps");
     mu_assert("error, evaluation value should be negative", eval(&b, false) < 0);
     mu_assert("error, evaluation value should be negative "
               "with big absolute value", eval(&b, false) <= ALPHA_MIN);
@@ -53,7 +53,7 @@ static char* test_odd_even_white_win() {
             "b b w w b w b"
             "w w b w w b w"
             "b w w w b b w");
-    fboard2eps(&b, "build/test_odd_even_white_win.eps");
+    fboard2eps(&b, "test_odd_even_white_win.eps");
     mu_assert("error, expected game to be ongoing", b.winner == NOBODY);
     Variation var;
     variation_init(&var);
@@ -77,7 +77,7 @@ static char* test_odd_even_white_win2() {
             "b b w w b w b"
             "w w b w w b w"
             "b w w w b b w");
-    fboard2eps(&b, "build/test_odd_even_white_win2.eps");
+    fboard2eps(&b, "test_odd_even_white_win2.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -102,7 +102,7 @@ static char* test_odd_even_white_win3() {
             "b - w b - w b"
             "w - w b - b w"
             "b w b w - b w");
-    fboard2eps(&b, "build/test_odd_even_white_win3.eps");
+    fboard2eps(&b, "test_odd_even_white_win3.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -124,7 +124,7 @@ static char* test_odd_even_draw() {
             "b - w b - w b"
             "b w b w w b w"
             "b w b w b w w");
-    fboard2eps(&b, "build/test_odd_even_draw.eps");
+    fboard2eps(&b, "test_odd_even_draw.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -149,7 +149,7 @@ static char* test_odd_even_black_win() {
             "b w w b - w b"
             "w b b b - b w"
             "w w b w - b w");
-    fboard2eps(&b, "build/test_odd_even_black_win.eps");
+    fboard2eps(&b, "test_odd_even_black_win.eps");
     SearchRecord rec;
     searchrecord_init(&rec);
     search(&b, &rec);
@@ -170,7 +170,7 @@ static char* test_odd_even_draw2() {
             "b b w b w b b"
             "b w w b b w w"
             "b w w w b w b");
-    fboard2eps(&b, "build/test_odd_even_draw2.eps");
+    fboard2eps(&b, "test_odd_even_draw2.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;

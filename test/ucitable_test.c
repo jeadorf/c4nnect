@@ -11,7 +11,7 @@ extern UCITEntry ucitable[];
 static char* test_ucitable_read_win() {
     printf("test_ucitable_read_win\n");
     
-    FILE* f = fopen("connect-4.data", "r");
+    FILE* f = fopen("data/connect-4.data", "r");
     ucitable_read(f);
     
     Board b;
@@ -33,7 +33,7 @@ static char* test_ucitable_read_win() {
 static char* test_ucitable_read_draw() {
     printf("test_ucitable_read_draw\n");
     
-    FILE* f = fopen("connect-4.data", "r");
+    FILE* f = fopen("data/connect-4.data", "r");
     ucitable_read(f);
     
     Board b;
@@ -55,7 +55,7 @@ static char* test_ucitable_read_draw() {
 static char* test_ucitable_read_loss() {
     printf("test_ucitable_read_loss\n");
     
-    FILE* f = fopen("connect-4.data", "r");
+    FILE* f = fopen("data/connect-4.data", "r");
     ucitable_read(f);
     
     Board b;
@@ -77,7 +77,7 @@ static char* test_ucitable_read_loss() {
 static char* test_ucitable_lookup_none() {
     printf("test_ucitable_lookup_none\n");
     
-    FILE* f = fopen("connect-4.data", "r");
+    FILE* f = fopen("data/connect-4.data", "r");
     ucitable_read(f);
     
     Board b;

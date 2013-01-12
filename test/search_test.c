@@ -63,7 +63,7 @@ static char* test_abn_white_win() {
             "- - - - - - -"
             "- b b - b - -"
             "- w w - w - -");
-    fboard2eps(&b, "build/test_abn_white_win.eps");
+    fboard2eps(&b, "test_abn_white_win.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -88,7 +88,7 @@ static char* test_abn_white_win2() {
             "b - - w w - -"
             "b - - w w - -"
             "b - b w w w b");
-    fboard2eps(&b, "build/test_abn_white_win2.eps");
+    fboard2eps(&b, "test_abn_white_win2.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -113,7 +113,7 @@ static char* test_abn_black_win() {
             "- - - - - - -"
             "w w - - w - -"
             "w b b - b - -");
-    fboard2eps(&b, "build/test_abn_black_win.eps");
+    fboard2eps(&b, "test_abn_black_win.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -138,7 +138,7 @@ static char* test_search_white_win() {
             "- - - - - - -"
             "- b b - b - -"
             "- w w - w - -");
-    fboard2eps(&b, "build/test_search_white_win.eps");
+    fboard2eps(&b, "test_search_white_win.eps");
     mu_assert("error, should find winning move", searchm(&b) == 3);
     // This is dangerous to test. There might be no way for black to avoid
     // defeat in this position though this is rather unlikely.
@@ -164,7 +164,7 @@ static char* test_search_white_win() {
             "b - - w w - -"
             "b - - w w - -"
             "b - b w w w b");
-    fboard2eps(&b, "build/test_search_fastest_white_win.eps");
+    fboard2eps(&b, "test_search_fastest_white_win.eps");
     mu_assert("error, should find fastest winning move", searchm(&b) == 4);
 
     return 0;
@@ -180,7 +180,7 @@ static char* test_search_black_win() {
             "- - - - - - -"
             "- w w - w - -"
             "- b b - b w -");
-    fboard2eps(&b, "build/test_search_black_win.eps");
+    fboard2eps(&b, "test_search_black_win.eps");
     mu_assert("error, should find winning move", searchm(&b) == 3);
     mu_assert("error, should find saving move", searchm(&b) == 3);
 
@@ -197,7 +197,7 @@ static char* test_search_white_win3() {
             "b b b w w b -"
             "b w b w w w -"
             "b b b w w b -");
-    fboard2eps(&b, "build/test_search_white_win3.eps");
+    fboard2eps(&b, "test_search_white_win3.eps");
     mu_assert("error, should find winning move h", searchm(&b) == 1);
 
     return 0;
@@ -218,7 +218,7 @@ static char* test_beginning_trap_white() {
             "- - - - - - -"
             "- - - b - - -"
             "- - w w - - -");
-    fboard2eps(&b, "build/test_beginning_trap_white.eps");
+    fboard2eps(&b, "test_beginning_trap_white.eps");
     int8_t col = searchm(&b);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
 
@@ -235,7 +235,7 @@ static char* test_beginning_trap_black() {
             "- - - - - - -"
             "- - w w - - -"
             "- - b b - - -");
-    fboard2eps(&b, "build/test_beginning_trap_black.eps");
+    fboard2eps(&b, "test_beginning_trap_black.eps");
     int8_t col = searchm(&b);
     mu_assert("error, should avoid trap in the beginning", col == 1 || col == 4);
 
@@ -252,7 +252,7 @@ static char* test_beginning_trap_black() {
             "- - b b b - -"
             "- - w b b - -"
             "w w b b w w w");
-    fboard2eps(&b, "build/test_fast_black_win.eps");
+    fboard2eps(&b, "test_fast_black_win.eps");
     mu_assert("error, should choose 3-ply win", 5 == searchm(&b));
 
     return 0;
@@ -274,7 +274,7 @@ static char* test_search_defer_defeat() {
             "b - - w w - -"
             "b - - w w - -"
             "b - b w w w b");
-    fboard2eps(&b, "build/test_search_defer_defeat.eps");
+    fboard2eps(&b, "test_search_defer_defeat.eps");
     mu_assert("error, should defer defeat", searchm(&b) == 4);
 
     return 0;
@@ -290,7 +290,7 @@ static char* test_white_difficult_win() {
             "- - b b w b - "
             "- - w w b b - "
             "- - b w w w b ");
-    fboard2eps(&b, "build/test_white_difficult_win.eps");
+    fboard2eps(&b, "test_white_difficult_win.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -324,7 +324,7 @@ static char* test_time_consuming_position() {
             "b - - - w w - "
             "w w w b b w - "
             "b b w b b b w ");
-    fboard2eps(&b, "build/test_time_consuming_position.eps");
+    fboard2eps(&b, "test_time_consuming_position.eps");
     mu_assert("error, should be black's turn", b.turn == BLACK);
     searchm(&b);
     return 0;
@@ -362,7 +362,7 @@ static char* test_time_consuming_position2() {
             "- - - - - - w "
             "- - w - b w w "
             "b - w b b b w ");
-    fboard2eps(&b, "build/test_time_consuming_position2.eps");
+    fboard2eps(&b, "test_time_consuming_position2.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -383,7 +383,7 @@ static char* test_time_consuming_position3() {
             "w - b - w - b "
             "b w w b b - w "
             "w w b b w b b ");
-    fboard2eps(&b, "build/test_time_consuming_position3.eps");
+    fboard2eps(&b, "test_time_consuming_position3.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -397,7 +397,7 @@ static char* test_abort_on_timeout() {
     printf("test_abort_on_timeout\n");
     Board b;
     board_decode(&b, 0x31E18C560A098784);
-    fboard2eps(&b, "build/test_abort_on_timeout.eps");
+    fboard2eps(&b, "test_abort_on_timeout.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -412,7 +412,7 @@ static char* test_max_depth_boundary() {
     printf("test_max_depth_boundary\n");
     Board b;
     board_decode(&b, 0xD3291AE83B11854E);
-    fboard2eps(&b, "build/test_abort_on_timeout.eps");
+    fboard2eps(&b, "test_abort_on_timeout.eps");
     board_print(&b);
     Variation var;
     variation_init(&var);

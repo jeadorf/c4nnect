@@ -11,7 +11,7 @@
 }
 
 void board2eps(Board *b, FILE *eps_out) {
-    FILE *template_in = fopen("board.eps", "r");
+    FILE *template_in = fopen("data/board.eps", "r");
     if (template_in == NULL) {
         handle_error("Cannot read PostScript board template file");
     }

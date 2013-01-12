@@ -6,19 +6,12 @@
 
 #include "benchmark.h"
 #include "board.h"
-#include "minunit.h"
 #include "search.h"
 #include "stats.h"
 #include "ucitable.h"
 #include "parser.h"
 #include "eval.h"
 #include "ttable.h"
-#include "board_test.h"
-#include "eval_test.h"
-#include "parser_test.h"
-#include "search_test.h"
-#include "stats_test.h"
-#include "ucitable_test.h"
 
 static bool check_game_end(Board *b) {
     if (b->winner != NOBODY) {
@@ -50,7 +43,7 @@ static void play_game() {
 
     // Reload the transposition table with positions that occur in the opening
     // TODO: check whether this is helpful or not
-    FILE *f = fopen("ttable.ser", "r");
+    FILE *f = fopen("data/ttable.ser", "r");
     if (f) {
         ttable_read(f);
         fclose(f);
@@ -59,7 +52,7 @@ static void play_game() {
 #endif
     }
     
-    f = fopen("connect-4.data", "r");
+    f = fopen("data/connect-4.data", "r");
     if (f) {
         ucitable_read(f);
         fclose(f);
@@ -111,19 +104,6 @@ int main(int argc, char** argv) {
     rewind(boards);
     benchmark_run(boards, stdout, stdout);
     fclose(boards);
-#endif
-
-#ifdef DEBUG
-    board_test();
-    eval_test();
-    parser_test();
-    search_test();
-    stats_test();
-    ucitable_test();
-    if (tests_failed > 0) {
-        puts("TESTS FAILED!");
-        return (EXIT_FAILURE);
-    }
 #endif
 
     puts("Welcome to 'Connect Four'!");

@@ -19,7 +19,7 @@ static char* test_collect_principal_variation() {
             "- - - - b - -"
             "w w w - w - -"
             "w b b - b - -");
-    fboard2eps(&b, "build/test_collect_principal_variation.eps");
+    fboard2eps(&b, "test_collect_principal_variation.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
@@ -42,7 +42,7 @@ static char* test_search_depth() {
     printf("test_search_depth\n");
     Board b;
     board_init(&b);
-    fboard2eps(&b, "build/test_search_depth.eps");
+    fboard2eps(&b, "test_search_depth.eps");
     Variation var;
     variation_init(&var);
     SearchRecord rec;
