@@ -52,6 +52,9 @@ file(COPY "${PROJECT_SOURCE_DIR}/data"
 # TESTS
 # -----------------------------------------------------------------------------
 
+enable_testing()
+
 add_executable(test test/test.c)
 target_link_libraries(test ${PROJECT_NAME})
 target_link_libraries(test ${PROJECT_NAME}_test)
+add_test(test test)
