@@ -9,12 +9,14 @@
 #include "eval.h"
 #include "util.h"
 #include "ttable.h"
+#include "ucitable.h"
 
 #ifdef DEBUG
 void stats_print(Board *b, Variation *var, SearchRecord *rec);
 #endif
 
 extern TTEntry ttable[];
+extern UCITEntry ucitable[];
 
 #define DEFAULT_MAX_DEPTH 10
 
@@ -54,6 +56,19 @@ bool alphabeta_negamax(
     TTEntry *ttentry = &(ttable[hash]);
 #endif
 
+    UCITEntry *ucitentry = ucitable_lookup(b->code);
+    if (b->move_cnt == 8) {
+        if (ucitentry == NULL) {
+            // board_print(b);
+        } else if (ucitentry->code == b->code) {
+            var->rating = ucitentry->rating;
+            var->length = 0;
+            return true;
+        } else {
+            puts("ERROR!\n");
+        }
+    }
+    
     if (cfg->abort_on_timeout && clock_in_millis(clock() - rec->cpu_time) > TIME_LIMIT_PER_PLY - TIME_LIMIT_SAFETY_MARGIN) {
         return false;
     } else if (b->winner != NOBODY

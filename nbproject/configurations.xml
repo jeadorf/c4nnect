@@ -13,6 +13,7 @@
       <itemPath>search.h</itemPath>
       <itemPath>stats.h</itemPath>
       <itemPath>ttable.h</itemPath>
+      <itemPath>ucitable.h</itemPath>
       <itemPath>util.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -32,6 +33,7 @@
       <itemPath>search.c</itemPath>
       <itemPath>stats.c</itemPath>
       <itemPath>ttable.c</itemPath>
+      <itemPath>ucitable.c</itemPath>
       <itemPath>util.c</itemPath>
     </logicalFolder>
     <logicalFolder name="f1" displayName="Test Header Files" projectFiles="true">
@@ -40,7 +42,7 @@
       <itemPath>parser_test.h</itemPath>
       <itemPath>search_test.h</itemPath>
       <itemPath>stats_test.h</itemPath>
-      <itemPath>ttable_test.h</itemPath>
+      <itemPath>ucitable_test.h</itemPath>
     </logicalFolder>
     <logicalFolder name="f2" displayName="Test Source Files" projectFiles="true">
       <itemPath>board_test.c</itemPath>
@@ -48,7 +50,7 @@
       <itemPath>parser_test.c</itemPath>
       <itemPath>search_test.c</itemPath>
       <itemPath>stats_test.c</itemPath>
-      <itemPath>ttable_test.c</itemPath>
+      <itemPath>ucitable_test.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

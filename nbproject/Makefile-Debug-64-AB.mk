@@ -43,10 +43,11 @@ OBJECTFILES= \
 	${OBJECTDIR}/board_test.o \
 	${OBJECTDIR}/util.o \
 	${OBJECTDIR}/board2eps.o \
-	${OBJECTDIR}/ttable_test.o \
 	${OBJECTDIR}/stats.o \
 	${OBJECTDIR}/eval_test.o \
+	${OBJECTDIR}/ucitable.o \
 	${OBJECTDIR}/eval.o \
+	${OBJECTDIR}/ucitable_test.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/search.o \
 	${OBJECTDIR}/parser.o
@@ -121,11 +122,6 @@ ${OBJECTDIR}/board2eps.o: board2eps.c
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/board2eps.o board2eps.c
 
-${OBJECTDIR}/ttable_test.o: ttable_test.c 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/ttable_test.o ttable_test.c
-
 ${OBJECTDIR}/stats.o: stats.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -136,10 +132,20 @@ ${OBJECTDIR}/eval_test.o: eval_test.c
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval_test.o eval_test.c
 
+${OBJECTDIR}/ucitable.o: ucitable.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/ucitable.o ucitable.c
+
 ${OBJECTDIR}/eval.o: eval.c 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/eval.o eval.c
+
+${OBJECTDIR}/ucitable_test.o: ucitable_test.c 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.c) -g -Werror -MMD -MP -MF $@.d -o ${OBJECTDIR}/ucitable_test.o ucitable_test.c
 
 ${OBJECTDIR}/main.o: main.c 
 	${MKDIR} -p ${OBJECTDIR}
