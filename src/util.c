@@ -1,7 +1,7 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdint.h>
 #include <inttypes.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
 
 void handle_error(char *msg) {

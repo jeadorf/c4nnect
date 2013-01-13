@@ -1,15 +1,16 @@
-#include <math.h>
 #include <malloc.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
-#include "search.h"
-#include "stats.h"
+
 #include "board.h"
 #include "eval.h"
-#include "util.h"
+#include "search.h"
+#include "stats.h"
 #include "ttable.h"
 #include "ucitable.h"
+#include "util.h"
 
 #ifdef DEBUG
 void stats_print(Board *b, Variation *var, SearchRecord *rec);

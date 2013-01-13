@@ -1,9 +1,9 @@
 #ifndef _BOARD_H
 #define _BOARD_H
 
-#include <sys/types.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <sys/types.h>
 
 /* Players. Do not change the values of these definitions; WHITE and BLACK are
  * used as single bits. */

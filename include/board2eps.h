@@ -2,6 +2,7 @@
 #define _BOARD2EPS_H
 
 #include <stdio.h>
+
 #include "board.h"
 
 /*! Exports a position to encapsulated PostScript. */

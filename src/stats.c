@@ -1,11 +1,12 @@
-#include <stdbool.h>
-#include <math.h>
-#include <stdio.h>
 #include <inttypes.h>
+#include <math.h>
+#include <stdbool.h>
+#include <stdio.h>
+
 #include "eval.h"
-#include "ttable.h"
-#include "stats.h"
 #include "search.h"
+#include "stats.h"
+#include "ttable.h"
 
 void variation_init(Variation *var) {
     var->length = 0;

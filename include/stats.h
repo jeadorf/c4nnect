@@ -1,9 +1,10 @@
 #ifndef _STATS_H
 #define _STATS_H
 
-#include <time.h>
 #include <stdbool.h>
 #include <stdint.h>
+#include <time.h>
+
 #include "board.h"
 
 /*! The variation is the result of a search. When searching we are usually

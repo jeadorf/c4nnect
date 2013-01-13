@@ -1,7 +1,8 @@
 #include <stdlib.h>
-#include "ucitable.h"
+
 #include "board.h"
 #include "eval.h"
+#include "ucitable.h"
 
 UCITEntry ucitable[UCITABLE_SIZE];
 

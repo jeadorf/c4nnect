@@ -3,6 +3,7 @@
 #define _SEARCH_H
 
 #include <stdint.h>
+
 #include "board.h"
 #include "stats.h"
 

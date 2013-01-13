@@ -1,15 +1,16 @@
+#include <inttypes.h>
 #include <math.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
 #include <time.h>
-#include <inttypes.h>
 #include <unistd.h>
+
 #include "benchmark.h"
-#include "eval.h"
-#include "stats.h"
 #include "board.h"
+#include "eval.h"
 #include "search.h"
+#include "stats.h"
 #include "ttable.h"
 
 void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {

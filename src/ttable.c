@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdio.h>
+
 #include "ttable.h"
 
 TTEntry ttable[TTABLE_SIZE];

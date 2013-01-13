@@ -5,7 +5,7 @@
 
 #define EPS_BUFFER_SIZE 4096
 
- void fboard2eps(Board *b, char *filename) {
+void fboard2eps(Board *b, char *filename) {
     FILE *eps_out = fopen(filename, "w");
     board2eps(b, eps_out);
     fclose(eps_out);
