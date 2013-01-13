@@ -1,9 +1,9 @@
 #include <stdio.h>
+
 #include "board.h"
+#include "board2eps.h"
 #include "minunit.h"
 #include "parser.h"
-#include "parser_test.h"
-#include "board2eps.h"
 
 static char* test_parse_empty() {
     printf("test_parse_empty\n");
@@ -96,23 +96,11 @@ static char* test_black_to_move() {
     return 0;
 }
 
-static char* all_tests() {
+int main() {
     mu_run_test(test_parse_empty);
     mu_run_test(test_parse_one);
     mu_run_test(test_parse_quoted);
     mu_run_test(test_white_to_move);
     mu_run_test(test_black_to_move);
-    return 0;
-}
-
-int parser_test() {
-    char *result = all_tests();
-    if (result != 0) {
-        printf("%s\n", result);
-    } else {
-        printf("ALL TESTS RUN\n");
-    }
-    printf("Tests run: %d\n", tests_run);
-
-    return result != 0;
+    return tests_failed;
 }

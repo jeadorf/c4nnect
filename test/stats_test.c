@@ -1,13 +1,13 @@
-#include <stdio.h>
 #include <math.h>
-#include "util.h"
+#include <stdio.h>
+
 #include "board.h"
+#include "board2eps.h"
+#include "eval.h"
 #include "minunit.h"
 #include "parser.h"
-#include "stats_test.h"
-#include "board2eps.h"
 #include "search.h"
-#include "eval.h"
+#include "util.h"
 
 static char* test_collect_principal_variation() {
     printf("test_collect_principal_variation\n");
@@ -58,21 +58,8 @@ static char* test_search_depth() {
     return 0;
 }
 
-static char* all_tests() {
+int main() {
     mu_run_test(test_collect_principal_variation);
     mu_run_test(test_search_depth);
-    return 0;
+    return tests_failed;
 }
-
-int stats_test() {
-    char *result = all_tests();
-    if (result != 0) {
-        printf("%s\n", result);
-    } else {
-        printf("ALL TESTS RUN\n");
-    }
-    printf("Tests run: %d\n", tests_run);
-
-    return result != 0;
-}
-

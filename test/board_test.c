@@ -1,11 +1,12 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#include "minunit.h"
+
 #include "board.h"
+#include "board2eps.h"
+#include "minunit.h"
 #include "parser.h"
 #include "util.h"
-#include "board2eps.h"
 
 static char* test_board_put() {
     printf("test_board_put\n");
@@ -386,7 +387,7 @@ static char* test_board_move_cnt() {
     return 0;
 }
 
-static char* all_tests() {
+int main() {
     mu_run_test(test_board_put);
     mu_run_test(test_board_undo);
     mu_run_test(test_board_undo_full);
@@ -409,17 +410,5 @@ static char* all_tests() {
     mu_run_test(test_board_encode_incremental);
     mu_run_test(test_board_code);
     mu_run_test(test_board_move_cnt);
-    return 0;
-}
-
-int board_test() {
-    char *result = all_tests();
-    if (result != 0) {
-        printf("%s\n", result);
-    } else {
-        printf("ALL TESTS RUN\n");
-    }
-    printf("Tests run: %d\n", tests_run);
-
-    return result != 0;
+    return tests_failed;
 }

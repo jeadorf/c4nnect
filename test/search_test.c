@@ -1,15 +1,15 @@
 #include <math.h>
 #include <stdio.h>
-#include "util.h"
 #include <stdlib.h>
+
 #include "board.h"
+#include "board2eps.h"
 #include "eval.h"
 #include "minunit.h"
 #include "parser.h"
 #include "stats.h"
 #include "search.h"
-#include "search_test.h"
-#include "board2eps.h"
+#include "util.h"
 
 static char* assert_surjectivity(int8_t *moves) {
     for (int k = 0; k < NUM_COLS; k++) {
@@ -424,43 +424,25 @@ static char* test_max_depth_boundary() {
     return 0;
 }
 
-static char* all_tests() {
+int main() {
     mu_run_test(test_genmove_surjectivity_simple);
     mu_run_test(test_genmove_pv_first);
     mu_run_test(test_abn_white_win);
     mu_run_test(test_abn_black_win);
     mu_run_test(test_abn_white_win2);
     mu_run_test(test_search_white_win);
-    /*
-        mu_run_test(test_search_fastest_white_win);
-     */
+    // mu_run_test(test_search_fastest_white_win);
     mu_run_test(test_search_white_win3);
     mu_run_test(test_search_black_win);
     mu_run_test(test_beginning_trap_white);
     mu_run_test(test_beginning_trap_black);
     mu_run_test(test_search_defer_defeat);
-    /*
-        mu_run_test(test_fast_black_win);
-     */
+    // mu_run_test(test_fast_black_win);
     mu_run_test(test_white_difficult_win);
     mu_run_test(test_time_consuming_position);
     mu_run_test(test_time_consuming_position2);
     mu_run_test(test_time_consuming_position3);
     mu_run_test(test_abort_on_timeout);
     mu_run_test(test_max_depth_boundary);
-
-    return 0;
+    return tests_failed;
 }
-
-int search_test() {
-    char *result = all_tests();
-    if (result != 0) {
-        printf("%s\n", result);
-    } else {
-        printf("ALL TESTS RUN\n");
-    }
-    printf("Tests run: %d\n", tests_run);
-
-    return result != 0;
-}
-

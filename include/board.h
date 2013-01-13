@@ -5,7 +5,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-/* Players. Do not change the values of these definitions; WHITE and BLACK are 
+/* Players. Do not change the values of these definitions; WHITE and BLACK are
  * used as single bits. */
 #define WHITE 0
 #define BLACK 1
@@ -74,7 +74,7 @@ struct Board {
      * \verbatim
      *  0 LSB                                                                    62 63 MSB
      *  000100-001-100100-001-100000-100-000000-000-100000-100-000000-000-000000-100-1
-     * 
+     *
      *  0 LSB                                                                       63 MSB
      *  8    0    3    1    6    0    1    0    0    1    4    0    0    0    0    9
      * \endverbatim

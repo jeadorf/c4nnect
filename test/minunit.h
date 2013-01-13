@@ -8,7 +8,7 @@
 
 #define mu_assert(message, test) do { if (!(test)) { tests_failed++; return message; } } while (0)
 #define mu_run_test(test) do { char *message = test(); tests_run++; \
-                                if (message) return message; } while (0)
+                                if (message) return 1; } while (0)
 int tests_run;
 int tests_failed;
 

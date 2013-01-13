@@ -1,8 +1,8 @@
-#include <stdlib.h>
 #include <stdio.h>
+#include <stdlib.h>
 
-#include "minunit.h"
 #include "board.h"
+#include "minunit.h"
 #include "parser.h"
 #include "ucitable.h"
 
@@ -95,22 +95,10 @@ static char* test_ucitable_lookup_none() {
     return 0;
 }
 
-static char* all_tests() {
+int main() {
     mu_run_test(test_ucitable_read_win);
     mu_run_test(test_ucitable_read_draw);
     mu_run_test(test_ucitable_read_loss);
     mu_run_test(test_ucitable_lookup_none);
-    return 0;
-}
-
-int ucitable_test() {
-    char *result = all_tests();
-    if (result != 0) {
-        printf("%s\n", result);
-    } else {
-        printf("ALL TESTS RUN\n");
-    }
-    printf("Tests run: %d\n", tests_run);
-
-    return result != 0;
+    return tests_failed;
 }

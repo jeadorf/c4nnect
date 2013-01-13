@@ -1,13 +1,13 @@
-#include <stdio.h>
 #include <math.h>
-#include "eval.h"
-#include "eval_test.h"
+#include <stdio.h>
+
 #include "board.h"
-#include "search.h"
-#include "stats.h"
+#include "board2eps.h"
+#include "eval.h"
 #include "minunit.h"
 #include "parser.h"
-#include "board2eps.h"
+#include "search.h"
+#include "stats.h"
 
 static char* test_eval_white_win() {
     printf("test_eval_white_win\n");
@@ -182,30 +182,14 @@ static char* test_odd_even_draw2() {
     return 0;
 }
 
-static char* all_tests() {
+int main() {
     mu_run_test(test_eval_white_win);
     mu_run_test(test_eval_black_win);
-
     mu_run_test(test_odd_even_white_win);
     mu_run_test(test_odd_even_white_win2);
     mu_run_test(test_odd_even_white_win3);
     mu_run_test(test_odd_even_draw);
-/*
-    mu_run_test(test_odd_even_black_win);
-*/
+    // mu_run_test(test_odd_even_black_win);
     mu_run_test(test_odd_even_draw2);
-
-    return 0;
-}
-
-int eval_test() {
-    char *result = all_tests();
-    if (result != 0) {
-        printf("%s\n", result);
-    } else {
-        printf("ALL TESTS RUN\n");
-    }
-    printf("Tests run: %d\n", tests_run);
-
-    return result != 0;
+    return tests_failed;
 }

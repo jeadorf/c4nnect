@@ -26,17 +26,19 @@ configure_file(
 # -----------------------------------------------------------------------------
 
 file(GLOB srcs src/*.c)
-add_library(${PROJECT_NAME} ${srcs})
+set(PROJECT_LIB ${PROJECT_NAME})
+add_library(${PROJECT_LIB} ${srcs})
 
-file(GLOB tests test/*.c)
-add_library(${PROJECT_NAME}_test ${tests})
+# file(GLOB tests test/*.c)
+# set(PROJECT_LIB_TEST ${PROJECT_NAME}_test)
+# add_library(${PROJECT_LIB_TEST} ${tests})
 
 # -----------------------------------------------------------------------------
 # EXECUTABLES
 # -----------------------------------------------------------------------------
 
 add_executable(${PROJECT_NAME}_exe main.c)
-target_link_libraries(${PROJECT_NAME}_exe ${PROJECT_NAME})
+target_link_libraries(${PROJECT_NAME}_exe ${PROJECT_LIB})
 # This is a small trick that allows us to have the library and the executable
 # share the same name. It is quite intuitive to name the library after the
 # project, and the executable as well.
@@ -54,7 +56,17 @@ file(COPY "${PROJECT_SOURCE_DIR}/data"
 
 enable_testing()
 
-add_executable(test test/test.c)
-target_link_libraries(test ${PROJECT_NAME})
-target_link_libraries(test ${PROJECT_NAME}_test)
-add_test(test test)
+macro(add_utest NAME)
+    set(TEST_NAME ${NAME}_test)
+    add_executable(${TEST_NAME} test/${TEST_NAME}.c)
+    target_link_libraries(${TEST_NAME} ${PROJECT_LIB})
+    # target_link_libraries(${TEST_NAME} ${PROJECT_LIB_TEST})
+    add_test(${NAME} ${TEST_NAME})
+endmacro()
+
+add_utest(board)
+add_utest(eval)
+add_utest(parser)
+add_utest(search)
+add_utest(stats)
+add_utest(ucitable)

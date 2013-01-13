@@ -1,0 +1,6 @@
+#ifndef _CONFIGURE_H
+#define	_CONFIGURE_H
+
+#define C4NNECT_DIR "${PROJECT_BINARY_DIR}"
+
+#endif
