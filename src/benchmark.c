@@ -30,7 +30,7 @@ void benchmark_run(FILE *positions_in, FILE *stats_out, FILE *summary_out) {
     uint64_t visited_cnt = 0, move_cnt = 0, eval_cnt = 0,
             abcut_cnt = 0, ttcut_cnt = 0, ttrcoll_cnt = 0, ttadd_cnt = 0,
             max_depth = 0, reached_depth = 0, cpu_time = 0, on_time_cnt = 0,
-            on_time_solved_cnt = 0, on_time_unsolved_cnt = 0, solved = 0;
+            solved = 0;
     while (fscanf(positions_in, "%lX", &n) == 1) {
         Board b;
         board_decode(&b, n); // FIXME: probably something to do with PRId32 etc

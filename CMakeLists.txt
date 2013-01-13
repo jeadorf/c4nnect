@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION 2.8.7)
 
 project(c4nnect)
 
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
-set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=c99")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
 set(BUILD_SHARED_LIBS true)
 
 include_directories("include")

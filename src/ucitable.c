@@ -1,3 +1,4 @@
+#include <stdio.h>
 #include <stdlib.h>
 
 #include "board.h"
@@ -20,7 +21,6 @@ void ucitable_read(FILE *f) {
     char *buf = NULL;
     size_t n = 89;
     ssize_t m = 0;
-    int c = 0;
     while (!feof(f) && !ferror(f)) {
         board_init(&b);
         m = getline(&buf, &n, f);
