@@ -57,18 +57,21 @@ bool alphabeta_negamax(
     TTEntry *ttentry = &(ttable[hash]);
 #endif
 
+#ifndef DISABLE_UCITABLE
     UCITEntry *ucitentry = ucitable_lookup(b->code);
-    if (b->move_cnt == 8) {
+    // May NOT return variation with length 0 if this is the root of the recursion tree
+    if (depth > 0 && b->move_cnt == 8) {
         if (ucitentry == NULL) {
-            // board_print(b);
+            // no op
         } else if (ucitentry->code == b->code) {
             var->rating = ucitentry->rating;
-            var->length = 0;
+            var->length = 0; // can't do that!
             return true;
         } else {
             puts("ERROR!\n");
         }
     }
+#endif
     
     if (cfg->abort_on_timeout && clock_in_millis(clock() - rec->cpu_time) > TIME_LIMIT_PER_PLY - TIME_LIMIT_SAFETY_MARGIN) {
         return false;
@@ -128,6 +131,7 @@ bool alphabeta_negamax(
                     bestcol = col;
                     // Construct principal variation. Append the PV of the subtree
                     // to the PV that led to this node.
+                    // TODO: need to profile this, Variation data structure probably too big
                     pv.moves[0] = col;
                     memcpy(pv.moves + 1, var->moves, var->length * sizeof (col));
                     pv.length = var->length + 1;

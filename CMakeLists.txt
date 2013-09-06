@@ -2,12 +2,20 @@ cmake_minimum_required(VERSION 2.8.7)
 
 project(c4nnect)
 
+# Enable for debugging
 # set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g")
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDEBUG")
+
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall")
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wextra")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Werror")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -pedantic")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -O2")
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -std=gnu99")
+# The semantics are not clear, UCI table helps predicting the winner but does
+# not help finding the best moves.
+set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -DDISABLE_UCITABLE")
+
 set(BUILD_SHARED_LIBS true)
 
 include_directories("include")

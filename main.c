@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <ctype.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -52,6 +53,7 @@ static void play_game() {
 #endif
     }
     
+#ifndef DISABLE_UCITABLE
     f = fopen("data/connect-4.data", "r");
     if (f) {
         ucitable_read(f);
@@ -60,6 +62,7 @@ static void play_game() {
         printf("Read UCI ML table.");
 #endif
     }
+#endif
 
     Player ai = WHITE;
 
@@ -75,6 +78,10 @@ static void play_game() {
 #ifdef DEBUG
             stats_print(&b, &var, &rec);
 #endif
+
+            assert(var.length > 0);
+            assert(var.moves[0] >= 0);
+            assert(var.moves[0] < NUM_COLS);
 
             board_put(&b, var.moves[0]);
             if (check_game_end(&b)) {
@@ -97,7 +104,7 @@ static void play_game() {
     board_print(&b);
 }
 
-int main(int argc, char** argv) {
+int main() { //int argc, char** argv) {
 #ifdef BENCHMARK
     FILE *boards = tmpfile();
     benchmark_sample(boards);
