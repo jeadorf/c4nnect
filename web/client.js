@@ -126,7 +126,7 @@ var inflight;
 
 function fetchBoard(code, ai) {
   inflight = true;
-  $.get('/c4nnect/web/server.py',
+  $.get('server.py',
     {
       command: ai ? 'move' : 'get',
       board: '' + code
