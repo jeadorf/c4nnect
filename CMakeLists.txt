@@ -61,6 +61,9 @@ set_target_properties(${PROJECT_NAME}_exe PROPERTIES OUTPUT_NAME ${PROJECT_NAME}
 file(COPY "${PROJECT_SOURCE_DIR}/data"
     DESTINATION "${PROJECT_BINARY_DIR}")
 
+add_executable(server web/server.c)
+target_link_libraries(server ${PROJECT_LIB})
+
 # -----------------------------------------------------------------------------
 # TESTS
 # -----------------------------------------------------------------------------
